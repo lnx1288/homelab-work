@@ -12,6 +12,7 @@ resource "openstack_compute_flavor_v2" "manila-service-flavor" {
   vcpus     = "1"
   disk      = "0"
   flavor_id = "100"
+  is_public = true
 }
 
 resource "openstack_compute_keypair_v2" "manila-service" {
