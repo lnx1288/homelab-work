@@ -40,11 +40,3 @@ resource "openstack_compute_secgroup_v2" "allow_ping" {
     cidr        = "0.0.0.0/0"
   }
 }
-
-resource "openstack_images_image_v2" "cirros" {
-  name             = "cirros"
-  local_file_path  = "/home/arif/images/cirros-0.5.1-x86_64-disk.img"
-  container_format = "bare"
-  disk_format      = "qcow2"
-  visibility       = "public"
-}
