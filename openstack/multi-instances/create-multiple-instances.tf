@@ -1,17 +1,3 @@
-terraform {
-  required_version = ">= 0.14.0"
-  required_providers {
-    openstack = {
-      source  = "terraform-provider-openstack/openstack"
-      version = "1.49.0"
-    }
-  }
-}
-
-provider "openstack" {
-  cloud = "arif-home"
-}
-
 data "openstack_compute_flavor_v2" "m1_small" {
     name = "m1.small"
 }
