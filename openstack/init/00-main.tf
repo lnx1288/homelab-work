@@ -12,9 +12,18 @@ provider "openstack" {
   cloud = "arif-home"
 }
 
+variable "domain_id" {
+  type = string
+  default = "3fd5a53e08e243b49ac3b171d57b4e4a"
+}
+
 resource "openstack_compute_keypair_v2" "arif-key" {
   name       = "arif-key"
   public_key = file("/home/arif/.ssh/aarsa4096canonical.pub")
+}
+
+resource "openstack_identity_role_v3" "tenantLead" {
+  name = "tenantLead"
 }
 
 resource "openstack_compute_secgroup_v2" "allow_ssh" {
