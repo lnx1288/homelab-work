@@ -9,10 +9,15 @@ terraform {
 }
 
 provider "openstack" {
-  cloud = "arif-home"
+  cloud = var.cloud
 }
 
 variable "domain_id" {
-  type = string
-  default = "3fd5a53e08e243b49ac3b171d57b4e4a"
+  type    = string
+  default = ""
+}
+
+variable "cloud" {
+  type    = string
+  default = ""
 }

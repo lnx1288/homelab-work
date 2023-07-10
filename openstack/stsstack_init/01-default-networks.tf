@@ -1,29 +1,33 @@
 resource "openstack_networking_network_v2" "ext_net" {
   name           = "ext_net"
-  admin_state_up = "true"
+  admin_state_up = true
   shared         = true
   external       = true
 
   segments {
 
     physical_network = "physnet1"
-    network_type = "flat"
+    network_type     = "flat"
 
   }
 }
 
 resource "openstack_networking_subnet_v2" "ext_net_subnet" {
-  name       = "ext_net_subnet"
-  network_id = openstack_networking_network_v2.ext_net.id
-  cidr       = "192.168.1.0/24"
-  gateway_ip = "192.168.1.254"
+  name        = "ext_net_subnet"
+  network_id  = openstack_networking_network_v2.ext_net.id
+  cidr        = "192.168.1.0/24"
+  gateway_ip  = "192.168.1.254"
   enable_dhcp = false
-  ip_version = 4
-  dns_nameservers = ["192.168.1.9","192.168.1.13"]
+  ip_version  = 4
+
+  dns_nameservers = [
+    "192.168.1.9",
+    "192.168.1.13"
+  ]
 
   allocation_pool {
     start = "192.168.1.42"
-    end = "192.168.1.79"
+    end   = "192.168.1.79"
   }
 }
 
@@ -46,7 +50,7 @@ resource "openstack_networking_subnet_v2" "private_subnet" {
 
   allocation_pool {
     start = "192.168.21.2"
-    end = "192.168.21.254"
+    end   = "192.168.21.254"
   }
 
 }
