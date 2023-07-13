@@ -22,4 +22,6 @@ resource "openstack_compute_quotaset_v2" "compute_quota_1" {
 resource "openstack_blockstorage_quotaset_v3" "block_quota_1" {
   project_id           = data.openstack_identity_project_v3.admin.id
   volumes              = 100
+  per_volume_gigabytes = 50
+  gigabytes            = 1000
 }
