@@ -24,6 +24,8 @@ resource "openstack_compute_instance_v2" "test_server_01" {
   network {
     name = "private"
   }
+
+  user_data = file("user-data.yaml")
 }
 
 resource "openstack_networking_floatingip_v2" "fip" {

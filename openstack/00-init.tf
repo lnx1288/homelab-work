@@ -21,3 +21,8 @@ variable "cloud" {
   type    = string
   default = ""
 }
+
+variable "heat_domain_id" {
+  type    = string
+  default = ""
+}
