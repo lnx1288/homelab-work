@@ -1,4 +1,3 @@
-
 resource "juju_application" "ceph-osd" {
   name = "ceph-osd"
 
@@ -10,16 +9,24 @@ resource "juju_application" "ceph-osd" {
   }
 
   units = 8
-  #placement = "1000,1002,1003,1004,1005,1006,1007"
+  placement = "${join(",",sort([
+    juju_machine.all_machines["1000"].machine_id,
+    juju_machine.all_machines["1001"].machine_id,
+    juju_machine.all_machines["1002"].machine_id,
+    juju_machine.all_machines["1003"].machine_id,
+    juju_machine.all_machines["1004"].machine_id,
+    juju_machine.all_machines["1005"].machine_id,
+    juju_machine.all_machines["1006"].machine_id,
+    juju_machine.all_machines["1007"].machine_id,
+   ]))}"
 
   config = {
     osd-devices = var.osd-devices
     source = var.openstack-origin
-    autotune = "false"
     aa-profile-mode = "complain"
-    bluestore = "true"
     osd-encrypt = "true"
     osd-encrypt-keymanager = "vault"
+    customize-failure-domain = "true"
   }
 }
 
@@ -52,6 +59,7 @@ resource "juju_application" "ceph-radosgw" {
   charm {
     name     = "ceph-radosgw"
     channel  = "octopus/stable"
+
   }
 
   units = 3
@@ -59,8 +67,10 @@ resource "juju_application" "ceph-radosgw" {
   config = {
       source: var.openstack-origin
       vip = "10.0.1.224"
-      region = "RegionOne"
-      operator-roles = "Member,admin" # Contrail requires admin and not Admin
+      operator-roles = "Member,admin"
+      os-admin-hostname    = "swift-internal.example.com"
+      os-internal-hostname = "swift-internal.example.com"
+      os-public-hostname   = "swift.example.com"
   }
 }
 
