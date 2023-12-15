@@ -36,6 +36,18 @@ resource "juju_application" "nova-compute" {
        cpu-mode = "custom"
        cpu-model = "EPYC-IBPB"
        cpu-model-extra-flags = "svm,pcid"
+       pci-passthrough-whitelist = jsonencode([
+         {vendor_id: "1af4", product_id: "1000", address: "00:08.0"},
+         {vendor_id: "1af4", product_id: "1000", address: "00:07.0"},
+         {vendor_id: "1af4", product_id: "1000", address: "00:06.0"},
+       ])
+       pci-alias = jsonencode({
+         vendor_id: "1af4",
+         product_id: "1000",
+         device_type: "type-PCI",
+         name: "arifpass",
+         numa_policy: "preferred"
+       })
 
   }
 }
@@ -48,6 +60,10 @@ resource "juju_application" "ceilometer-agent" {
   charm {
     name     = "ceilometer-agent"
     channel  = "ussuri/stable"
+  }
+
+  config = {
+    use-internal-endpoints = "true"
   }
 
 }
@@ -72,6 +88,26 @@ resource "juju_application" "neutron-openvswitch" {
 
 }
 
+resource "juju_application" "sysconfig-compute" {
+  name = "sysconfig-compute"
+
+  model = juju_model.cpe-focal.name
+
+  charm {
+    name     = "sysconfig"
+    channel  = "latest/stable"
+    revision = "19"
+  }
+
+  config = {
+#      enable-iommu = "false"
+      governor     = "performance"
+      enable-pti   = "on"
+      update-grub  = "true"
+      enable-tsx   = "true"
+  }
+}
+
 resource "juju_integration" "compute-ceilometer" {
 
   model = juju_model.cpe-focal.name
@@ -92,12 +128,42 @@ resource "juju_integration" "compute-ovs" {
   model = juju_model.cpe-focal.name
 
   application {
-    name = juju_application.nova-compute.name
+    name = juju_application.neutron-openvswitch.name
     endpoint = "neutron-plugin"
   }
 
   application {
-    name = juju_application.neutron-openvswitch.name
+    name = juju_application.nova-compute.name
     endpoint = "neutron-plugin"
+  }
+}
+
+resource "juju_integration" "compute-sysconfig" {
+
+  model = juju_model.cpe-focal.name
+
+  application {
+    name = juju_application.nova-compute.name
+    endpoint = "juju-info"
+  }
+
+  application {
+    name = juju_application.sysconfig-compute.name
+    endpoint = "juju-info"
+  }
+}
+
+resource "juju_integration" "compute-ceph-mon" {
+
+  model = juju_model.cpe-focal.name
+
+  application {
+    name = juju_application.nova-compute.name
+    endpoint = "ceph"
+  }
+
+  application {
+    name = juju_application.ceph-mon.name
+    endpoint = "client"
   }
 }

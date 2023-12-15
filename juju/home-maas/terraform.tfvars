@@ -19,3 +19,6 @@ machines = [
 ]
 
 osd-devices = "/dev/sdb /dev/sdc"
+data-port = "br-data:ens9"
+bridge-mappings = "physnet1:br-data"
+dns-servers = "192.168.1.13"
