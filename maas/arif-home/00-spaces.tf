@@ -1,11 +1,11 @@
-locals {
-  spaces = ["external","oam","ceph-access","ceph-replica","overlay","admin","internal"]
-}
-
 resource "maas_space" "maas_spaces" {
 
-  for_each = toset(local.spaces)
-  name = each.value
+  for_each = {
+    for index, spaces in var.spaces:
+    spaces.space => spaces
+  }
+
+  name = each.value.space
 
 }
 

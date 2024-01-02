@@ -1,3 +1,10 @@
+variable "machines" {
+  type = list(object({
+    machine_id = number
+    constraints = string
+  }))
+}
+
 variable openstack-origin {
     type = string
     default = "distro"
