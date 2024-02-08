@@ -13,3 +13,11 @@ variable "spaces" {
     }))
   }))
 }
+
+variable "asrock_machines" {
+  type = list(object({
+    host_name = string
+    power_type = string
+    mac_addr = string
+  }))
+}

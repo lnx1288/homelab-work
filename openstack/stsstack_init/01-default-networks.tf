@@ -26,8 +26,8 @@ resource "openstack_networking_subnet_v2" "ext_net_subnet" {
   ]
 
   allocation_pool {
-    start = "192.168.1.42"
-    end   = "192.168.1.79"
+    start = "192.168.1.40"
+    end   = "192.168.1.69"
   }
 }
 

@@ -51,6 +51,6 @@ resource "maas_subnet_ip_range" "dynamic_ip_ranges" {
     type = each.value.type
     start_ip = each.value.start_ip
     end_ip = each.value.end_ip
-    comment = each.value.comment
+    comment = each.value.comment == "Dynamic"?"":each.value.comment
 }
 

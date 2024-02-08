@@ -9,6 +9,6 @@ terraform {
 
 provider "maas" {
   api_version = "2.0"
-  api_key = "cP5gj8RyemEhBLvyKG:AmRXEzR8MPAbRPWGBH:7T9LPemF3gAPe3qwr47rXAkLWZysjeRB"
+  api_key = "yvjRUz4B4FJtpC99Dc:gBSmTpFttb7x2WDkBD:jdWhHVBBGGu5D2vVtzMK3ks9fNTk9YuJ"
   api_url = "http://10.0.1.253:5240/MAAS"
 }

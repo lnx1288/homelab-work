@@ -143,5 +143,36 @@ spaces = [
         comment = "Servers"
       }
     ]
+  },
+  {
+    space="add-new-test",
+    vid=306,
+    cidr="10.0.7.0/24",
+    mtu=1500,
+    managed=true,
+    ip_range = []
+  }
+]
+
+asrock_machines = [
+  {
+     host_name = "asrock01"
+     power_type = "manual",
+     mac_addr = "a8:a1:59:44:70:ac"
+  },
+  {
+     host_name = "asrock02"
+     power_type = "manual",
+     mac_addr = "a8:a1:59:44:76:79"
+  },
+  {
+     host_name = "asrock03"
+     power_type = "manual",
+     mac_addr = "a8:a1:59:44:73:f0"
+  },
+  {
+     host_name = "asrock04"
+     power_type = "manual",
+     mac_addr = "a8:a1:59:e4:92:b8"
   }
 ]
