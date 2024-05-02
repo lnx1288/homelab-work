@@ -1,0 +1,16 @@
+#cloud-config
+password: ubuntu
+chpasswd: {expire: False}
+ssh_pwauth: True
+write_files:
+- content: |
+    #!/bin/bash
+
+    sudo mkfs.ext4 /dev/vdb
+    sudo mkdir /mnt/disk
+    sudo mount /dev/vdb /mnt/disk
+  owner: root
+  permissions: '0755'
+  path: /tmp/mount_disk.sh
+runcmd:
+  - [ sudo, /tmp/mount_disk.sh ]
