@@ -33,9 +33,9 @@ resource "juju_application" "nova-compute" {
        virt-type = "kvm"
        customize-failure-domain = var.customize-failure-domain
        reserved-host-memory = var.reserved-host-memory
-       cpu-mode = "custom"
-       cpu-model = "EPYC-IBPB"
-       cpu-model-extra-flags = "svm,pcid"
+       #cpu-mode = "custom"
+       #cpu-model = "EPYC-IBPB"
+       #cpu-model-extra-flags = "svm,pcid"
        pci-passthrough-whitelist = jsonencode([
          {vendor_id: "1af4", product_id: "1000", address: "00:08.0"},
          {vendor_id: "1af4", product_id: "1000", address: "00:07.0"},
@@ -62,6 +62,8 @@ resource "juju_application" "ceilometer-agent" {
     channel  = "ussuri/stable"
   }
 
+  units = 0
+
   config = {
     use-internal-endpoints = "true"
   }
@@ -77,6 +79,8 @@ resource "juju_application" "neutron-openvswitch" {
     name     = "neutron-openvswitch"
     channel  = "ussuri/stable"
   }
+
+  units = 0
 
   config = {
       data-port                      = "br-data:ens9"
@@ -98,6 +102,8 @@ resource "juju_application" "sysconfig-compute" {
     channel  = "latest/stable"
     revision = "19"
   }
+
+  units = 0
 
   config = {
 #      enable-iommu = "false"

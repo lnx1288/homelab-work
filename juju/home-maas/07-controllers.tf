@@ -7,6 +7,7 @@ resource "juju_application" "controller-server" {
     name     = "ubuntu"
     channel  = "latest/stable"
     revision = "24"
+    series = "focal"
   }
 
   units = 6
@@ -31,6 +32,8 @@ resource "juju_application" "sysconfig-control" {
     channel  = "latest/stable"
     revision = "22"
   }
+
+  units = 0
 
   config = {
       governor     = "performance"

@@ -2,7 +2,7 @@ resource "juju_model" "cpe-focal" {
   name = "cpe-focal"
 
   cloud {
-    name   = "home-maas"
+    name = "home-maas"
   }
 
   config = {
