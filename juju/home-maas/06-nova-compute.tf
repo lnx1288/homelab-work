@@ -20,6 +20,12 @@ resource "juju_application" "nova-compute" {
     juju_machine.all_machines["1007"].machine_id,
    ]))}"
 
+   endpoint_bindings = [{
+     space = "oam"
+   },{
+     space = "oam"
+     endpoint = "internal"
+   }]
 
   config = {
        openstack-origin = var.openstack-origin
@@ -67,7 +73,6 @@ resource "juju_application" "ceilometer-agent" {
   config = {
     use-internal-endpoints = "true"
   }
-
 }
 
 resource "juju_application" "neutron-openvswitch" {
@@ -81,6 +86,13 @@ resource "juju_application" "neutron-openvswitch" {
   }
 
   units = 0
+
+  endpoint_bindings = [{
+    space = "oam"
+  },{
+    space = "oam"
+    endpoint = "data"
+  }]
 
   config = {
       data-port                      = "br-data:ens9"

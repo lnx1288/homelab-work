@@ -7,7 +7,7 @@ resource "juju_application" "controller-server" {
     name     = "ubuntu"
     channel  = "latest/stable"
     revision = "24"
-    series = "focal"
+    base = "ubuntu@20.04"
   }
 
   units = 6
@@ -48,12 +48,12 @@ resource "juju_integration" "control-sysconfig" {
   model = juju_model.cpe-focal.name
 
   application {
-    name = juju_application.controller-server.name
+    name = juju_application.sysconfig-control.name
     endpoint = "juju-info"
   }
 
   application {
-    name = juju_application.sysconfig-control.name
+    name = juju_application.controller-server.name
     endpoint = "juju-info"
   }
 }
