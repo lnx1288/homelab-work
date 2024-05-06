@@ -10,6 +10,11 @@ variable openstack-origin {
     default = "distro"
 }
 
+variable openstack-region {
+    type = string
+    default = "RegionOne"
+}
+
 variable osd-devices {
     type = string
     default = ""
@@ -43,4 +48,19 @@ variable data-port {
 variable dns-servers {
     type = string
     default = ""
+}
+
+variable nagios-context {
+    type = string
+    default = ""
+}
+
+variable mysql-connections {
+    type = string
+    default = "4000"
+}
+
+variable mysql-tuning-level {
+    type = string
+    default = "safest"
 }

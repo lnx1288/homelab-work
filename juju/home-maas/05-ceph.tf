@@ -24,25 +24,27 @@ resource "juju_application" "ceph-osd" {
     osd-devices = var.osd-devices
     source = var.openstack-origin
     aa-profile-mode = "complain"
-    osd-encrypt = "true"
-    osd-encrypt-keymanager = "vault"
     customize-failure-domain = "true"
+    autotune = "false"
+    bluestore = "true"
+    #osd-encrypt = "true"
+    #osd-encrypt-keymanager = "vault"
   }
 }
 
 resource "juju_machine" "ceph-mon-1" {
   model = juju_model.cpe-focal.name
-  placement = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
+  placement = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
   constraints = "spaces=oam,ceph-access,ceph-replica"
 }
 resource "juju_machine" "ceph-mon-2" {
   model = juju_model.cpe-focal.name
-  placement = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
+  placement = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
   constraints = "spaces=oam,ceph-access,ceph-replica"
 }
 resource "juju_machine" "ceph-mon-3" {
   model = juju_model.cpe-focal.name
-  placement = join(":",["lxd",juju_machine.all_machines["103"].machine_id])
+  placement = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
   constraints = "spaces=oam,ceph-access,ceph-replica"
 }
 
@@ -68,20 +70,20 @@ resource "juju_application" "ceph-mon" {
   endpoint_bindings = [{
     space = "oam"
   },{
-    space = "ceph-access"
     endpoint = "public"
-  },{
     space = "ceph-access"
+  },{
     endpoint = "osd"
-  },{
     space = "ceph-access"
+  },{
     endpoint = "client"
-  },{
     space = "ceph-access"
-    endpoint = "admin"
   },{
-    space = "ceph-replica"
+    endpoint = "admin"
+    space = "ceph-access"
+  },{
     endpoint = "cluster"
+    space = "ceph-replica"
   }]
 
   config = {
@@ -94,17 +96,17 @@ resource "juju_application" "ceph-mon" {
 
 resource "juju_machine" "ceph-rgw-1" {
   model = juju_model.cpe-focal.name
-  placement = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
+  placement = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
   constraints = "spaces=oam,ceph-access"
 }
 resource "juju_machine" "ceph-rgw-2" {
   model = juju_model.cpe-focal.name
-  placement = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
+  placement = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
   constraints = "spaces=oam,ceph-access"
 }
 resource "juju_machine" "ceph-rgw-3" {
   model = juju_model.cpe-focal.name
-  placement = join(":",["lxd",juju_machine.all_machines["103"].machine_id])
+  placement = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
   constraints = "spaces=oam,ceph-access"
 }
 
@@ -143,9 +145,10 @@ resource "juju_application" "ceph-radosgw" {
   }]
 
   config = {
-      source: var.openstack-origin
+      source = var.openstack-origin
       vip = "10.0.1.224"
       operator-roles = "Member,admin"
+      region = var.openstack-region
       os-admin-hostname    = "swift-internal.example.com"
       os-internal-hostname = "swift-internal.example.com"
       os-public-hostname   = "swift.example.com"
@@ -212,3 +215,19 @@ resource "juju_integration" "rgw-ha" {
     endpoint = "ha"
   }
 }
+
+resource "juju_integration" "rgw-keystone" {
+
+  model = juju_model.cpe-focal.name
+
+  application {
+    name = juju_application.ceph-radosgw.name
+    endpoint = "identity-service"
+  }
+
+  application {
+    name = juju_application.keystone.name
+    endpoint = "identity-service"
+  }
+}
+

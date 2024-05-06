@@ -1,0 +1,52 @@
+resource "juju_machine" "rmq-1" {
+  model = juju_model.cpe-focal.name
+  placement = join(":",["lxd",juju_machine.all_machines["103"].machine_id])
+  constraints = "spaces=oam"
+}
+resource "juju_machine" "rmq-2" {
+  model = juju_model.cpe-focal.name
+  placement = join(":",["lxd",juju_machine.all_machines["104"].machine_id])
+  constraints = "spaces=oam"
+}
+resource "juju_machine" "rmq-3" {
+  model = juju_model.cpe-focal.name
+  placement = join(":",["lxd",juju_machine.all_machines["105"].machine_id])
+  constraints = "spaces=oam"
+}
+
+
+resource "juju_application" "rabbitmq-server" {
+  name = "rabbitmq-server"
+
+  model = juju_model.cpe-focal.name
+
+  charm {
+    name     = "rabbitmq-server"
+    channel  = "3.8/stable"
+  }
+
+  units = 3
+
+  placement = "${join(",",sort([
+    juju_machine.rmq-1.machine_id,
+    juju_machine.rmq-2.machine_id,
+    juju_machine.rmq-3.machine_id,
+  ]))}"
+
+  endpoint_bindings = [{
+    space = "oam"
+  },{
+    endpoint = "amqp"
+    space = "oam"
+  },{
+    endpoint = "cluster"
+    space = "oam"
+  }]
+
+  config = {
+      source = var.openstack-origin
+      min-cluster-size = "3"
+      cluster-partition-handling = "pause_minority"
+  }
+}
+

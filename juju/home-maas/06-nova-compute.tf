@@ -185,3 +185,93 @@ resource "juju_integration" "compute-ceph-mon" {
     endpoint = "client"
   }
 }
+
+resource "juju_integration" "neutron-api-ovs" {
+
+  model = juju_model.cpe-focal.name
+
+  application {
+    name = juju_application.neutron-openvswitch.name
+    endpoint = "neutron-plugin-api"
+  }
+
+  application {
+    name = juju_application.neutron-api.name
+    endpoint = "neutron-plugin-api"
+  }
+}
+
+resource "juju_integration" "nova-compute-rmq" {
+
+  model = juju_model.cpe-focal.name
+
+  application {
+    name = juju_application.nova-compute.name
+    endpoint = "amqp"
+  }
+
+  application {
+    name = juju_application.rabbitmq-server.name
+    endpoint = "amqp"
+  }
+}
+
+resource "juju_integration" "neutron-ovs-rmq" {
+
+  model = juju_model.cpe-focal.name
+
+  application {
+    name = juju_application.neutron-openvswitch.name
+    endpoint = "amqp"
+  }
+
+  application {
+    name = juju_application.rabbitmq-server.name
+    endpoint = "amqp"
+  }
+}
+
+resource "juju_integration" "ceilometer-agent-rmq" {
+
+  model = juju_model.cpe-focal.name
+
+  application {
+    name = juju_application.ceilometer-agent.name
+    endpoint = "amqp"
+  }
+
+  application {
+    name = juju_application.rabbitmq-server.name
+    endpoint = "amqp"
+  }
+}
+
+resource "juju_integration" "nova-compute-glance" {
+
+  model = juju_model.cpe-focal.name
+
+  application {
+    name = juju_application.nova-compute.name
+    endpoint = "image-service"
+  }
+
+  application {
+    name = juju_application.glance.name
+    endpoint = "image-service"
+  }
+}
+
+resource "juju_integration" "nova-compute-cinder-ceph" {
+
+  model = juju_model.cpe-focal.name
+
+  application {
+    name = juju_application.nova-compute.name
+    endpoint = "ceph-access"
+  }
+
+  application {
+    name = juju_application.cinder-ceph.name
+    endpoint = "ceph-access"
+  }
+}
