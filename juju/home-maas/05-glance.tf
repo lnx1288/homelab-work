@@ -1,19 +1,18 @@
 resource "juju_machine" "glance-1" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "glance-2" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "glance-3" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
   constraints = "spaces=oam"
 }
-
 
 resource "juju_application" "glance" {
   name = "glance"
@@ -22,7 +21,7 @@ resource "juju_application" "glance" {
 
   charm {
     name     = "glance"
-    channel  = "ussuri/stable"
+    channel  = var.openstack-channel
   }
 
   units = 3
@@ -34,29 +33,28 @@ resource "juju_application" "glance" {
   ]))}"
 
   endpoint_bindings = [{
-    space = "oam"
+    space    = var.oam-space
   },{
     endpoint = "public"
-    space = "oam"
+    space    = var.public-space
   },{
     endpoint = "admin"
-    space = "oam"
+    space    = var.admin-space
   },{
     endpoint = "internal"
-    space = "oam"
+    space    = var.internal-space
   },{
     endpoint = "shared-db"
-    space = "oam"
+    space    = var.internal-space
   }]
 
   config = {
       worker-multiplier = var.worker-multiplier
-      openstack-origin = var.openstack-origin
-      vip = "10.0.1.214"
-      region = var.openstack-region
+      openstack-origin  = var.openstack-origin
+      region            = var.openstack-region
+      vip               = var.vips["glance"]
       use-internal-endpoints = "true"
-      restrict-ceph-pools = "false"
-      region = var.openstack-region
+      restrict-ceph-pools    = "false"
   }
 }
 
@@ -66,19 +64,19 @@ resource "juju_application" "glance-mysql-router" {
   model = var.model-name
 
   charm {
-    name = "mysql-router"
+    name    = "mysql-router"
     channel = "8.0/stable"
   }
 
   units = 0
 
   endpoint_bindings = [{
-    space = "oam"
+    space    = var.oam-space
   },{
-    space = "oam"
+    space    = var.internal-space
     endpoint = "shared-db"
   },{
-    space = "oam"
+    space    = var.internal-space
     endpoint = "db-router"
   }]
 
@@ -106,12 +104,12 @@ resource "juju_integration" "glance-ha" {
   model = var.model-name
 
   application {
-    name = juju_application.glance.name
+    name     = juju_application.glance.name
     endpoint = "ha"
   }
 
   application {
-    name = juju_application.hacluster-glance.name
+    name     = juju_application.hacluster-glance.name
     endpoint = "ha"
   }
 }
@@ -121,12 +119,12 @@ resource "juju_integration" "glance-mysql" {
   model = var.model-name
 
   application {
-    name = juju_application.glance.name
+    name     = juju_application.glance.name
     endpoint = "shared-db"
   }
 
   application {
-    name = juju_application.glance-mysql-router.name
+    name     = juju_application.glance-mysql-router.name
     endpoint = "shared-db"
   }
 }
@@ -136,12 +134,12 @@ resource "juju_integration" "glance-db" {
   model = var.model-name
 
   application {
-    name = juju_application.glance-mysql-router.name
+    name     = juju_application.glance-mysql-router.name
     endpoint = "db-router"
   }
 
   application {
-    name = juju_application.mysql-innodb-cluster.name
+    name     = juju_application.mysql-innodb-cluster.name
     endpoint = "db-router"
   }
 }
@@ -151,12 +149,12 @@ resource "juju_integration" "glance-rmq" {
   model = var.model-name
 
   application {
-    name = juju_application.glance.name
+    name     = juju_application.glance.name
     endpoint = "amqp"
   }
 
   application {
-    name = juju_application.rabbitmq-server.name
+    name     = juju_application.rabbitmq-server.name
     endpoint = "amqp"
   }
 }
@@ -166,12 +164,12 @@ resource "juju_integration" "glance-keystone" {
   model = var.model-name
 
   application {
-    name = juju_application.glance.name
+    name     = juju_application.glance.name
     endpoint = "identity-service"
   }
 
   application {
-    name = juju_application.keystone.name
+    name     = juju_application.keystone.name
     endpoint = "identity-service"
   }
 }
@@ -181,12 +179,12 @@ resource "juju_integration" "glance-ceph" {
   model = var.model-name
 
   application {
-    name = juju_application.glance.name
+    name     = juju_application.glance.name
     endpoint = "ceph"
   }
 
   application {
-    name = juju_application.ceph-mon.name
+    name     = juju_application.ceph-mon.name
     endpoint = "client"
   }
 }
@@ -196,12 +194,12 @@ resource "juju_integration" "glance-cinder" {
   model = var.model-name
 
   application {
-    name = juju_application.glance.name
+    name     = juju_application.glance.name
     endpoint = "image-service"
   }
 
   application {
-    name = juju_application.cinder.name
+    name     = juju_application.cinder.name
     endpoint = "image-service"
   }
 }

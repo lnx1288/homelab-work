@@ -5,7 +5,7 @@ resource "juju_application" "nova-compute-kvm" {
 
   charm {
     name     = "nova-compute"
-    channel  = "ussuri/stable"
+    channel  = var.openstack-channel
   }
 
   units = 8
@@ -21,27 +21,27 @@ resource "juju_application" "nova-compute-kvm" {
    ]))}"
 
    endpoint_bindings = [{
-     space = "oam"
+     space    = var.oam-space
    },{
-     space = "oam"
+     space    = var.internal-space
      endpoint = "internal"
    }]
 
   config = {
-       openstack-origin = var.openstack-origin
-       enable-live-migration = "true"
-       enable-resize = "true"
-       migration-auth-type = "ssh"
+       openstack-origin       = var.openstack-origin
+       enable-live-migration  = "true"
+       enable-resize          = "true"
+       migration-auth-type    = "ssh"
        use-internal-endpoints = "true"
-       libvirt-image-backend = "rbd"
-       restrict-ceph-pools = "false"
-       aa-profile-mode = "complain"
-       virt-type = "kvm"
+       libvirt-image-backend  = "rbd"
+       restrict-ceph-pools    = "false"
+       aa-profile-mode        = "complain"
+       virt-type              = "kvm"
        customize-failure-domain = var.customize-failure-domain
-       reserved-host-memory = var.reserved-host-memory
-       #cpu-mode = "custom"
-       #cpu-model = "EPYC-IBPB"
-       #cpu-model-extra-flags = "svm,pcid"
+       reserved-host-memory   = var.reserved-host-memory
+       #cpu-mode               = "custom"
+       #cpu-model              = "EPYC-IBPB"
+       #cpu-model-extra-flags  = "svm,pcid"
        pci-passthrough-whitelist = jsonencode([
          {vendor_id: "1af4", product_id: "1000", address: "00:08.0"},
          {vendor_id: "1af4", product_id: "1000", address: "00:07.0"},
@@ -54,7 +54,6 @@ resource "juju_application" "nova-compute-kvm" {
          name: "arifpass",
          numa_policy: "preferred"
        })
-
   }
 }
 
@@ -65,7 +64,7 @@ resource "juju_application" "ceilometer-agent" {
 
   charm {
     name     = "ceilometer-agent"
-    channel  = "ussuri/stable"
+    channel  = var.openstack-channel
   }
 
   units = 0
@@ -82,26 +81,25 @@ resource "juju_application" "neutron-openvswitch" {
 
   charm {
     name     = "neutron-openvswitch"
-    channel  = "ussuri/stable"
+    channel  = var.openstack-channel
   }
 
   units = 0
 
   endpoint_bindings = [{
-    space = "oam"
+    space    = var.oam-space
   },{
-    space = "oam"
+    space    = var.overlay-space
     endpoint = "data"
   }]
 
   config = {
-      data-port                      = "br-data:ens9"
-      dns-servers                    = "192.168.1.13"
+      data-port                      = var.data-port
+      dns-servers                    = var.dns-servers
       enable-local-dhcp-and-metadata = "true"
       firewall-driver                = "openvswitch"
-      worker-multiplier              = "0"
+      worker-multiplier              = var.worker-multiplier
   }
-
 }
 
 resource "juju_application" "sysconfig-compute" {
@@ -131,12 +129,12 @@ resource "juju_integration" "compute-ceilometer" {
   model = var.model-name
 
   application {
-    name = juju_application.nova-compute-kvm.name
+    name     = juju_application.nova-compute-kvm.name
     endpoint = "nova-ceilometer"
   }
 
   application {
-    name = juju_application.ceilometer-agent.name
+    name     = juju_application.ceilometer-agent.name
     endpoint = "nova-ceilometer"
   }
 }
@@ -146,12 +144,12 @@ resource "juju_integration" "compute-ovs" {
   model = var.model-name
 
   application {
-    name = juju_application.neutron-openvswitch.name
+    name     = juju_application.neutron-openvswitch.name
     endpoint = "neutron-plugin"
   }
 
   application {
-    name = juju_application.nova-compute-kvm.name
+    name     = juju_application.nova-compute-kvm.name
     endpoint = "neutron-plugin"
   }
 }
@@ -161,12 +159,12 @@ resource "juju_integration" "compute-sysconfig" {
   model = var.model-name
 
   application {
-    name = juju_application.nova-compute-kvm.name
+    name     = juju_application.nova-compute-kvm.name
     endpoint = "juju-info"
   }
 
   application {
-    name = juju_application.sysconfig-compute.name
+    name     = juju_application.sysconfig-compute.name
     endpoint = "juju-info"
   }
 }
@@ -176,12 +174,12 @@ resource "juju_integration" "compute-ceph-mon" {
   model = var.model-name
 
   application {
-    name = juju_application.nova-compute-kvm.name
+    name     = juju_application.nova-compute-kvm.name
     endpoint = "ceph"
   }
 
   application {
-    name = juju_application.ceph-mon.name
+    name     = juju_application.ceph-mon.name
     endpoint = "client"
   }
 }
@@ -191,12 +189,12 @@ resource "juju_integration" "neutron-api-ovs" {
   model = var.model-name
 
   application {
-    name = juju_application.neutron-openvswitch.name
+    name     = juju_application.neutron-openvswitch.name
     endpoint = "neutron-plugin-api"
   }
 
   application {
-    name = juju_application.neutron-api.name
+    name     = juju_application.neutron-api.name
     endpoint = "neutron-plugin-api"
   }
 }
@@ -206,12 +204,12 @@ resource "juju_integration" "nova-compute-rmq" {
   model = var.model-name
 
   application {
-    name = juju_application.nova-compute-kvm.name
+    name     = juju_application.nova-compute-kvm.name
     endpoint = "amqp"
   }
 
   application {
-    name = juju_application.rabbitmq-server.name
+    name     = juju_application.rabbitmq-server.name
     endpoint = "amqp"
   }
 }
@@ -221,12 +219,12 @@ resource "juju_integration" "neutron-ovs-rmq" {
   model = var.model-name
 
   application {
-    name = juju_application.neutron-openvswitch.name
+    name     = juju_application.neutron-openvswitch.name
     endpoint = "amqp"
   }
 
   application {
-    name = juju_application.rabbitmq-server.name
+    name     = juju_application.rabbitmq-server.name
     endpoint = "amqp"
   }
 }
@@ -236,12 +234,12 @@ resource "juju_integration" "ceilometer-agent-rmq" {
   model = var.model-name
 
   application {
-    name = juju_application.ceilometer-agent.name
+    name     = juju_application.ceilometer-agent.name
     endpoint = "amqp"
   }
 
   application {
-    name = juju_application.rabbitmq-server.name
+    name     = juju_application.rabbitmq-server.name
     endpoint = "amqp"
   }
 }
@@ -251,12 +249,12 @@ resource "juju_integration" "nova-compute-glance" {
   model = var.model-name
 
   application {
-    name = juju_application.nova-compute-kvm.name
+    name     = juju_application.nova-compute-kvm.name
     endpoint = "image-service"
   }
 
   application {
-    name = juju_application.glance.name
+    name     = juju_application.glance.name
     endpoint = "image-service"
   }
 }
@@ -266,12 +264,12 @@ resource "juju_integration" "nova-compute-cinder-ceph" {
   model = var.model-name
 
   application {
-    name = juju_application.nova-compute-kvm.name
+    name     = juju_application.nova-compute-kvm.name
     endpoint = "ceph-access"
   }
 
   application {
-    name = juju_application.cinder-ceph.name
+    name     = juju_application.cinder-ceph.name
     endpoint = "ceph-access"
   }
 }

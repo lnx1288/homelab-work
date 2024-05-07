@@ -1,16 +1,16 @@
 resource "juju_machine" "rmq-1" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["103"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["103"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "rmq-2" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["104"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["104"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "rmq-3" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["105"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["105"].machine_id])
   constraints = "spaces=oam"
 }
 
@@ -34,19 +34,18 @@ resource "juju_application" "rabbitmq-server" {
   ]))}"
 
   endpoint_bindings = [{
-    space = "oam"
+    space    = var.oam-space
   },{
     endpoint = "amqp"
-    space = "oam"
+    space    = var.internal-space
   },{
     endpoint = "cluster"
-    space = "oam"
+    space    = var.internal-space
   }]
 
   config = {
-      source = var.openstack-origin
+      source           = var.openstack-origin
       min-cluster-size = "3"
       cluster-partition-handling = "pause_minority"
   }
 }
-

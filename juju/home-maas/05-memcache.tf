@@ -1,16 +1,16 @@
 resource "juju_machine" "memcache-1" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "memcache-2" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "memcache-3" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
   constraints = "spaces=oam"
 }
 
@@ -20,9 +20,9 @@ resource "juju_application" "memcached" {
   model = var.model-name
 
   charm {
-    name     = "memcached"
-    channel  = "latest/stable"
-    base     = "ubuntu@20.04"
+    name    = "memcached"
+    channel = "latest/stable"
+    base    = var.default-base
   }
 
   units = 3
@@ -34,10 +34,10 @@ resource "juju_application" "memcached" {
   ]))}"
 
   endpoint_bindings = [{
-    space = "oam"
+    space    = var.internal-space
   },{
     endpoint = "cache"
-    space = "oam"
+    space    = var.internal-space
   }]
 
   config = {
@@ -47,17 +47,15 @@ resource "juju_application" "memcached" {
 
 resource "juju_integration" "nova-cloud-controller-memcache" {
 
-
   model = var.model-name
 
   application {
-    name = juju_application.nova-cloud-controller.name
+    name     = juju_application.nova-cloud-controller.name
     endpoint = "memcache"
   }
 
   application {
-    name = juju_application.memcached.name
+    name     = juju_application.memcached.name
     endpoint = "cache"
   }
 }
-

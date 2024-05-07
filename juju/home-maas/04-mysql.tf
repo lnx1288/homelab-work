@@ -1,19 +1,18 @@
 resource "juju_machine" "mysql-1" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "mysql-2" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "mysql-3" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
   constraints = "spaces=oam"
 }
-
 
 resource "juju_application" "mysql-innodb-cluster" {
   name = "mysql-innodb-cluster"
@@ -22,8 +21,8 @@ resource "juju_application" "mysql-innodb-cluster" {
 
   charm {
     name     = "mysql-innodb-cluster"
-    channel  = "8.0/stable"
-    base     = "ubuntu@20.04"
+    channel  = var.mysql-channel
+    base     = var.default-base
   }
 
   units = 3
@@ -35,23 +34,21 @@ resource "juju_application" "mysql-innodb-cluster" {
   ]))}"
 
   endpoint_bindings = [{
-    space = "oam"
+    space    = var.oam-space
   },{
     endpoint = "cluster"
-    space = "oam"
+    space    = var.internal-space
   },{
     endpoint = "db-router"
-    space = "oam"
+    space    = var.internal-space
   }]
 
   config = {
-      source = var.openstack-origin
-      #innodb-buffer-pool-size = "16G"
-      wait-timeout = "3600"
-      enable-binlogs = "false"
-      snapd_refresh = "max"
+      source          = var.openstack-origin
+      wait-timeout    = "3600"
+      enable-binlogs  = "false"
+      snapd_refresh   = "max"
       max-connections = var.mysql-connections
-      tuning-level = var.mysql-tuning-level
+      tuning-level    = var.mysql-tuning-level
   }
 }
-

@@ -1,19 +1,18 @@
 resource "juju_machine" "keystone-1" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["103"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["103"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "keystone-2" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["104"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["104"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "keystone-3" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["105"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["105"].machine_id])
   constraints = "spaces=oam"
 }
-
 
 resource "juju_application" "keystone" {
   name = "keystone"
@@ -22,7 +21,7 @@ resource "juju_application" "keystone" {
 
   charm {
     name     = "keystone"
-    channel  = "ussuri/stable"
+    channel  = var.openstack-channel
   }
 
   units = 3
@@ -34,29 +33,29 @@ resource "juju_application" "keystone" {
   ]))}"
 
   endpoint_bindings = [{
-    space = "oam"
+    space    = var.oam-space
   },{
-    space = "oam"
+    space    = var.public-space
     endpoint = "public"
   },{
-    space = "oam"
+    space    = var.admin-space
     endpoint = "admin"
   },{
-    space = "oam"
+    space    = var.internal-space
     endpoint = "internal"
   },{
-    space = "oam"
+    space    = var.internal-space
     endpoint = "shared-db"
   }]
 
   config = {
-      worker-multiplier = var.worker-multiplier
-      openstack-origin = var.openstack-origin
-      vip = "10.0.1.216"
-      region = var.openstack-region
+      worker-multiplier     = var.worker-multiplier
+      openstack-origin      = var.openstack-origin
+      vip                   = var.vips["keystone"]
+      region                = var.openstack-region
       preferred-api-version = "3"
-      token-provider = "fernet"
-      admin-password = "openstack"
+      token-provider        = "fernet"
+      admin-password        = "openstack"
   }
 }
 
@@ -73,17 +72,17 @@ resource "juju_application" "keystone-mysql-router" {
   units = 0
 
   endpoint_bindings = [{
-    space = "oam"
+    space    = var.oam-space
   },{
-    space = "oam"
+    space    = var.internal-space
     endpoint = "shared-db"
   },{
-    space = "oam"
+    space    = var.internal-space
     endpoint = "db-router"
   }]
 
   config = {
-    source = var.openstack-origin
+    source   = var.openstack-origin
   }
 }
 
@@ -93,8 +92,8 @@ resource "juju_application" "hacluster-keystone" {
   model = var.model-name
 
   charm {
-    name     = "hacluster"
-    channel  = "2.0.3/stable"
+    name    = "hacluster"
+    channel = "2.0.3/stable"
   }
 
   units = 0
@@ -102,16 +101,15 @@ resource "juju_application" "hacluster-keystone" {
 
 resource "juju_integration" "keystone-ha" {
 
-
   model = var.model-name
 
   application {
-    name = juju_application.keystone.name
+    name     = juju_application.keystone.name
     endpoint = "ha"
   }
 
   application {
-    name = juju_application.hacluster-keystone.name
+    name     = juju_application.hacluster-keystone.name
     endpoint = "ha"
   }
 }
@@ -121,12 +119,12 @@ resource "juju_integration" "keystone-mysql" {
   model = var.model-name
 
   application {
-    name = juju_application.keystone.name
+    name     = juju_application.keystone.name
     endpoint = "shared-db"
   }
 
   application {
-    name = juju_application.keystone-mysql-router.name
+    name     = juju_application.keystone-mysql-router.name
     endpoint = "shared-db"
   }
 }
@@ -136,13 +134,12 @@ resource "juju_integration" "keystone-db" {
   model = var.model-name
 
   application {
-    name = juju_application.keystone-mysql-router.name
+    name     = juju_application.keystone-mysql-router.name
     endpoint = "db-router"
   }
 
   application {
-    name = juju_application.mysql-innodb-cluster.name
+    name     = juju_application.mysql-innodb-cluster.name
     endpoint = "db-router"
   }
 }
-

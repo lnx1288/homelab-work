@@ -1,16 +1,16 @@
 resource "juju_machine" "placement-1" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["103"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["103"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "placement-2" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["104"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["104"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "placement-3" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["105"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["105"].machine_id])
   constraints = "spaces=oam"
 }
 
@@ -21,7 +21,7 @@ resource "juju_application" "placement" {
 
   charm {
     name     = "placement"
-    channel  = "ussuri/stable"
+    channel  = var.openstack-channel
   }
 
   units = 3
@@ -33,25 +33,25 @@ resource "juju_application" "placement" {
   ]))}"
 
   endpoint_bindings = [{
-    space = "oam"
+    space    = var.oam-space
   },{
     endpoint = "public"
-    space = "oam"
+    space    = var.public-space
   },{
     endpoint = "admin"
-    space = "oam"
+    space    = var.admin-space
   },{
     endpoint = "internal"
-    space = "oam"
+    space    = var.internal-space
   },{
     endpoint = "shared-db"
-    space = "oam"
+    space    = var.internal-space
   }]
 
   config = {
       worker-multiplier = var.worker-multiplier
-      openstack-origin = var.openstack-origin
-      vip = "10.0.1.223"
+      openstack-origin  = var.openstack-origin
+      vip               = var.vips["placement"]
   }
 }
 
@@ -61,19 +61,19 @@ resource "juju_application" "placement-mysql-router" {
   model = var.model-name
 
   charm {
-    name = "mysql-router"
+    name    = "mysql-router"
     channel = "8.0/stable"
   }
 
   units = 0
 
   endpoint_bindings = [{
-    space = "oam"
+    space    = var.oam-space
   },{
-    space = "oam"
+    space    = var.internal-space
     endpoint = "shared-db"
   },{
-    space = "oam"
+    space    = var.internal-space
     endpoint = "db-router"
   }]
 
@@ -95,20 +95,17 @@ resource "juju_application" "hacluster-placement" {
   units = 0
 }
 
-
-
 resource "juju_integration" "placement-ha" {
-
 
   model = var.model-name
 
   application {
-    name = juju_application.placement.name
+    name     = juju_application.placement.name
     endpoint = "ha"
   }
 
   application {
-    name = juju_application.hacluster-placement.name
+    name     = juju_application.hacluster-placement.name
     endpoint = "ha"
   }
 }
@@ -118,12 +115,12 @@ resource "juju_integration" "placement-mysql" {
   model = var.model-name
 
   application {
-    name = juju_application.placement.name
+    name     = juju_application.placement.name
     endpoint = "shared-db"
   }
 
   application {
-    name = juju_application.placement-mysql-router.name
+    name     = juju_application.placement-mysql-router.name
     endpoint = "shared-db"
   }
 }
@@ -133,12 +130,12 @@ resource "juju_integration" "placement-db" {
   model = var.model-name
 
   application {
-    name = juju_application.placement-mysql-router.name
+    name     = juju_application.placement-mysql-router.name
     endpoint = "db-router"
   }
 
   application {
-    name = juju_application.mysql-innodb-cluster.name
+    name     = juju_application.mysql-innodb-cluster.name
     endpoint = "db-router"
   }
 }
@@ -148,12 +145,12 @@ resource "juju_integration" "placement-keystone" {
   model = var.model-name
 
   application {
-    name = juju_application.placement.name
+    name     = juju_application.placement.name
     endpoint = "identity-service"
   }
 
   application {
-    name = juju_application.keystone.name
+    name     = juju_application.keystone.name
     endpoint = "identity-service"
   }
 }
@@ -163,12 +160,12 @@ resource "juju_integration" "placement-nova" {
   model = var.model-name
 
   application {
-    name = juju_application.placement.name
+    name     = juju_application.placement.name
     endpoint = "placement"
   }
 
   application {
-    name = juju_application.nova-cloud-controller.name
+    name     = juju_application.nova-cloud-controller.name
     endpoint = "placement"
   }
 }

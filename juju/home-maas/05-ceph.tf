@@ -4,8 +4,8 @@ resource "juju_application" "ceph-osd" {
   model = var.model-name
 
   charm {
-    name     = "ceph-osd"
-    channel  = "octopus/stable"
+    name    = "ceph-osd"
+    channel = "octopus/stable"
   }
 
   units = 8
@@ -21,33 +21,32 @@ resource "juju_application" "ceph-osd" {
    ]))}"
 
   config = {
-    osd-devices = var.osd-devices
-    source = var.openstack-origin
+    osd-devices     = var.osd-devices
+    source          = var.openstack-origin
     aa-profile-mode = "complain"
     customize-failure-domain = "true"
-    autotune = "false"
-    bluestore = "true"
-    #osd-encrypt = "true"
+    autotune        = "false"
+    bluestore       = "true"
+    #osd-encrypt     = "true"
     #osd-encrypt-keymanager = "vault"
   }
 }
 
 resource "juju_machine" "ceph-mon-1" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
   constraints = "spaces=oam,ceph-access,ceph-replica"
 }
 resource "juju_machine" "ceph-mon-2" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
   constraints = "spaces=oam,ceph-access,ceph-replica"
 }
 resource "juju_machine" "ceph-mon-3" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
   constraints = "spaces=oam,ceph-access,ceph-replica"
 }
-
 
 resource "juju_application" "ceph-mon" {
   name = "ceph-mon"
@@ -68,45 +67,45 @@ resource "juju_application" "ceph-mon" {
   ]))}"
 
   endpoint_bindings = [{
-    space = "oam"
+    space    = var.oam-space
   },{
     endpoint = "public"
-    space = "ceph-access"
+    space    = var.ceph-public-space
   },{
     endpoint = "osd"
-    space = "ceph-access"
+    space    = var.ceph-public-space
   },{
     endpoint = "client"
-    space = "ceph-access"
+    space    = var.ceph-public-space
   },{
     endpoint = "admin"
-    space = "ceph-access"
+    space    = var.ceph-public-space
   },{
     endpoint = "cluster"
-    space = "ceph-replica"
+    space    = var.ceph-cluster-space
   }]
 
   config = {
-      expected-osd-count = 12
-      source = var.openstack-origin
-      monitor-count = 3
+      expected-osd-count = var.expected-osd-count
+      source             = var.openstack-origin
+      monitor-count      = var.expected-mon-count
       customize-failure-domain = true
   }
 }
 
 resource "juju_machine" "ceph-rgw-1" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
   constraints = "spaces=oam,ceph-access"
 }
 resource "juju_machine" "ceph-rgw-2" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
   constraints = "spaces=oam,ceph-access"
 }
 resource "juju_machine" "ceph-rgw-3" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
   constraints = "spaces=oam,ceph-access"
 }
 
@@ -129,26 +128,26 @@ resource "juju_application" "ceph-radosgw" {
   ]))}"
 
   endpoint_bindings = [{
-    space = "oam"
+    space    = var.oam-space
   },{
-    space = "oam"
+    space    = var.public-space
     endpoint = "public"
   },{
-    space = "oam"
+    space    = var.admin-space
     endpoint = "admin"
   },{
-    space = "oam"
+    space    = var.internal-space
     endpoint = "internal"
   },{
-    space = "ceph-access"
+    space    = var.ceph-public-space
     endpoint = "mon"
   }]
 
   config = {
-      source = var.openstack-origin
-      vip = "10.0.1.224"
-      operator-roles = "Member,admin"
-      region = var.openstack-region
+      source               = var.openstack-origin
+      vip                  = var.vips["radosgw"]
+      operator-roles       = "Member,admin"
+      region               = var.openstack-region
       os-admin-hostname    = "swift-internal.example.com"
       os-internal-hostname = "swift-internal.example.com"
       os-public-hostname   = "swift.example.com"
@@ -166,7 +165,6 @@ resource "juju_application" "hacluster-radosgw" {
   }
 
   units = 0
-
 }
 
 resource "juju_integration" "osd-mon" {
@@ -174,44 +172,42 @@ resource "juju_integration" "osd-mon" {
   model = var.model-name
 
   application {
-    name = juju_application.ceph-osd.name
+    name     = juju_application.ceph-osd.name
     endpoint = "mon"
   }
 
   application {
-    name = juju_application.ceph-mon.name
+    name     = juju_application.ceph-mon.name
     endpoint = "osd"
   }
 }
-
 
 resource "juju_integration" "rgw-mon" {
 
   model = var.model-name
 
   application {
-    name = juju_application.ceph-radosgw.name
+    name     = juju_application.ceph-radosgw.name
     endpoint = "mon"
   }
 
   application {
-    name = juju_application.ceph-mon.name
+    name     = juju_application.ceph-mon.name
     endpoint = "radosgw"
   }
 }
-
 
 resource "juju_integration" "rgw-ha" {
 
   model = var.model-name
 
   application {
-    name = juju_application.ceph-radosgw.name
+    name     = juju_application.ceph-radosgw.name
     endpoint = "ha"
   }
 
   application {
-    name = juju_application.hacluster-radosgw.name
+    name     = juju_application.hacluster-radosgw.name
     endpoint = "ha"
   }
 }
@@ -221,13 +217,12 @@ resource "juju_integration" "rgw-keystone" {
   model = var.model-name
 
   application {
-    name = juju_application.ceph-radosgw.name
+    name     = juju_application.ceph-radosgw.name
     endpoint = "identity-service"
   }
 
   application {
-    name = juju_application.keystone.name
+    name     = juju_application.keystone.name
     endpoint = "identity-service"
   }
 }
-

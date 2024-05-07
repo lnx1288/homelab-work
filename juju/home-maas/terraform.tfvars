@@ -20,12 +20,44 @@ machines = [
   {machine_id=1007,constraints="tags=compute,asrock04"},
 ]
 
-osd-devices = "/dev/sdb /dev/sdc"
-data-port = "br-data:ens9"
-bridge-mappings = "physnet1:br-data"
-dns-servers = "192.168.1.13"
+osd-devices    = "/dev/sdb /dev/sdc"
+
 nagios-context = "arif-nc01"
 
-#vips = [
-#  {vault=10.0.1.222}
-#]
+ram-allocation-ratio = 1.0
+cpu-allocation-ratio = 2.0
+
+oam-space          = "oam"
+admin-space        = "oam"
+public-space       = "oam"
+internal-space     = "oam"
+ceph-public-space  = "ceph-access"
+ceph-cluster-space = "ceph-replica"
+overlay-space      = "overlay"
+
+expected-osd-count = 12
+expected-mon-count = 3
+
+ntp-source               = "192.168.1.11"
+external-network-cidr    = "192.168.1.0/24"
+external-network-gateway = "192.168.1.249"
+dns-servers              = "192.168.1.13"
+
+data-port       = "br-data:ens9"
+bridge-mappings = "physnet1:br-data"
+
+vips = {
+  aodh        = "10.0.1.211"
+  cinder      = "10.0.1.212"
+  dashboard   = "10.0.1.213"
+  glance      = "10.0.1.214"
+  heat        = "10.0.1.215"
+  keystone    = "10.0.1.216"
+  neutron-api = "10.0.1.218"
+  nova-cc     = "10.0.1.219"
+  gnocchi     = "10.0.1.220"
+  contrail    = "10.0.1.221"
+  vault       = "10.0.1.222"
+  placement   = "10.0.1.223"
+  radosgw     = "10.0.1.224"
+}

@@ -7,7 +7,7 @@ resource "juju_application" "controller-server" {
     name     = "ubuntu"
     channel  = "latest/stable"
     revision = "24"
-    base = "ubuntu@20.04"
+    base     = var.default-base
   }
 
   units = 6
@@ -19,7 +19,6 @@ resource "juju_application" "controller-server" {
     juju_machine.all_machines["104"].machine_id,
     juju_machine.all_machines["105"].machine_id,
    ]))}"
-
 }
 
 resource "juju_application" "sysconfig-control" {
@@ -48,13 +47,12 @@ resource "juju_integration" "control-sysconfig" {
   model = var.model-name
 
   application {
-    name = juju_application.sysconfig-control.name
+    name     = juju_application.sysconfig-control.name
     endpoint = "juju-info"
   }
 
   application {
-    name = juju_application.controller-server.name
+    name     = juju_application.controller-server.name
     endpoint = "juju-info"
   }
 }
-

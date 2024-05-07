@@ -5,7 +5,7 @@ resource "juju_application" "neutron-gateway" {
 
   charm {
     name     = "neutron-gateway"
-    channel  = "ussuri/stable"
+    channel  = var.openstack-channel
   }
 
   units = 3
@@ -28,18 +28,18 @@ resource "juju_application" "neutron-gateway" {
 }
 
 resource "juju_machine" "neutron-api-1" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "neutron-api-2" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "neutron-api-3" {
-  model = var.model-name
-  placement = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
+  model       = var.model-name
+  placement   = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
   constraints = "spaces=oam"
 }
 
@@ -50,7 +50,7 @@ resource "juju_application" "neutron-api" {
 
   charm {
     name     = "neutron-api"
-    channel  = "ussuri/stable"
+    channel  = var.openstack-channel
   }
 
   units = 3
@@ -62,43 +62,41 @@ resource "juju_application" "neutron-api" {
   ]))}"
 
   endpoint_bindings = [{
-    space = "oam"
+    space    = var.oam-space
   },{
     endpoint = "public"
-    space = "oam"
+    space    = var.public-space
   },{
     endpoint = "admin"
-    space = "oam"
+    space    = var.admin-space
   },{
     endpoint = "internal"
-    space = "oam"
+    space    = var.internal-space
   },{
     endpoint = "shared-db"
-    space = "oam"
+    space    = var.internal-space
   }]
 
   config = {
-    vip = "10.0.1.218"
-    worker-multiplier: var.worker-multiplier
-    openstack-origin: var.openstack-origin
-    region: var.openstack-region
-    neutron-security-groups = "true"
-    #overlay-network-type = "vxlan gre"
-    overlay-network-type = "vxlan"
-    use-internal-endpoints = "true"
-    enable-l3ha = "true"
-    dhcp-agents-per-network = "2"
+    worker-multiplier = var.worker-multiplier
+    openstack-origin  = var.openstack-origin
+    region            = var.openstack-region
+    vip               = var.vips["neutron-api"]
+    neutron-security-groups  = "true"
+    #overlay-network-type     = "vxlan gre"
+    overlay-network-type     = "vxlan"
+    use-internal-endpoints   = "true"
+    enable-l3ha              = "true"
+    dhcp-agents-per-network  = "2"
     enable-ml2-port-security = "true"
+    l2-population            = "true"
+    #global-physnet-mtu       = "9000"
+    vlan-ranges              = "physnet1:350:599"
+    flat-network-providers   = "physnet1"
+    enable-vlan-trunking     = "true"
     default-tenant-network-type = "vxlan"
-    l2-population = "true"
-    #global-physnet-mtu = "9000"
     manage-neutron-plugin-legacy-mode = "true"
-    vlan-ranges = "physnet1:350:599"
-    flat-network-providers = "physnet1"
-    enable-vlan-trunking = "true"
   }
-
-
 }
 
 resource "juju_application" "neutron-mysql-router" {
@@ -114,12 +112,12 @@ resource "juju_application" "neutron-mysql-router" {
   units = 0
 
   endpoint_bindings = [{
-    space = "oam"
+    space    = var.oam-space
   },{
-    space = "oam"
+    space    = var.internal-space
     endpoint = "shared-db"
   },{
-    space = "oam"
+    space    = var.internal-space
     endpoint = "db-router"
   }]
 
@@ -146,12 +144,12 @@ resource "juju_integration" "neutron-ha" {
   model = var.model-name
 
   application {
-    name = juju_application.neutron-api.name
+    name     = juju_application.neutron-api.name
     endpoint = "ha"
   }
 
   application {
-    name = juju_application.hacluster-neutron.name
+    name     = juju_application.hacluster-neutron.name
     endpoint = "ha"
   }
 }
@@ -161,12 +159,12 @@ resource "juju_integration" "neutron-mysql" {
   model = var.model-name
 
   application {
-    name = juju_application.neutron-api.name
+    name     = juju_application.neutron-api.name
     endpoint = "shared-db"
   }
 
   application {
-    name = juju_application.neutron-mysql-router.name
+    name     = juju_application.neutron-mysql-router.name
     endpoint = "shared-db"
   }
 }
@@ -176,12 +174,12 @@ resource "juju_integration" "neutron-db" {
   model = var.model-name
 
   application {
-    name = juju_application.neutron-mysql-router.name
+    name     = juju_application.neutron-mysql-router.name
     endpoint = "db-router"
   }
 
   application {
-    name = juju_application.mysql-innodb-cluster.name
+    name     = juju_application.mysql-innodb-cluster.name
     endpoint = "db-router"
   }
 }
@@ -191,12 +189,12 @@ resource "juju_integration" "neutron-keystone" {
   model = var.model-name
 
   application {
-    name = juju_application.neutron-api.name
+    name     = juju_application.neutron-api.name
     endpoint = "identity-service"
   }
 
   application {
-    name = juju_application.keystone.name
+    name     = juju_application.keystone.name
     endpoint = "identity-service"
   }
 }
@@ -206,12 +204,12 @@ resource "juju_integration" "neutron-api-rmq" {
   model = var.model-name
 
   application {
-    name = juju_application.neutron-api.name
+    name     = juju_application.neutron-api.name
     endpoint = "amqp"
   }
 
   application {
-    name = juju_application.rabbitmq-server.name
+    name     = juju_application.rabbitmq-server.name
     endpoint = "amqp"
   }
 }
@@ -221,12 +219,12 @@ resource "juju_integration" "neutron-gw-rmq" {
   model = var.model-name
 
   application {
-    name = juju_application.neutron-gateway.name
+    name     = juju_application.neutron-gateway.name
     endpoint = "amqp"
   }
 
   application {
-    name = juju_application.rabbitmq-server.name
+    name     = juju_application.rabbitmq-server.name
     endpoint = "amqp"
   }
 }
