@@ -1,7 +1,7 @@
 resource "juju_application" "neutron-gateway" {
   name = "neutron-gateway"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "neutron-gateway"
@@ -28,17 +28,17 @@ resource "juju_application" "neutron-gateway" {
 }
 
 resource "juju_machine" "neutron-api-1" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "neutron-api-2" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "neutron-api-3" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
   constraints = "spaces=oam"
 }
@@ -46,7 +46,7 @@ resource "juju_machine" "neutron-api-3" {
 resource "juju_application" "neutron-api" {
   name = "neutron-api"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "neutron-api"
@@ -104,7 +104,7 @@ resource "juju_application" "neutron-api" {
 resource "juju_application" "neutron-mysql-router" {
   name = "neutron-mysql-router"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "mysql-router"
@@ -131,7 +131,7 @@ resource "juju_application" "neutron-mysql-router" {
 resource "juju_application" "hacluster-neutron" {
   name = "hacluster-neutron"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "hacluster"
@@ -143,7 +143,7 @@ resource "juju_application" "hacluster-neutron" {
 
 resource "juju_integration" "neutron-ha" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.neutron-api.name
@@ -158,7 +158,7 @@ resource "juju_integration" "neutron-ha" {
 
 resource "juju_integration" "neutron-mysql" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.neutron-api.name
@@ -173,7 +173,7 @@ resource "juju_integration" "neutron-mysql" {
 
 resource "juju_integration" "neutron-db" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.neutron-mysql-router.name
@@ -188,7 +188,7 @@ resource "juju_integration" "neutron-db" {
 
 resource "juju_integration" "neutron-keystone" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.neutron-api.name
@@ -203,7 +203,7 @@ resource "juju_integration" "neutron-keystone" {
 
 resource "juju_integration" "neutron-api-rmq" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.neutron-api.name
@@ -218,7 +218,7 @@ resource "juju_integration" "neutron-api-rmq" {
 
 resource "juju_integration" "neutron-gw-rmq" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.neutron-gateway.name

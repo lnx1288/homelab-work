@@ -1,7 +1,7 @@
 resource "juju_application" "controller-server" {
   name = "controller-server"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "ubuntu"
@@ -25,7 +25,7 @@ resource "juju_application" "controller-server" {
 resource "juju_application" "sysconfig-control" {
   name = "sysconfig-control"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "sysconfig"
@@ -45,7 +45,7 @@ resource "juju_application" "sysconfig-control" {
 
 resource "juju_integration" "control-sysconfig" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.sysconfig-control.name

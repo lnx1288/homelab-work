@@ -1,15 +1,15 @@
 resource "juju_machine" "mysql-1" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "mysql-2" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "mysql-3" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
   constraints = "spaces=oam"
 }
@@ -18,7 +18,7 @@ resource "juju_machine" "mysql-3" {
 resource "juju_application" "mysql-innodb-cluster" {
   name = "mysql-innodb-cluster"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "mysql-innodb-cluster"

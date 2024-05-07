@@ -1,7 +1,7 @@
 resource "juju_application" "ceph-osd" {
   name = "ceph-osd"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "ceph-osd"
@@ -33,17 +33,17 @@ resource "juju_application" "ceph-osd" {
 }
 
 resource "juju_machine" "ceph-mon-1" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
   constraints = "spaces=oam,ceph-access,ceph-replica"
 }
 resource "juju_machine" "ceph-mon-2" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
   constraints = "spaces=oam,ceph-access,ceph-replica"
 }
 resource "juju_machine" "ceph-mon-3" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
   constraints = "spaces=oam,ceph-access,ceph-replica"
 }
@@ -52,7 +52,7 @@ resource "juju_machine" "ceph-mon-3" {
 resource "juju_application" "ceph-mon" {
   name = "ceph-mon"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "ceph-mon"
@@ -95,17 +95,17 @@ resource "juju_application" "ceph-mon" {
 }
 
 resource "juju_machine" "ceph-rgw-1" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
   constraints = "spaces=oam,ceph-access"
 }
 resource "juju_machine" "ceph-rgw-2" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
   constraints = "spaces=oam,ceph-access"
 }
 resource "juju_machine" "ceph-rgw-3" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
   constraints = "spaces=oam,ceph-access"
 }
@@ -113,7 +113,7 @@ resource "juju_machine" "ceph-rgw-3" {
 resource "juju_application" "ceph-radosgw" {
   name = "ceph-radosgw"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "ceph-radosgw"
@@ -158,7 +158,7 @@ resource "juju_application" "ceph-radosgw" {
 resource "juju_application" "hacluster-radosgw" {
   name = "hacluster-radosgw"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "hacluster"
@@ -171,7 +171,7 @@ resource "juju_application" "hacluster-radosgw" {
 
 resource "juju_integration" "osd-mon" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.ceph-osd.name
@@ -187,7 +187,7 @@ resource "juju_integration" "osd-mon" {
 
 resource "juju_integration" "rgw-mon" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.ceph-radosgw.name
@@ -203,7 +203,7 @@ resource "juju_integration" "rgw-mon" {
 
 resource "juju_integration" "rgw-ha" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.ceph-radosgw.name
@@ -218,7 +218,7 @@ resource "juju_integration" "rgw-ha" {
 
 resource "juju_integration" "rgw-keystone" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.ceph-radosgw.name

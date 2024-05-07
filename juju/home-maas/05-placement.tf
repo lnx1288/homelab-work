@@ -1,15 +1,15 @@
 resource "juju_machine" "placement-1" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["103"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "placement-2" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["104"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "placement-3" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["105"].machine_id])
   constraints = "spaces=oam"
 }
@@ -17,7 +17,7 @@ resource "juju_machine" "placement-3" {
 resource "juju_application" "placement" {
   name = "placement"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "placement"
@@ -58,7 +58,7 @@ resource "juju_application" "placement" {
 resource "juju_application" "placement-mysql-router" {
   name = "placement-mysql-router"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name = "mysql-router"
@@ -85,7 +85,7 @@ resource "juju_application" "placement-mysql-router" {
 resource "juju_application" "hacluster-placement" {
   name = "hacluster-placement"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "hacluster"
@@ -100,7 +100,7 @@ resource "juju_application" "hacluster-placement" {
 resource "juju_integration" "placement-ha" {
 
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.placement.name
@@ -115,7 +115,7 @@ resource "juju_integration" "placement-ha" {
 
 resource "juju_integration" "placement-mysql" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.placement.name
@@ -130,7 +130,7 @@ resource "juju_integration" "placement-mysql" {
 
 resource "juju_integration" "placement-db" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.placement-mysql-router.name
@@ -145,7 +145,7 @@ resource "juju_integration" "placement-db" {
 
 resource "juju_integration" "placement-keystone" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.placement.name
@@ -160,7 +160,7 @@ resource "juju_integration" "placement-keystone" {
 
 resource "juju_integration" "placement-nova" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.placement.name

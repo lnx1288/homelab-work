@@ -1,7 +1,7 @@
 resource "juju_application" "nova-compute-kvm" {
   name = "nova-compute-kvm"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "nova-compute"
@@ -61,7 +61,7 @@ resource "juju_application" "nova-compute-kvm" {
 resource "juju_application" "ceilometer-agent" {
   name = "ceilometer-agent"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "ceilometer-agent"
@@ -78,7 +78,7 @@ resource "juju_application" "ceilometer-agent" {
 resource "juju_application" "neutron-openvswitch" {
   name = "neutron-openvswitch"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "neutron-openvswitch"
@@ -107,7 +107,7 @@ resource "juju_application" "neutron-openvswitch" {
 resource "juju_application" "sysconfig-compute" {
   name = "sysconfig-compute"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "sysconfig"
@@ -128,7 +128,7 @@ resource "juju_application" "sysconfig-compute" {
 
 resource "juju_integration" "compute-ceilometer" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.nova-compute-kvm.name
@@ -143,7 +143,7 @@ resource "juju_integration" "compute-ceilometer" {
 
 resource "juju_integration" "compute-ovs" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.neutron-openvswitch.name
@@ -158,7 +158,7 @@ resource "juju_integration" "compute-ovs" {
 
 resource "juju_integration" "compute-sysconfig" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.nova-compute-kvm.name
@@ -173,7 +173,7 @@ resource "juju_integration" "compute-sysconfig" {
 
 resource "juju_integration" "compute-ceph-mon" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.nova-compute-kvm.name
@@ -188,7 +188,7 @@ resource "juju_integration" "compute-ceph-mon" {
 
 resource "juju_integration" "neutron-api-ovs" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.neutron-openvswitch.name
@@ -203,7 +203,7 @@ resource "juju_integration" "neutron-api-ovs" {
 
 resource "juju_integration" "nova-compute-rmq" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.nova-compute-kvm.name
@@ -218,7 +218,7 @@ resource "juju_integration" "nova-compute-rmq" {
 
 resource "juju_integration" "neutron-ovs-rmq" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.neutron-openvswitch.name
@@ -233,7 +233,7 @@ resource "juju_integration" "neutron-ovs-rmq" {
 
 resource "juju_integration" "ceilometer-agent-rmq" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.ceilometer-agent.name
@@ -248,7 +248,7 @@ resource "juju_integration" "ceilometer-agent-rmq" {
 
 resource "juju_integration" "nova-compute-glance" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.nova-compute-kvm.name
@@ -263,7 +263,7 @@ resource "juju_integration" "nova-compute-glance" {
 
 resource "juju_integration" "nova-compute-cinder-ceph" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.nova-compute-kvm.name

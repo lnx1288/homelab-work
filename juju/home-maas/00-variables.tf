@@ -5,6 +5,11 @@ variable "machines" {
   }))
 }
 
+variable "model-name" {
+    type = string
+    default = "openstack"
+}
+
 variable openstack-origin {
     type = string
     default = "distro"

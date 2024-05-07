@@ -1,15 +1,15 @@
 resource "juju_machine" "cinder-1" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "cinder-2" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "cinder-3" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
   constraints = "spaces=oam"
 }
@@ -18,7 +18,7 @@ resource "juju_machine" "cinder-3" {
 resource "juju_application" "cinder" {
   name = "cinder"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "cinder"
@@ -65,7 +65,7 @@ resource "juju_application" "cinder" {
 resource "juju_application" "cinder-ceph" {
   name = "cinder-ceph"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "cinder-ceph"
@@ -83,7 +83,7 @@ resource "juju_application" "cinder-ceph" {
 resource "juju_application" "cinder-mysql-router" {
   name = "cinder-mysql-router"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name = "mysql-router"
@@ -110,7 +110,7 @@ resource "juju_application" "cinder-mysql-router" {
 resource "juju_application" "hacluster-cinder" {
   name = "hacluster-cinder"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "hacluster"
@@ -123,7 +123,7 @@ resource "juju_application" "hacluster-cinder" {
 resource "juju_integration" "cinder-ha" {
 
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.cinder.name
@@ -138,7 +138,7 @@ resource "juju_integration" "cinder-ha" {
 
 resource "juju_integration" "cinder-mysql" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.cinder.name
@@ -153,7 +153,7 @@ resource "juju_integration" "cinder-mysql" {
 
 resource "juju_integration" "cinder-db" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.cinder-mysql-router.name
@@ -168,7 +168,7 @@ resource "juju_integration" "cinder-db" {
 
 resource "juju_integration" "cinder-rmq" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.cinder.name
@@ -183,7 +183,7 @@ resource "juju_integration" "cinder-rmq" {
 
 resource "juju_integration" "cinder-keystone" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.cinder.name
@@ -198,7 +198,7 @@ resource "juju_integration" "cinder-keystone" {
 
 resource "juju_integration" "cinder-ceph" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.cinder.name
@@ -214,7 +214,7 @@ resource "juju_integration" "cinder-ceph" {
 
 resource "juju_integration" "cinder-ceph-mon" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.cinder-ceph.name
@@ -229,7 +229,7 @@ resource "juju_integration" "cinder-ceph-mon" {
 
 resource "juju_integration" "cinder-ceph-cinder" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.cinder-ceph.name

@@ -1,15 +1,15 @@
 resource "juju_machine" "heat-1" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "heat-2" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "heat-3" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
   constraints = "spaces=oam"
 }
@@ -18,7 +18,7 @@ resource "juju_machine" "heat-3" {
 resource "juju_application" "heat" {
   name = "heat"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "heat"
@@ -62,7 +62,7 @@ resource "juju_application" "heat" {
 resource "juju_application" "heat-mysql-router" {
   name = "heat-mysql-router"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name = "mysql-router"
@@ -89,7 +89,7 @@ resource "juju_application" "heat-mysql-router" {
 resource "juju_application" "hacluster-heat" {
   name = "hacluster-heat"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "hacluster"
@@ -102,7 +102,7 @@ resource "juju_application" "hacluster-heat" {
 resource "juju_integration" "heat-ha" {
 
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.heat.name
@@ -117,7 +117,7 @@ resource "juju_integration" "heat-ha" {
 
 resource "juju_integration" "heat-mysql" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.heat.name
@@ -132,7 +132,7 @@ resource "juju_integration" "heat-mysql" {
 
 resource "juju_integration" "heat-db" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.heat-mysql-router.name
@@ -147,7 +147,7 @@ resource "juju_integration" "heat-db" {
 
 resource "juju_integration" "heat-rmq" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.heat.name
@@ -162,7 +162,7 @@ resource "juju_integration" "heat-rmq" {
 
 resource "juju_integration" "heat-keystone" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.heat.name

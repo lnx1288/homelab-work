@@ -1,5 +1,5 @@
-resource "juju_model" "cpe-focal" {
-  name = "cpe-focal"
+resource "juju_model" "openstack" {
+  name = var.model-name
 
   cloud {
     name = "home-maas"

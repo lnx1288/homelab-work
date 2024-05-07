@@ -1,15 +1,15 @@
 resource "juju_machine" "ncc-1" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["103"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "ncc-2" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["104"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "ncc-3" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["105"].machine_id])
   constraints = "spaces=oam"
 }
@@ -18,7 +18,7 @@ resource "juju_machine" "ncc-3" {
 resource "juju_application" "nova-cloud-controller" {
   name = "nova-cloud-controller"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "nova-cloud-controller"
@@ -70,7 +70,7 @@ resource "juju_application" "nova-cloud-controller" {
 resource "juju_application" "nova-cloud-controller-mysql-router" {
   name = "nova-cloud-controller-mysql-router"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name = "mysql-router"
@@ -97,7 +97,7 @@ resource "juju_application" "nova-cloud-controller-mysql-router" {
 resource "juju_application" "hacluster-nova" {
   name = "hacluster-nova"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "hacluster"
@@ -110,7 +110,7 @@ resource "juju_application" "hacluster-nova" {
 resource "juju_integration" "nova-cloud-controller-ha" {
 
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.nova-cloud-controller.name
@@ -125,7 +125,7 @@ resource "juju_integration" "nova-cloud-controller-ha" {
 
 resource "juju_integration" "nova-cloud-controller-mysql" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.nova-cloud-controller.name
@@ -140,7 +140,7 @@ resource "juju_integration" "nova-cloud-controller-mysql" {
 
 resource "juju_integration" "nova-cloud-controller-db" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.nova-cloud-controller-mysql-router.name
@@ -155,7 +155,7 @@ resource "juju_integration" "nova-cloud-controller-db" {
 
 resource "juju_integration" "nova-cloud-controller-rmq" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.nova-cloud-controller.name
@@ -170,7 +170,7 @@ resource "juju_integration" "nova-cloud-controller-rmq" {
 
 resource "juju_integration" "nova-cloud-controller-keystone" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.nova-cloud-controller.name
@@ -185,7 +185,7 @@ resource "juju_integration" "nova-cloud-controller-keystone" {
 
 resource "juju_integration" "nova-cloud-controller-neutron" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.nova-cloud-controller.name
@@ -200,7 +200,7 @@ resource "juju_integration" "nova-cloud-controller-neutron" {
 
 resource "juju_integration" "nova-cloud-controller-nova-compute" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.nova-cloud-controller.name
@@ -214,7 +214,7 @@ resource "juju_integration" "nova-cloud-controller-nova-compute" {
 }
 resource "juju_integration" "nova-cloud-controller-glance" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.nova-cloud-controller.name

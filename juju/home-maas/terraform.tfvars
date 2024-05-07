@@ -1,3 +1,5 @@
+model-name = "cpe-focal"
+
 machines = [
   {machine_id=100,constraints="tags=control,asrock01"},
   {machine_id=101,constraints="tags=control,asrock02"},

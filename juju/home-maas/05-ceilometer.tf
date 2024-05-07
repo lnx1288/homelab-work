@@ -1,15 +1,15 @@
 resource "juju_machine" "ceilometer-1" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["103"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "ceilometer-2" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["104"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "ceilometer-3" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["105"].machine_id])
   constraints = "spaces=oam"
 }
@@ -18,7 +18,7 @@ resource "juju_machine" "ceilometer-3" {
 resource "juju_application" "ceilometer" {
   name = "ceilometer"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "ceilometer"
@@ -55,7 +55,7 @@ resource "juju_application" "ceilometer" {
 
 resource "juju_integration" "ceilometer-rmq" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.ceilometer.name
@@ -70,7 +70,7 @@ resource "juju_integration" "ceilometer-rmq" {
 
 resource "juju_integration" "ceilometer-keystone" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.ceilometer.name
@@ -85,7 +85,7 @@ resource "juju_integration" "ceilometer-keystone" {
 
 resource "juju_integration" "ceilometer-ceil-agent" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.ceilometer.name

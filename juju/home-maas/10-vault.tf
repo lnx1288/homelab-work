@@ -1,15 +1,15 @@
 resource "juju_machine" "vault-1" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["400"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "vault-2" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["401"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "vault-3" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["402"].machine_id])
   constraints = "spaces=oam"
 }
@@ -17,7 +17,7 @@ resource "juju_machine" "vault-3" {
 resource "juju_application" "vault" {
   name = "vault"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "vault"
@@ -43,7 +43,7 @@ resource "juju_application" "vault" {
 resource "juju_application" "vault-mysql-router" {
   name = "vault-mysql-router"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name = "mysql-router"
@@ -72,7 +72,7 @@ resource "juju_application" "vault-mysql-router" {
 resource "juju_application" "hacluster-vault" {
   name = "hacluster-vault"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "hacluster"
@@ -85,17 +85,17 @@ resource "juju_application" "hacluster-vault" {
 
 
 resource "juju_machine" "etcd-1" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["400"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "etcd-2" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["401"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "etcd-3" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["402"].machine_id])
   constraints = "spaces=oam"
 }
@@ -103,7 +103,7 @@ resource "juju_machine" "etcd-3" {
 resource "juju_application" "etcd" {
   name = "etcd"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "etcd"
@@ -136,7 +136,7 @@ resource "juju_application" "etcd" {
 }
 
 resource "juju_machine" "easyrsa" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["402"].machine_id])
   constraints = "spaces=oam"
 }
@@ -144,7 +144,7 @@ resource "juju_machine" "easyrsa" {
 resource "juju_application" "easyrsa" {
   name = "easyrsa"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "easyrsa"
@@ -161,7 +161,7 @@ resource "juju_application" "easyrsa" {
 
 resource "juju_integration" "vault-etcd" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.vault.name
@@ -176,7 +176,7 @@ resource "juju_integration" "vault-etcd" {
 
 resource "juju_integration" "etcd-easyrsa" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.etcd.name
@@ -191,7 +191,7 @@ resource "juju_integration" "etcd-easyrsa" {
 
 resource "juju_integration" "vault-ha" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.vault.name
@@ -206,7 +206,7 @@ resource "juju_integration" "vault-ha" {
 
 resource "juju_integration" "vault-mysql" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.vault.name
@@ -221,7 +221,7 @@ resource "juju_integration" "vault-mysql" {
 
 resource "juju_integration" "vault-ceph" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.vault.name
@@ -236,7 +236,7 @@ resource "juju_integration" "vault-ceph" {
 
 resource "juju_integration" "vault-db" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.vault-mysql-router.name

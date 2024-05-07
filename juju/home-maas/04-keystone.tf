@@ -1,15 +1,15 @@
 resource "juju_machine" "keystone-1" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["103"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "keystone-2" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["104"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "keystone-3" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["105"].machine_id])
   constraints = "spaces=oam"
 }
@@ -18,7 +18,7 @@ resource "juju_machine" "keystone-3" {
 resource "juju_application" "keystone" {
   name = "keystone"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "keystone"
@@ -63,7 +63,7 @@ resource "juju_application" "keystone" {
 resource "juju_application" "keystone-mysql-router" {
   name = "keystone-mysql-router"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name = "mysql-router"
@@ -90,7 +90,7 @@ resource "juju_application" "keystone-mysql-router" {
 resource "juju_application" "hacluster-keystone" {
   name = "hacluster-keystone"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "hacluster"
@@ -103,7 +103,7 @@ resource "juju_application" "hacluster-keystone" {
 resource "juju_integration" "keystone-ha" {
 
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.keystone.name
@@ -118,7 +118,7 @@ resource "juju_integration" "keystone-ha" {
 
 resource "juju_integration" "keystone-mysql" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.keystone.name
@@ -133,7 +133,7 @@ resource "juju_integration" "keystone-mysql" {
 
 resource "juju_integration" "keystone-db" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.keystone-mysql-router.name

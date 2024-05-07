@@ -1,15 +1,15 @@
 resource "juju_machine" "memcache-1" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "memcache-2" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "memcache-3" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
   constraints = "spaces=oam"
 }
@@ -17,7 +17,7 @@ resource "juju_machine" "memcache-3" {
 resource "juju_application" "memcached" {
   name = "memcached"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "memcached"
@@ -48,7 +48,7 @@ resource "juju_application" "memcached" {
 resource "juju_integration" "nova-cloud-controller-memcache" {
 
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.nova-cloud-controller.name

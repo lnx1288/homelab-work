@@ -1,15 +1,15 @@
 resource "juju_machine" "rmq-1" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["103"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "rmq-2" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["104"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "rmq-3" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["105"].machine_id])
   constraints = "spaces=oam"
 }
@@ -18,7 +18,7 @@ resource "juju_machine" "rmq-3" {
 resource "juju_application" "rabbitmq-server" {
   name = "rabbitmq-server"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "rabbitmq-server"

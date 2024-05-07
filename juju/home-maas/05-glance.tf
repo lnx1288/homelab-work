@@ -1,15 +1,15 @@
 resource "juju_machine" "glance-1" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "glance-2" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
   constraints = "spaces=oam"
 }
 resource "juju_machine" "glance-3" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
   constraints = "spaces=oam"
 }
@@ -18,7 +18,7 @@ resource "juju_machine" "glance-3" {
 resource "juju_application" "glance" {
   name = "glance"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "glance"
@@ -63,7 +63,7 @@ resource "juju_application" "glance" {
 resource "juju_application" "glance-mysql-router" {
   name = "glance-mysql-router"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name = "mysql-router"
@@ -90,7 +90,7 @@ resource "juju_application" "glance-mysql-router" {
 resource "juju_application" "hacluster-glance" {
   name = "hacluster-glance"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "hacluster"
@@ -103,7 +103,7 @@ resource "juju_application" "hacluster-glance" {
 resource "juju_integration" "glance-ha" {
 
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.glance.name
@@ -118,7 +118,7 @@ resource "juju_integration" "glance-ha" {
 
 resource "juju_integration" "glance-mysql" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.glance.name
@@ -133,7 +133,7 @@ resource "juju_integration" "glance-mysql" {
 
 resource "juju_integration" "glance-db" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.glance-mysql-router.name
@@ -148,7 +148,7 @@ resource "juju_integration" "glance-db" {
 
 resource "juju_integration" "glance-rmq" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.glance.name
@@ -163,7 +163,7 @@ resource "juju_integration" "glance-rmq" {
 
 resource "juju_integration" "glance-keystone" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.glance.name
@@ -178,7 +178,7 @@ resource "juju_integration" "glance-keystone" {
 
 resource "juju_integration" "glance-ceph" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.glance.name
@@ -193,7 +193,7 @@ resource "juju_integration" "glance-ceph" {
 
 resource "juju_integration" "glance-cinder" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.glance.name

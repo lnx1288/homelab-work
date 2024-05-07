@@ -1,15 +1,15 @@
 resource "juju_machine" "gnocchi-1" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["103"].machine_id])
   constraints = "spaces=oam,ceph-access"
 }
 resource "juju_machine" "gnocchi-2" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["104"].machine_id])
   constraints = "spaces=oam,ceph-access"
 }
 resource "juju_machine" "gnocchi-3" {
-  model = juju_model.cpe-focal.name
+  model = var.model-name
   placement = join(":",["lxd",juju_machine.all_machines["105"].machine_id])
   constraints = "spaces=oam,ceph-access"
 }
@@ -18,7 +18,7 @@ resource "juju_machine" "gnocchi-3" {
 resource "juju_application" "gnocchi" {
   name = "gnocchi"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "gnocchi"
@@ -67,7 +67,7 @@ resource "juju_application" "gnocchi" {
 resource "juju_application" "gnocchi-mysql-router" {
   name = "gnocchi-mysql-router"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name = "mysql-router"
@@ -94,7 +94,7 @@ resource "juju_application" "gnocchi-mysql-router" {
 resource "juju_application" "hacluster-gnocchi" {
   name = "hacluster-gnocchi"
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   charm {
     name     = "hacluster"
@@ -107,7 +107,7 @@ resource "juju_application" "hacluster-gnocchi" {
 resource "juju_integration" "gnocchi-ha" {
 
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.gnocchi.name
@@ -122,7 +122,7 @@ resource "juju_integration" "gnocchi-ha" {
 
 resource "juju_integration" "gnocchi-mysql" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.gnocchi.name
@@ -137,7 +137,7 @@ resource "juju_integration" "gnocchi-mysql" {
 
 resource "juju_integration" "gnocchi-db" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.gnocchi-mysql-router.name
@@ -152,7 +152,7 @@ resource "juju_integration" "gnocchi-db" {
 
 resource "juju_integration" "gnocchi-rmq" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.gnocchi.name
@@ -167,7 +167,7 @@ resource "juju_integration" "gnocchi-rmq" {
 
 resource "juju_integration" "gnocchi-keystone" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.gnocchi.name
@@ -182,7 +182,7 @@ resource "juju_integration" "gnocchi-keystone" {
 
 resource "juju_integration" "gnocchi-ceph" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.gnocchi.name
@@ -197,7 +197,7 @@ resource "juju_integration" "gnocchi-ceph" {
 
 resource "juju_integration" "gnocchi-memcache" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.gnocchi.name
@@ -212,7 +212,7 @@ resource "juju_integration" "gnocchi-memcache" {
 
 resource "juju_integration" "gnocchi-ceilometer" {
 
-  model = juju_model.cpe-focal.name
+  model = var.model-name
 
   application {
     name = juju_application.gnocchi.name
