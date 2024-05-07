@@ -1,5 +1,5 @@
-resource "juju_application" "nova-compute" {
-  name = "nova-compute"
+resource "juju_application" "nova-compute-kvm" {
+  name = "nova-compute-kvm"
 
   model = juju_model.cpe-focal.name
 
@@ -131,7 +131,7 @@ resource "juju_integration" "compute-ceilometer" {
   model = juju_model.cpe-focal.name
 
   application {
-    name = juju_application.nova-compute.name
+    name = juju_application.nova-compute-kvm.name
     endpoint = "nova-ceilometer"
   }
 
@@ -151,7 +151,7 @@ resource "juju_integration" "compute-ovs" {
   }
 
   application {
-    name = juju_application.nova-compute.name
+    name = juju_application.nova-compute-kvm.name
     endpoint = "neutron-plugin"
   }
 }
@@ -161,7 +161,7 @@ resource "juju_integration" "compute-sysconfig" {
   model = juju_model.cpe-focal.name
 
   application {
-    name = juju_application.nova-compute.name
+    name = juju_application.nova-compute-kvm.name
     endpoint = "juju-info"
   }
 
@@ -176,7 +176,7 @@ resource "juju_integration" "compute-ceph-mon" {
   model = juju_model.cpe-focal.name
 
   application {
-    name = juju_application.nova-compute.name
+    name = juju_application.nova-compute-kvm.name
     endpoint = "ceph"
   }
 
@@ -206,7 +206,7 @@ resource "juju_integration" "nova-compute-rmq" {
   model = juju_model.cpe-focal.name
 
   application {
-    name = juju_application.nova-compute.name
+    name = juju_application.nova-compute-kvm.name
     endpoint = "amqp"
   }
 
@@ -251,7 +251,7 @@ resource "juju_integration" "nova-compute-glance" {
   model = juju_model.cpe-focal.name
 
   application {
-    name = juju_application.nova-compute.name
+    name = juju_application.nova-compute-kvm.name
     endpoint = "image-service"
   }
 
@@ -266,7 +266,7 @@ resource "juju_integration" "nova-compute-cinder-ceph" {
   model = juju_model.cpe-focal.name
 
   application {
-    name = juju_application.nova-compute.name
+    name = juju_application.nova-compute-kvm.name
     endpoint = "ceph-access"
   }
 

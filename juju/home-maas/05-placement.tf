@@ -1,67 +1,62 @@
-resource "juju_machine" "keystone-1" {
+resource "juju_machine" "placement-1" {
   model = juju_model.cpe-focal.name
   placement = join(":",["lxd",juju_machine.all_machines["103"].machine_id])
   constraints = "spaces=oam"
 }
-resource "juju_machine" "keystone-2" {
+resource "juju_machine" "placement-2" {
   model = juju_model.cpe-focal.name
   placement = join(":",["lxd",juju_machine.all_machines["104"].machine_id])
   constraints = "spaces=oam"
 }
-resource "juju_machine" "keystone-3" {
+resource "juju_machine" "placement-3" {
   model = juju_model.cpe-focal.name
   placement = join(":",["lxd",juju_machine.all_machines["105"].machine_id])
   constraints = "spaces=oam"
 }
 
-
-resource "juju_application" "keystone" {
-  name = "keystone"
+resource "juju_application" "placement" {
+  name = "placement"
 
   model = juju_model.cpe-focal.name
 
   charm {
-    name     = "keystone"
+    name     = "placement"
     channel  = "ussuri/stable"
   }
 
   units = 3
 
   placement = "${join(",",sort([
-    juju_machine.keystone-1.machine_id,
-    juju_machine.keystone-2.machine_id,
-    juju_machine.keystone-3.machine_id,
+    juju_machine.placement-1.machine_id,
+    juju_machine.placement-2.machine_id,
+    juju_machine.placement-3.machine_id,
   ]))}"
 
   endpoint_bindings = [{
     space = "oam"
   },{
-    space = "oam"
     endpoint = "public"
-  },{
     space = "oam"
+  },{
     endpoint = "admin"
-  },{
     space = "oam"
+  },{
     endpoint = "internal"
-  },{
     space = "oam"
+  },{
     endpoint = "shared-db"
+    space = "oam"
   }]
 
   config = {
       worker-multiplier = var.worker-multiplier
       openstack-origin = var.openstack-origin
-      vip = "10.0.1.216"
-      region = var.openstack-region
-      preferred-api-version = "3"
-      token-provider = "fernet"
-      admin-password = "openstack"
+      vip = "10.0.1.223"
   }
 }
 
-resource "juju_application" "keystone-mysql-router" {
-  name = "keystone-mysql-router"
+resource "juju_application" "placement-mysql-router" {
+  name = "placement-mysql-router"
 
   model = juju_model.cpe-focal.name
 
@@ -87,8 +82,8 @@ resource "juju_application" "keystone-mysql-router" {
   }
 }
 
-resource "juju_application" "hacluster-keystone" {
-  name = "hacluster-keystone"
+resource "juju_application" "hacluster-placement" {
+  name = "hacluster-placement"
 
   model = juju_model.cpe-focal.name
 
@@ -100,43 +95,45 @@ resource "juju_application" "hacluster-keystone" {
   units = 0
 }
 
-resource "juju_integration" "keystone-ha" {
+
+
+resource "juju_integration" "placement-ha" {
 
 
   model = juju_model.cpe-focal.name
 
   application {
-    name = juju_application.keystone.name
+    name = juju_application.placement.name
     endpoint = "ha"
   }
 
   application {
-    name = juju_application.hacluster-keystone.name
+    name = juju_application.hacluster-placement.name
     endpoint = "ha"
   }
 }
 
-resource "juju_integration" "keystone-mysql" {
+resource "juju_integration" "placement-mysql" {
 
   model = juju_model.cpe-focal.name
 
   application {
-    name = juju_application.keystone.name
+    name = juju_application.placement.name
     endpoint = "shared-db"
   }
 
   application {
-    name = juju_application.keystone-mysql-router.name
+    name = juju_application.placement-mysql-router.name
     endpoint = "shared-db"
   }
 }
 
-resource "juju_integration" "keystone-db" {
+resource "juju_integration" "placement-db" {
 
   model = juju_model.cpe-focal.name
 
   application {
-    name = juju_application.keystone-mysql-router.name
+    name = juju_application.placement-mysql-router.name
     endpoint = "db-router"
   }
 
@@ -146,3 +143,32 @@ resource "juju_integration" "keystone-db" {
   }
 }
 
+resource "juju_integration" "placement-keystone" {
+
+  model = juju_model.cpe-focal.name
+
+  application {
+    name = juju_application.placement.name
+    endpoint = "identity-service"
+  }
+
+  application {
+    name = juju_application.keystone.name
+    endpoint = "identity-service"
+  }
+}
+
+resource "juju_integration" "placement-nova" {
+
+  model = juju_model.cpe-focal.name
+
+  application {
+    name = juju_application.placement.name
+    endpoint = "placement"
+  }
+
+  application {
+    name = juju_application.nova-cloud-controller.name
+    endpoint = "placement"
+  }
+}

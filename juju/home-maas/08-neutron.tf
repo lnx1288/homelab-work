@@ -93,6 +93,9 @@ resource "juju_application" "neutron-api" {
     l2-population = "true"
     #global-physnet-mtu = "9000"
     manage-neutron-plugin-legacy-mode = "true"
+    vlan-ranges = "physnet1:350:599"
+    flat-network-providers = "physnet1"
+    enable-vlan-trunking = "true"
   }
 
 
