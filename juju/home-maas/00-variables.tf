@@ -11,14 +11,24 @@ variable "num_units" {
 
 variable "controller_ids" {
   type    = list(string)
-  default = ["100", "101", "102", 
+  default = ["100", "101", "102",
              "103", "104", "105"]
+}
+
+variable "controller_ids_high" {
+  type    = list(string)
+  default = ["103", "104", "105"]
 }
 
 variable "compute_ids" {
   type    = list(string)
-  default = ["1000", "1001", "1002", "1003", 
+  default = ["1000", "1001", "1002", "1003",
              "1004", "1005", "1006", "1007"]
+}
+
+variable "sdn_ids" {
+  type    = list(string)
+  default = ["400", "401", "402"]
 }
 
 variable "apt_mirror" {
@@ -69,17 +79,17 @@ variable mysql-router-channel {
     default = "8.0/stable"
 }
 
-variable "hacluster-channel" {
+variable hacluster-channel {
     type = string
     default = "2.0.3/stable"
 }
 
-variable "rabbitmq-server-channel" {
+variable rabbitmq-server-channel {
     type = string
     default = "3.8/stable"
 }
 
-variable "ceph-channel" {
+variable ceph-channel {
     type = string
     default = "octopus/stable"
 }

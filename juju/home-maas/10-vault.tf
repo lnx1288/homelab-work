@@ -1,16 +1,7 @@
-resource "juju_machine" "vault-1" {
+resource "juju_machine" "vault" {
+  count       = var.num_units
   model       = var.model-name
-  placement   = join(":",["lxd",juju_machine.all_machines["400"].machine_id])
-  constraints = "spaces=oam"
-}
-resource "juju_machine" "vault-2" {
-  model       = var.model-name
-  placement   = join(":",["lxd",juju_machine.all_machines["401"].machine_id])
-  constraints = "spaces=oam"
-}
-resource "juju_machine" "vault-3" {
-  model       = var.model-name
-  placement   = join(":",["lxd",juju_machine.all_machines["402"].machine_id])
+  placement   = join(":",["lxd",juju_machine.all_machines[var.sdn_ids[count.index+var.num_units]].machine_id])
   constraints = "spaces=oam"
 }
 
@@ -25,12 +16,11 @@ resource "juju_application" "vault" {
     base    = var.default-base
   }
 
-  units = 3
+  units = var.num_units
 
   placement = "${join(",",sort([
-    juju_machine.vault-1.machine_id,
-    juju_machine.vault-2.machine_id,
-    juju_machine.vault-3.machine_id,
+    for res in juju_machine.vault :
+      res.machine_id
   ]))}"
 
   config = {
@@ -83,19 +73,10 @@ resource "juju_application" "hacluster-vault" {
 }
 
 
-resource "juju_machine" "etcd-1" {
+resource "juju_machine" "etcd" {
+  count       = var.num_units
   model       = var.model-name
-  placement   = join(":",["lxd",juju_machine.all_machines["400"].machine_id])
-  constraints = "spaces=oam"
-}
-resource "juju_machine" "etcd-2" {
-  model       = var.model-name
-  placement   = join(":",["lxd",juju_machine.all_machines["401"].machine_id])
-  constraints = "spaces=oam"
-}
-resource "juju_machine" "etcd-3" {
-  model       = var.model-name
-  placement   = join(":",["lxd",juju_machine.all_machines["402"].machine_id])
+  placement   = join(":",["lxd",juju_machine.all_machines[var.sdn_ids[count.index+var.num_units]].machine_id])
   constraints = "spaces=oam"
 }
 
@@ -112,9 +93,8 @@ resource "juju_application" "etcd" {
   }
 
   placement = "${join(",",sort([
-    juju_machine.etcd-1.machine_id,
-    juju_machine.etcd-2.machine_id,
-    juju_machine.etcd-3.machine_id,
+    for res in juju_machine.etcd :
+      res.machine_id
   ]))}"
 
   endpoint_bindings = [{

@@ -5,13 +5,13 @@ resource "juju_application" "ceph-osd" {
 
   charm {
     name    = "ceph-osd"
-    channel = var.ceph-osd-channel
+    channel = var.ceph-channel
   }
 
   units = length(var.compute_ids)
 
   placement = "${join(",", sort([
-    for index, _ in var.compute_ids : 
+    for index, _ in var.compute_ids :
       juju_machine.all_machines[index].machine_id
   ]))}"
 
@@ -47,8 +47,8 @@ resource "juju_application" "ceph-mon" {
   units = var.num_units
 
   placement = "${join(",", sort([
-    for index, _ in slice(var.controller_ids, 0, var.num_units+1) : 
-        juju_machine.ceph-mon[index].machine_id
+    for res in juju_machine.ceph-mon :
+        res.machine_id
   ]))}"
 
   endpoint_bindings = [{
@@ -98,8 +98,8 @@ resource "juju_application" "ceph-radosgw" {
   units = var.num_units
 
   placement = "${join(",", sort([
-    for index, _ in slice(var.controller_ids, 0, var.num_units+1) : 
-        juju_machine.ceph-rgw[index].machine_id
+    for res in juju_machine.ceph-rgw :
+        res.machine_id
   ]))}"
 
   endpoint_bindings = [{

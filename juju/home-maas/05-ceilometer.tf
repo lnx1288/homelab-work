@@ -18,8 +18,8 @@ resource "juju_application" "ceilometer" {
   units = 3
 
   placement = "${join(",", sort([
-    for index, _ in slice(var.controller_ids, var.num_units, length(var.controller_ids)) : 
-        juju_machine.ceilometer[index].machine_id
+    for res in juju_machine.ceilometer :
+        res.machine_id
   ]))}"
 
   endpoint_bindings = [{

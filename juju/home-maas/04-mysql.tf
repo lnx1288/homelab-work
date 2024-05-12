@@ -19,8 +19,8 @@ resource "juju_application" "mysql-innodb-cluster" {
   units = var.num_units
 
   placement = "${join(",", sort([
-    for index, _ in slice(var.controller_ids, 0, var.num_units+1) : 
-        juju_machine.mysql[index].machine_id
+    for res in juju_machine.mysql :
+        res.machine_id
   ]))}"
 
   endpoint_bindings = [{

@@ -11,7 +11,7 @@ resource "juju_application" "nova-compute-kvm" {
   units = length(var.compute_ids)
 
   placement = "${join(",", sort([
-    for index, _ in var.compute_ids : 
+    for index, _ in var.compute_ids :
       juju_machine.all_machines[index].machine_id
   ]))}"
 

@@ -1,7 +1,7 @@
 resource "juju_machine" "placement" {
   count       = var.num_units
   model       = var.model-name
-  placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids[count.index+var.num_units]].machine_id])
+  placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids_high[count.index+var.num_units]].machine_id])
   constraints = "spaces=oam"
 }
 
@@ -18,8 +18,8 @@ resource "juju_application" "placement" {
   units = var.num_units
 
   placement = "${join(",", sort([
-    for index, _ in slice(var.controller_ids, var.num_units, length(var.controller_ids)) : 
-        juju_machine.placement[index].machine_id
+    for res in juju_machine.placement :
+        res.machine_id
   ]))}"
 
   endpoint_bindings = [{
