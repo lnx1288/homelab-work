@@ -1,19 +1,9 @@
-resource "juju_machine" "rmq-1" {
+resource "juju_machine" "rmq" {
+  count       = var.num_units
   model       = var.model-name
-  placement   = join(":",["lxd",juju_machine.all_machines["103"].machine_id])
+  placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids_high[count.index+var.num_units]].machine_id])
   constraints = "spaces=oam"
 }
-resource "juju_machine" "rmq-2" {
-  model       = var.model-name
-  placement   = join(":",["lxd",juju_machine.all_machines["104"].machine_id])
-  constraints = "spaces=oam"
-}
-resource "juju_machine" "rmq-3" {
-  model       = var.model-name
-  placement   = join(":",["lxd",juju_machine.all_machines["105"].machine_id])
-  constraints = "spaces=oam"
-}
-
 
 resource "juju_application" "rabbitmq-server" {
   name = "rabbitmq-server"
@@ -22,15 +12,14 @@ resource "juju_application" "rabbitmq-server" {
 
   charm {
     name     = "rabbitmq-server"
-    channel  = "3.8/stable"
+    channel  = var.rabbitmq-server-channel
   }
 
   units = 3
 
-  placement = "${join(",",sort([
-    juju_machine.rmq-1.machine_id,
-    juju_machine.rmq-2.machine_id,
-    juju_machine.rmq-3.machine_id,
+  placement = "${join(",", sort([
+    for index, _ in slice(var.controller_ids, var.num_units, length(var.controller_ids)) : 
+        juju_machine.rmq[index].machine_id
   ]))}"
 
   endpoint_bindings = [{

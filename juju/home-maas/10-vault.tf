@@ -21,7 +21,7 @@ resource "juju_application" "vault" {
 
   charm {
     name    = "vault"
-    channel = "1.7/stable"
+    channel = var.vault_channel
     base    = var.default-base
   }
 
@@ -47,7 +47,7 @@ resource "juju_application" "vault-mysql-router" {
 
   charm {
     name    = "mysql-router"
-    channel = "8.0/stable"
+    channel = var.mysql-router-channel
   }
 
   units = 0
@@ -76,7 +76,7 @@ resource "juju_application" "hacluster-vault" {
 
   charm {
     name     = "hacluster"
-    channel  = "2.0.3/stable"
+    channel  = var.hacluster-channel
   }
 
   units = 0
@@ -106,9 +106,9 @@ resource "juju_application" "etcd" {
 
   charm {
     name     = "etcd"
-    channel  = "latest/stable"
+    channel  = var.etcd_channel
     base     = var.default-base
-    revision = 583
+    revision = var.etcd_revision
   }
 
   placement = "${join(",",sort([
@@ -127,7 +127,7 @@ resource "juju_application" "etcd" {
     endpoint = "db"
   }]
 
-  units = 3
+  units = var.num_units
 
   config = {
     channel = "3.2/stable"
@@ -147,7 +147,7 @@ resource "juju_application" "easyrsa" {
 
   charm {
     name    = "easyrsa"
-    channel = "latest/stable"
+    channel = var.easyrsa_channel
     base    = var.default-base
   }
 

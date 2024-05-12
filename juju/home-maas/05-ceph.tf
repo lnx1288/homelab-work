@@ -5,20 +5,15 @@ resource "juju_application" "ceph-osd" {
 
   charm {
     name    = "ceph-osd"
-    channel = "octopus/stable"
+    channel = var.ceph-osd-channel
   }
 
-  units = 8
-  placement = "${join(",",sort([
-    juju_machine.all_machines["1000"].machine_id,
-    juju_machine.all_machines["1001"].machine_id,
-    juju_machine.all_machines["1002"].machine_id,
-    juju_machine.all_machines["1003"].machine_id,
-    juju_machine.all_machines["1004"].machine_id,
-    juju_machine.all_machines["1005"].machine_id,
-    juju_machine.all_machines["1006"].machine_id,
-    juju_machine.all_machines["1007"].machine_id,
-   ]))}"
+  units = length(var.compute_ids)
+
+  placement = "${join(",", sort([
+    for index, _ in var.compute_ids : 
+      juju_machine.all_machines[index].machine_id
+  ]))}"
 
   config = {
     osd-devices     = var.osd-devices
@@ -32,19 +27,10 @@ resource "juju_application" "ceph-osd" {
   }
 }
 
-resource "juju_machine" "ceph-mon-1" {
+resource "juju_machine" "ceph-mon" {
+  count       = var.num_units
   model       = var.model-name
-  placement   = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
-  constraints = "spaces=oam,ceph-access,ceph-replica"
-}
-resource "juju_machine" "ceph-mon-2" {
-  model       = var.model-name
-  placement   = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
-  constraints = "spaces=oam,ceph-access,ceph-replica"
-}
-resource "juju_machine" "ceph-mon-3" {
-  model       = var.model-name
-  placement   = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
+  placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids[count.index]].machine_id])
   constraints = "spaces=oam,ceph-access,ceph-replica"
 }
 
@@ -55,15 +41,14 @@ resource "juju_application" "ceph-mon" {
 
   charm {
     name     = "ceph-mon"
-    channel  = "octopus/stable"
+    channel  = var.ceph-channel
   }
 
-  units = 3
+  units = var.num_units
 
-  placement = "${join(",",sort([
-    juju_machine.ceph-mon-1.machine_id,
-    juju_machine.ceph-mon-2.machine_id,
-    juju_machine.ceph-mon-3.machine_id,
+  placement = "${join(",", sort([
+    for index, _ in slice(var.controller_ids, 0, var.num_units+1) : 
+        juju_machine.ceph-mon[index].machine_id
   ]))}"
 
   endpoint_bindings = [{
@@ -93,19 +78,10 @@ resource "juju_application" "ceph-mon" {
   }
 }
 
-resource "juju_machine" "ceph-rgw-1" {
+resource "juju_machine" "ceph-rgw" {
+  count       = var.num_units
   model       = var.model-name
-  placement   = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
-  constraints = "spaces=oam,ceph-access"
-}
-resource "juju_machine" "ceph-rgw-2" {
-  model       = var.model-name
-  placement   = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
-  constraints = "spaces=oam,ceph-access"
-}
-resource "juju_machine" "ceph-rgw-3" {
-  model       = var.model-name
-  placement   = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
+  placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids[count.index]].machine_id])
   constraints = "spaces=oam,ceph-access"
 }
 
@@ -116,15 +92,14 @@ resource "juju_application" "ceph-radosgw" {
 
   charm {
     name     = "ceph-radosgw"
-    channel  = "octopus/stable"
+    channel  = var.ceph-channel
   }
 
-  units = 3
+  units = var.num_units
 
-  placement = "${join(",",sort([
-    juju_machine.ceph-rgw-1.machine_id,
-    juju_machine.ceph-rgw-2.machine_id,
-    juju_machine.ceph-rgw-3.machine_id,
+  placement = "${join(",", sort([
+    for index, _ in slice(var.controller_ids, 0, var.num_units+1) : 
+        juju_machine.ceph-rgw[index].machine_id
   ]))}"
 
   endpoint_bindings = [{
@@ -161,7 +136,7 @@ resource "juju_application" "hacluster-radosgw" {
 
   charm {
     name     = "hacluster"
-    channel  = "2.0.3/stable"
+    channel  = var.hacluster-channel
   }
 
   units = 0

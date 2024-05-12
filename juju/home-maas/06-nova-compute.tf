@@ -8,17 +8,12 @@ resource "juju_application" "nova-compute-kvm" {
     channel  = var.openstack-channel
   }
 
-  units = 8
-  placement = "${join(",",sort([
-    juju_machine.all_machines["1000"].machine_id,
-    juju_machine.all_machines["1001"].machine_id,
-    juju_machine.all_machines["1002"].machine_id,
-    juju_machine.all_machines["1003"].machine_id,
-    juju_machine.all_machines["1004"].machine_id,
-    juju_machine.all_machines["1005"].machine_id,
-    juju_machine.all_machines["1006"].machine_id,
-    juju_machine.all_machines["1007"].machine_id,
-   ]))}"
+  units = length(var.compute_ids)
+
+  placement = "${join(",", sort([
+    for index, _ in var.compute_ids : 
+      juju_machine.all_machines[index].machine_id
+  ]))}"
 
    endpoint_bindings = [{
      space    = var.oam-space
@@ -109,8 +104,8 @@ resource "juju_application" "sysconfig-compute" {
 
   charm {
     name     = "sysconfig"
-    channel  = "latest/stable"
-    revision = "19"
+    channel  = var.sysconfig_compute_channel
+    revision = var.sysconfig_compute_revision
   }
 
   units = 0

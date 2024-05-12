@@ -5,20 +5,17 @@ resource "juju_application" "controller-server" {
 
   charm {
     name     = "ubuntu"
-    channel  = "latest/stable"
-    revision = "24"
+    channel  = var.ubuntu_channel
+    revision = var.ubuntu_revision
     base     = var.default-base
   }
 
-  units = 6
-  placement = "${join(",",sort([
-    juju_machine.all_machines["100"].machine_id,
-    juju_machine.all_machines["101"].machine_id,
-    juju_machine.all_machines["102"].machine_id,
-    juju_machine.all_machines["103"].machine_id,
-    juju_machine.all_machines["104"].machine_id,
-    juju_machine.all_machines["105"].machine_id,
-   ]))}"
+  units = length(var.controller_ids)
+
+  placement = "${join(",", sort([
+    for index, _ in var.controller_ids : 
+      juju_machine.all_machines[index].machine_id
+  ]))}"
 }
 
 resource "juju_application" "sysconfig-control" {
@@ -28,8 +25,8 @@ resource "juju_application" "sysconfig-control" {
 
   charm {
     name     = "sysconfig"
-    channel  = "latest/stable"
-    revision = "22"
+    channel  = var.sysconfig_compute_channel
+    revision = var.sysconfig_compute_revision
   }
 
   units = 0

@@ -1,16 +1,7 @@
-resource "juju_machine" "memcache-1" {
+resource "juju_machine" "memcache" {
+  count       = var.num_units
   model       = var.model-name
-  placement   = join(":",["lxd",juju_machine.all_machines["100"].machine_id])
-  constraints = "spaces=oam"
-}
-resource "juju_machine" "memcache-2" {
-  model       = var.model-name
-  placement   = join(":",["lxd",juju_machine.all_machines["101"].machine_id])
-  constraints = "spaces=oam"
-}
-resource "juju_machine" "memcache-3" {
-  model       = var.model-name
-  placement   = join(":",["lxd",juju_machine.all_machines["102"].machine_id])
+  placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids[count.index]].machine_id])
   constraints = "spaces=oam"
 }
 
@@ -25,13 +16,13 @@ resource "juju_application" "memcached" {
     base    = var.default-base
   }
 
-  units = 3
+  units = var.num_units
 
-  placement = "${join(",",sort([
-    juju_machine.memcache-1.machine_id,
-    juju_machine.memcache-2.machine_id,
-    juju_machine.memcache-3.machine_id,
+  placement = "${join(",", sort([
+    for index, _ in slice(var.controller_ids, 0, var.num_units+1) : 
+        juju_machine.memcached[index].machine_id
   ]))}"
+
 
   endpoint_bindings = [{
     space    = var.internal-space

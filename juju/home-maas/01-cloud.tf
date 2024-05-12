@@ -2,19 +2,19 @@ resource "juju_model" "openstack" {
   name = var.model-name
 
   cloud {
-    name = "home-maas"
+    name = var.cloud
   }
 
   config = {
     cloudinit-userdata = file("user-data.yaml")
 
-    apt-mirror = "http://192.168.1.12/archive.ubuntu.com/ubuntu"
-    lxd-snap-channel = "5.0/stable"
+    apt-mirror = "http://${var.apt_mirror}/archive.ubuntu.com/ubuntu"
+    lxd-snap-channel = var.lxd_snap_channel
 
-    container-image-metadata-url = "http://192.168.1.12/lxd/"
+    container-image-metadata-url = "http://${var.apt_mirror}/lxd/"
     container-image-stream = "released"
 
-    agent-metadata-url = "http://192.168.1.12/juju/tools/"
+    agent-metadata-url = "http://${var.apt_mirror}/juju/tools/"
     agent-stream = "released"
   }
 }

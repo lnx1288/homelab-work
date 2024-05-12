@@ -1,16 +1,7 @@
-resource "juju_machine" "keystone-1" {
+resource "juju_machine" "keystone" {
+  count       = var.num_units
   model       = var.model-name
-  placement   = join(":",["lxd",juju_machine.all_machines["103"].machine_id])
-  constraints = "spaces=oam"
-}
-resource "juju_machine" "keystone-2" {
-  model       = var.model-name
-  placement   = join(":",["lxd",juju_machine.all_machines["104"].machine_id])
-  constraints = "spaces=oam"
-}
-resource "juju_machine" "keystone-3" {
-  model       = var.model-name
-  placement   = join(":",["lxd",juju_machine.all_machines["105"].machine_id])
+  placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids[count.index+var.num_units]].machine_id])
   constraints = "spaces=oam"
 }
 
@@ -24,12 +15,11 @@ resource "juju_application" "keystone" {
     channel  = var.openstack-channel
   }
 
-  units = 3
+  units = var.num_units
 
-  placement = "${join(",",sort([
-    juju_machine.keystone-1.machine_id,
-    juju_machine.keystone-2.machine_id,
-    juju_machine.keystone-3.machine_id,
+  placement = "${join(",", sort([
+    for index, _ in slice(var.controller_ids, var.num_units, length(var.controller_ids)) : 
+        juju_machine.keystone[index].machine_id
   ]))}"
 
   endpoint_bindings = [{
@@ -66,7 +56,7 @@ resource "juju_application" "keystone-mysql-router" {
 
   charm {
     name = "mysql-router"
-    channel = "8.0/stable"
+    channel = var.mysql-router-channel
   }
 
   units = 0
@@ -93,7 +83,7 @@ resource "juju_application" "hacluster-keystone" {
 
   charm {
     name    = "hacluster"
-    channel = "2.0.3/stable"
+    channel = var.hacluster-channel
   }
 
   units = 0
