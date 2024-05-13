@@ -13,7 +13,7 @@ resource "juju_application" "controller-server" {
   units = length(var.controller_ids)
 
   placement = "${join(",", sort([
-    for index, _ in var.controller_ids :
+    for index in var.controller_ids :
       juju_machine.all_machines[index].machine_id
   ]))}"
 }

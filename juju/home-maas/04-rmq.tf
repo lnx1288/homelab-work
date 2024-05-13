@@ -1,7 +1,7 @@
 resource "juju_machine" "rmq" {
   count       = var.num_units
   model       = var.model-name
-  placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids_high[count.index+var.num_units]].machine_id])
+  placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids[count.index+var.num_units]].machine_id])
   constraints = "spaces=oam"
 }
 

@@ -1,7 +1,7 @@
 resource "juju_machine" "vault" {
   count       = var.num_units
   model       = var.model-name
-  placement   = join(":",["lxd",juju_machine.all_machines[var.sdn_ids[count.index+var.num_units]].machine_id])
+  placement   = join(":",["lxd",juju_machine.all_machines[var.sdn_ids[count.index]].machine_id])
   constraints = "spaces=oam"
 }
 
@@ -76,7 +76,7 @@ resource "juju_application" "hacluster-vault" {
 resource "juju_machine" "etcd" {
   count       = var.num_units
   model       = var.model-name
-  placement   = join(":",["lxd",juju_machine.all_machines[var.sdn_ids[count.index+var.num_units]].machine_id])
+  placement   = join(":",["lxd",juju_machine.all_machines[var.sdn_ids[count.index]].machine_id])
   constraints = "spaces=oam"
 }
 

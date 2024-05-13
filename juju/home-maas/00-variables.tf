@@ -15,11 +15,6 @@ variable "controller_ids" {
              "103", "104", "105"]
 }
 
-variable "controller_ids_high" {
-  type    = list(string)
-  default = ["103", "104", "105"]
-}
-
 variable "compute_ids" {
   type    = list(string)
   default = ["1000", "1001", "1002", "1003",
