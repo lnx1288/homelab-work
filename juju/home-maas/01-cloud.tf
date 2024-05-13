@@ -9,7 +9,7 @@ resource "juju_model" "openstack" {
     cloudinit-userdata = file("user-data.yaml")
 
     apt-mirror = "http://${var.apt_mirror}/archive.ubuntu.com/ubuntu"
-    lxd-snap-channel = var.lxd_snap_channel
+    lxd-snap-channel = var.lxd-snap-channel
 
     container-image-metadata-url = "http://${var.apt_mirror}/lxd/"
     container-image-stream = "released"

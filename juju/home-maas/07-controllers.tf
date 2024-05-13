@@ -25,8 +25,8 @@ resource "juju_application" "sysconfig-control" {
 
   charm {
     name     = "sysconfig"
-    channel  = var.sysconfig_compute_channel
-    revision = var.sysconfig_compute_revision
+    channel  = var.sysconfig_channel
+    revision = var.sysconfig_revision
   }
 
   units = 0

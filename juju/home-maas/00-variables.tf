@@ -1,32 +1,32 @@
 ######## vars to change as per env
-variable "cloud" {
+variable cloud {
     type = string
     default = "home-maas"
 }
 
-variable "num_units" {
+variable num_units {
     type = number
     default = 3
 }
 
-variable "controller_ids" {
+variable controller_ids {
   type    = list(string)
   default = ["100", "101", "102",
              "103", "104", "105"]
 }
 
-variable "compute_ids" {
+variable compute_ids {
   type    = list(string)
   default = ["1000", "1001", "1002", "1003",
              "1004", "1005", "1006", "1007"]
 }
 
-variable "sdn_ids" {
+variable sdn_ids {
   type    = list(string)
   default = ["400", "401", "402"]
 }
 
-variable "apt_mirror" {
+variable apt_mirror {
     type = string
     default = "192.168.1.12"
 }
@@ -39,7 +39,7 @@ variable "machines" {
   }))
 }
 
-variable "model-name" {
+variable model-name {
     type = string
     default = "openstack"
 }
@@ -89,17 +89,17 @@ variable ceph-channel {
     default = "octopus/stable"
 }
 
-variable "lxd_snap_channel" {
+variable lxd-snap-channel {
     type = string
     default = "5.0/stable"
 }
 
-variable "sysconfig_compute_channel" {
+variable "sysconfig_channel" {
     type = string
     default = "latest/stable"
 }
 
-variable "sysconfig_compute_revision" {
+variable "sysconfig_revision" {
     type = string
     default = "19"
 }
@@ -258,4 +258,3 @@ variable expected-mon-count {
     type = number
     default = 3
 }
-
