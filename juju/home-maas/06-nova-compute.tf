@@ -34,6 +34,8 @@ resource "juju_application" "nova-compute-kvm" {
        virt-type              = "kvm"
        customize-failure-domain = var.customize-failure-domain
        reserved-host-memory   = var.reserved-host-memory
+       cpu-allocation-ratio   = var.cpu-allocation-ratio
+       ram-allocation-ratio   = var.ram-allocation-ratio
        #cpu-mode               = "custom"
        #cpu-model              = "EPYC-IBPB"
        #cpu-model-extra-flags  = "svm,pcid"

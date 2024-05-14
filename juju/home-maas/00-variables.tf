@@ -101,7 +101,7 @@ variable "sysconfig_channel" {
 
 variable "sysconfig_revision" {
     type = string
-    default = "19"
+    default = "22"
 }
 
 variable "ubuntu_channel" {
