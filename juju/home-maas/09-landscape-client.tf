@@ -72,47 +72,8 @@ resource "juju_application" "landscape-client" {
   }
 }
 
-variable "openstack_services" {
-  type    = list(string)
-  default = [
-    "ceilometer",
-    "ceph-mon",
-    "ceph-radosgw",
-    "cinder",
-    "glance",
-    "gnocchi",
-    "heat",
-    "keystone",
-    "memcached",
-    "mysql-innodb-cluster",
-    "neutron-api",
-    "neutron-gateway",
-    "nova-cloud-controller",
-    "openstack-dashboard",
-    "placement",
-    "rabbitmq-server",
-    "vault",
-  ]
-}
-
-
-resource "juju_integration" "landscape-nova-compute-kvm" {
-
-  model = var.model-name
-
-  application {
-    name     = juju_application.landscape-client.name
-    endpoint = "container"
-  }
-
-  application {
-    name     = juju_application.nova-compute-kvm.name
-    endpoint = "juju-info"
-  }
-}
-
 resource "juju_integration" "landscape-client-integration" {
-  for_each = toset(var.openstack_services)
+  for_each = toset(var.all_services)
 
   model = var.model-name
 

@@ -31,6 +31,33 @@ variable apt_mirror {
     default = "192.168.1.12"
 }
 
+variable "all_services" {
+  type    = list(string)
+  default = [
+    "easyrsa",
+    "etcd",
+    "ceilometer",
+    "ceph-mon",
+#    "ceph-osd",
+    "ceph-radosgw",
+    "cinder",
+    "glance",
+    "gnocchi",
+    "heat",
+    "keystone",
+    "memcached",
+    "mysql-innodb-cluster",
+    "neutron-api",
+    "neutron-gateway",
+    "nova-compute-kvm",
+    "nova-cloud-controller",
+    "openstack-dashboard",
+    "placement",
+    "rabbitmq-server",
+    "vault",
+  ]
+}
+
 ######## vars unlikely to be changed
 variable "machines" {
   type = list(object({
