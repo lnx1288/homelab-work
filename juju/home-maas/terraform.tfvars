@@ -20,6 +20,15 @@ machines = [
   {machine_id=1007,constraints="tags=compute,asrock04"},
 ]
 
+lma-machines = [
+  {machine_id=200,constraints="tags=compute,asrock01"},
+  {machine_id=201,constraints="tags=compute,asrock04"},
+  {machine_id=202,constraints="tags=compute,asrock02"},
+  {machine_id=300,constraints="tags=compute,asrock04",base="ubuntu@18.04"},
+  {machine_id=301,constraints="tags=compute,asrock03",base="ubuntu@18.04"},
+  {machine_id=302,constraints="tags=compute,asrock01",base="ubuntu@18.04"},
+]
+
 osd-devices    = "/dev/sdb /dev/sdc"
 
 nagios-context = "arif-nc01"

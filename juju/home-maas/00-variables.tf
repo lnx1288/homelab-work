@@ -63,12 +63,26 @@ variable "machines" {
   type = list(object({
     machine_id = number
     constraints = string
+    base = optional(string)
+  }))
+}
+
+variable "lma-machines" {
+  type = list(object({
+    machine_id = number
+    constraints = string
+    base = optional(string)
   }))
 }
 
 variable model-name {
     type = string
     default = "openstack"
+}
+
+variable lma-model-name {
+    type = string
+    default = "lma"
 }
 
 variable openstack-origin {
