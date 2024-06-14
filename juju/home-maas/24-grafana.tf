@@ -29,4 +29,8 @@ resource "juju_application" "grafana" {
   }
 }
 
-#- [ "graylog:mongodb", "graylog-mongodb:database" ]
+resource "juju_offer" "grafana" {
+  model            = var.lma-model-name
+  application_name = juju_application.grafana.name
+  endpoint         = "dashboards"
+}
