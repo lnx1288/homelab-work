@@ -1,0 +1,43 @@
+apt:
+  primary:
+    - arches: [amd64]
+      uri: http://192.168.1.12/archive.ubuntu.com/ubuntu
+write_files:
+- owner: root:root
+  path: /root/99-post-juju.yaml
+  permissions: '0644'
+  content: |
+    network:
+      version: 2
+      ethernets:
+        ens3:
+          link-local: []
+        ens4:
+          link-local: []
+        ens5:
+          link-local: []
+        ens6:
+          link-local: []
+        ens7:
+          link-local: []
+        ens8:
+          link-local: []
+        ens9:
+          link-local: []
+- owner: root:root
+  path: /etc/systemd/network/99-default.link
+  permissions: '0644'
+  content: |
+    [Link]
+    NamePolicy=keep kernel database onboard path slot
+preruncmd:
+  - locale-gen en_GB.UTF-8; update-locale
+  - "systemd-detect-virt --container && rm -rf /root/99-post-juju.yaml"
+  - "systemd-detect-virt --container && sudo snap remove --purge lxd"
+  - "! systemd-detect-virt --container && mv /root/99-post-juju.yaml /etc/netplan/99-post-juju.yaml"
+  - "! systemd-detect-virt --container && sudo lxc profile set default security.nesting true"
+  - sudo netplan apply
+  - "! systemd-detect-virt --container && update-initramfs -u -k all"
+snap:
+  commands:
+    "00": systemctl restart snapd
