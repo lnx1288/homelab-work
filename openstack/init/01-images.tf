@@ -21,3 +21,15 @@ resource "openstack_images_image_v2" "focal-raw" {
   disk_format      = "raw"
   visibility       = "public"
 }
+
+resource "openstack_images_image_v2" "win2k12-r2-raw" {
+  name             = "win2k12-r12-raw"
+  local_file_path  = "/home/arif/images/windows_server_2012_r2_standard_eval_kvm_20170321.img"
+  container_format = "bare"
+  disk_format      = "raw"
+  visibility       = "public"
+  properties = {
+    "hypervisor_type" = "QEMU"
+    "os_type" = "windows"
+  }
+}
