@@ -54,23 +54,6 @@ resource "juju_application" "nova-compute-kvm" {
   }
 }
 
-resource "juju_application" "ceilometer-agent" {
-  name = "ceilometer-agent"
-
-  model = var.model-name
-
-  charm {
-    name     = "ceilometer-agent"
-    channel  = var.openstack-channel
-  }
-
-  units = 0
-
-  config = {
-    use-internal-endpoints = "true"
-  }
-}
-
 resource "juju_application" "neutron-openvswitch" {
   name = "neutron-openvswitch"
 
@@ -118,21 +101,6 @@ resource "juju_application" "sysconfig-compute" {
       enable-pti   = "on"
       update-grub  = "true"
       enable-tsx   = "true"
-  }
-}
-
-resource "juju_integration" "compute-ceilometer" {
-
-  model = var.model-name
-
-  application {
-    name     = juju_application.nova-compute-kvm.name
-    endpoint = "nova-ceilometer"
-  }
-
-  application {
-    name     = juju_application.ceilometer-agent.name
-    endpoint = "nova-ceilometer"
   }
 }
 
@@ -217,21 +185,6 @@ resource "juju_integration" "neutron-ovs-rmq" {
 
   application {
     name     = juju_application.neutron-openvswitch.name
-    endpoint = "amqp"
-  }
-
-  application {
-    name     = juju_application.rabbitmq-server.name
-    endpoint = "amqp"
-  }
-}
-
-resource "juju_integration" "ceilometer-agent-rmq" {
-
-  model = var.model-name
-
-  application {
-    name     = juju_application.ceilometer-agent.name
     endpoint = "amqp"
   }
 
