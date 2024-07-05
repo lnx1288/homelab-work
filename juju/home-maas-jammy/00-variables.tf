@@ -36,19 +36,19 @@ variable "all_services" {
   default = [
     "easyrsa",
     "etcd",
-    "ceilometer",
+#    "ceilometer",
     "ceph-mon",
 #    "ceph-osd",
     "ceph-radosgw",
     "cinder",
     "glance",
-    "gnocchi",
+#    "gnocchi",
     "heat",
     "keystone",
     "memcached",
     "mysql-innodb-cluster",
     "neutron-api",
-    "neutron-gateway",
+#    "neutron-gateway",
     "nova-compute-kvm",
     "nova-cloud-controller",
     "openstack-dashboard",
@@ -63,12 +63,26 @@ variable "machines" {
   type = list(object({
     machine_id = number
     constraints = string
+    base = optional(string)
+  }))
+}
+
+variable "lma-machines" {
+  type = list(object({
+    machine_id = number
+    constraints = string
+    base = optional(string)
   }))
 }
 
 variable model-name {
     type = string
     default = "openstack"
+}
+
+variable lma-model-name {
+    type = string
+    default = "lma"
 }
 
 variable openstack-origin {
@@ -177,13 +191,13 @@ variable customize-failure-domain {
 }
 
 variable reserved-host-memory {
-    type = number
-    default = 512
+    type = string
+    default = "512"
 }
 
 variable worker-multiplier {
-    type = number
-    default = 0.25
+    type = string
+    default = "0.25"
 }
 
 variable bridge-mappings {
@@ -207,8 +221,8 @@ variable nagios-context {
 }
 
 variable mysql-connections {
-    type = number
-    default = 4000
+    type = string
+    default = "4000"
 }
 
 variable mysql-tuning-level {
@@ -282,13 +296,13 @@ variable external-network-gateway {
 }
 
 variable cpu-allocation-ratio {
-    type = number
-    default = 16.0
+    type = string
+    default = "16.0"
 }
 
 variable ram-allocation-ratio {
-    type = number
-    default = 2.0
+    type = string
+    default = "2.0"
 }
 
 variable ntp-source {
@@ -302,11 +316,11 @@ variable external-network-cidr {
 }
 
 variable expected-osd-count {
-    type = number
-    default = 0
+    type = string
+    default = "0"
 }
 
 variable expected-mon-count {
-    type = number
-    default = 3
+    type = string
+    default = "3"
 }

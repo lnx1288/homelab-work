@@ -20,12 +20,18 @@ machines = [
   {machine_id=1007,constraints="tags=compute,asrock04"},
 ]
 
+lma-machines = [
+  {machine_id=200,constraints="tags=compute,asrock01",base="ubuntu@20.04"},
+  {machine_id=201,constraints="tags=compute,asrock04",base="ubuntu@20.04"},
+  {machine_id=202,constraints="tags=compute,asrock02",base="ubuntu@20.04"},
+]
+
 osd-devices    = "/dev/sdb /dev/sdc"
 
 nagios-context = "arif-nc01"
 
-ram-allocation-ratio = 1.0
-cpu-allocation-ratio = 2.0
+ram-allocation-ratio = "1.0"
+cpu-allocation-ratio = "2.0"
 
 oam-space          = "oam"
 admin-space        = "oam"
@@ -35,8 +41,8 @@ ceph-public-space  = "ceph-access"
 ceph-cluster-space = "ceph-replica"
 overlay-space      = "overlay"
 
-expected-osd-count = 12
-expected-mon-count = 3
+expected-osd-count = "12"
+expected-mon-count = "3"
 
 ntp-source               = "192.168.1.11"
 external-network-cidr    = "192.168.1.0/24"
