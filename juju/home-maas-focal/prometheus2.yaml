@@ -1,0 +1,8 @@
+applications:
+  prometheus:
+    charm: ch:prometheus2
+    channel: latest/stable
+    series: focal
+    bindings:
+      "": oam
+    num_units: 0

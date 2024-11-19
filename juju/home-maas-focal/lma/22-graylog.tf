@@ -1,7 +1,7 @@
 resource "juju_application" "graylog" {
   name = "graylog"
 
-  model = var.lma-model-name
+  model = juju_model.lma.name
 
   charm {
     name     = "graylog"
@@ -26,7 +26,7 @@ resource "juju_application" "graylog" {
 }
 
 resource "juju_machine" "graylog-mongodb" {
-  model       = var.lma-model-name
+  model       = juju_model.lma.name
   placement   = join(":", ["lxd", juju_machine.lma_machines["200"].machine_id])
   constraints = "spaces=oam"
 }
@@ -35,7 +35,7 @@ resource "juju_machine" "graylog-mongodb" {
 resource "juju_application" "graylog-mongodb" {
   name = "graylog-mongodb"
 
-  model = var.lma-model-name
+  model = juju_model.lma.name
 
   charm {
     name     = "mongodb"
@@ -58,7 +58,7 @@ resource "juju_application" "graylog-mongodb" {
 
 resource "juju_integration" "graylog-mongodb" {
 
-  model = var.lma-model-name
+  model = juju_model.lma.name
 
   application {
     name     = juju_application.graylog.name
@@ -72,7 +72,7 @@ resource "juju_integration" "graylog-mongodb" {
 }
 
 resource "juju_offer" "graylog" {
-  model            = var.lma-model-name
+  model            = juju_model.lma.name
   application_name = juju_application.graylog.name
   endpoint         = "beats"
 }

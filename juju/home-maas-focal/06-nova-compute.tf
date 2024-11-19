@@ -1,7 +1,7 @@
 resource "juju_application" "nova-compute-kvm" {
   name = "nova-compute-kvm"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "nova-compute"
@@ -57,7 +57,7 @@ resource "juju_application" "nova-compute-kvm" {
 resource "juju_application" "neutron-openvswitch" {
   name = "neutron-openvswitch"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "neutron-openvswitch"
@@ -85,7 +85,7 @@ resource "juju_application" "neutron-openvswitch" {
 resource "juju_application" "sysconfig-compute" {
   name = "sysconfig-compute"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "sysconfig"
@@ -106,7 +106,7 @@ resource "juju_application" "sysconfig-compute" {
 
 resource "juju_integration" "compute-ovs" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.neutron-openvswitch.name
@@ -121,7 +121,7 @@ resource "juju_integration" "compute-ovs" {
 
 resource "juju_integration" "compute-sysconfig" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.nova-compute-kvm.name
@@ -136,7 +136,7 @@ resource "juju_integration" "compute-sysconfig" {
 
 resource "juju_integration" "compute-ceph-mon" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.nova-compute-kvm.name
@@ -151,7 +151,7 @@ resource "juju_integration" "compute-ceph-mon" {
 
 resource "juju_integration" "neutron-api-ovs" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.neutron-openvswitch.name
@@ -166,7 +166,7 @@ resource "juju_integration" "neutron-api-ovs" {
 
 resource "juju_integration" "nova-compute-rmq" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.nova-compute-kvm.name
@@ -181,7 +181,7 @@ resource "juju_integration" "nova-compute-rmq" {
 
 resource "juju_integration" "neutron-ovs-rmq" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.neutron-openvswitch.name
@@ -196,7 +196,7 @@ resource "juju_integration" "neutron-ovs-rmq" {
 
 resource "juju_integration" "nova-compute-glance" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.nova-compute-kvm.name
@@ -211,7 +211,7 @@ resource "juju_integration" "nova-compute-glance" {
 
 resource "juju_integration" "nova-compute-cinder-ceph" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.nova-compute-kvm.name

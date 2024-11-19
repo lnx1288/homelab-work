@@ -1,6 +1,6 @@
 resource "juju_machine" "gnocchi" {
   count       = var.num_units
-  model       = var.model-name
+  model       = juju_model.openstack.name
   placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids[count.index+var.num_units]].machine_id])
   constraints = "spaces=oam,ceph-access"
 }
@@ -8,7 +8,7 @@ resource "juju_machine" "gnocchi" {
 resource "juju_application" "gnocchi" {
   name = "gnocchi"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "gnocchi"
@@ -56,7 +56,7 @@ resource "juju_application" "gnocchi" {
 resource "juju_application" "gnocchi-mysql-router" {
   name = "gnocchi-mysql-router"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name    = "mysql-router"
@@ -83,7 +83,7 @@ resource "juju_application" "gnocchi-mysql-router" {
 resource "juju_application" "hacluster-gnocchi" {
   name = "hacluster-gnocchi"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "hacluster"
@@ -96,7 +96,7 @@ resource "juju_application" "hacluster-gnocchi" {
 resource "juju_integration" "gnocchi-ha" {
 
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.gnocchi.name
@@ -111,7 +111,7 @@ resource "juju_integration" "gnocchi-ha" {
 
 resource "juju_integration" "gnocchi-mysql" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.gnocchi.name
@@ -126,7 +126,7 @@ resource "juju_integration" "gnocchi-mysql" {
 
 resource "juju_integration" "gnocchi-db" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.gnocchi-mysql-router.name
@@ -141,7 +141,7 @@ resource "juju_integration" "gnocchi-db" {
 
 resource "juju_integration" "gnocchi-rmq" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.gnocchi.name
@@ -156,7 +156,7 @@ resource "juju_integration" "gnocchi-rmq" {
 
 resource "juju_integration" "gnocchi-keystone" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.gnocchi.name
@@ -171,7 +171,7 @@ resource "juju_integration" "gnocchi-keystone" {
 
 resource "juju_integration" "gnocchi-ceph" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.gnocchi.name
@@ -186,7 +186,7 @@ resource "juju_integration" "gnocchi-ceph" {
 
 resource "juju_integration" "gnocchi-memcache" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.gnocchi.name
@@ -201,7 +201,7 @@ resource "juju_integration" "gnocchi-memcache" {
 
 resource "juju_integration" "gnocchi-ceilometer" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.gnocchi.name

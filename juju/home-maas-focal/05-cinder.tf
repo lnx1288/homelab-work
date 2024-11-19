@@ -1,6 +1,6 @@
 resource "juju_machine" "cinder" {
   count       = var.num_units
-  model       = var.model-name
+  model       = juju_model.openstack.name
   placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids[count.index]].machine_id])
   constraints = "spaces=oam"
 }
@@ -8,7 +8,7 @@ resource "juju_machine" "cinder" {
 resource "juju_application" "cinder" {
   name = "cinder"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "cinder"
@@ -53,7 +53,7 @@ resource "juju_application" "cinder" {
 resource "juju_application" "cinder-ceph" {
   name = "cinder-ceph"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name    = "cinder-ceph"
@@ -71,7 +71,7 @@ resource "juju_application" "cinder-ceph" {
 resource "juju_application" "cinder-mysql-router" {
   name = "cinder-mysql-router"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name    = "mysql-router"
@@ -98,7 +98,7 @@ resource "juju_application" "cinder-mysql-router" {
 resource "juju_application" "hacluster-cinder" {
   name = "hacluster-cinder"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "hacluster"
@@ -110,7 +110,7 @@ resource "juju_application" "hacluster-cinder" {
 
 resource "juju_integration" "cinder-ha" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.cinder.name
@@ -125,7 +125,7 @@ resource "juju_integration" "cinder-ha" {
 
 resource "juju_integration" "cinder-mysql" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.cinder.name
@@ -140,7 +140,7 @@ resource "juju_integration" "cinder-mysql" {
 
 resource "juju_integration" "cinder-db" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.cinder-mysql-router.name
@@ -155,7 +155,7 @@ resource "juju_integration" "cinder-db" {
 
 resource "juju_integration" "cinder-rmq" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.cinder.name
@@ -170,7 +170,7 @@ resource "juju_integration" "cinder-rmq" {
 
 resource "juju_integration" "cinder-keystone" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.cinder.name
@@ -185,7 +185,7 @@ resource "juju_integration" "cinder-keystone" {
 
 resource "juju_integration" "cinder-ceph" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.cinder.name
@@ -200,7 +200,7 @@ resource "juju_integration" "cinder-ceph" {
 
 resource "juju_integration" "cinder-ceph-mon" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.cinder-ceph.name
@@ -215,7 +215,7 @@ resource "juju_integration" "cinder-ceph-mon" {
 
 resource "juju_integration" "cinder-ceph-cinder" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.cinder-ceph.name

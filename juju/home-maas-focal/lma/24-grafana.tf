@@ -1,5 +1,5 @@
 resource "juju_machine" "grafana" {
-  model       = var.lma-model-name
+  model       = juju_model.lma.name
   placement   = join(":", ["lxd", juju_machine.lma_machines["201"].machine_id])
   constraints = "spaces=oam"
 }
@@ -7,7 +7,7 @@ resource "juju_machine" "grafana" {
 resource "juju_application" "grafana" {
   name = "grafana"
 
-  model = var.lma-model-name
+  model = juju_model.lma.name
 
   charm {
     name     = "grafana"
@@ -30,7 +30,7 @@ resource "juju_application" "grafana" {
 }
 
 resource "juju_offer" "grafana" {
-  model            = var.lma-model-name
+  model            = juju_model.lma.name
   application_name = juju_application.grafana.name
   endpoint         = "dashboards"
 }

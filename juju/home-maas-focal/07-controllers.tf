@@ -1,7 +1,7 @@
 resource "juju_application" "controller-server" {
   name = "controller-server"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "ubuntu"
@@ -21,7 +21,7 @@ resource "juju_application" "controller-server" {
 resource "juju_application" "sysconfig-control" {
   name = "sysconfig-control"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "sysconfig"
@@ -41,7 +41,7 @@ resource "juju_application" "sysconfig-control" {
 
 resource "juju_integration" "control-sysconfig" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.sysconfig-control.name

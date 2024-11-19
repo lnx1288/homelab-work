@@ -1,6 +1,6 @@
 resource "juju_machine" "glance" {
   count       = var.num_units
-  model       = var.model-name
+  model       = juju_model.openstack.name
   placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids[count.index]].machine_id])
   constraints = "spaces=oam"
 }
@@ -8,7 +8,7 @@ resource "juju_machine" "glance" {
 resource "juju_application" "glance" {
   name = "glance"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "glance"
@@ -51,7 +51,7 @@ resource "juju_application" "glance" {
 resource "juju_application" "glance-mysql-router" {
   name = "glance-mysql-router"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name    = "mysql-router"
@@ -78,7 +78,7 @@ resource "juju_application" "glance-mysql-router" {
 resource "juju_application" "hacluster-glance" {
   name = "hacluster-glance"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "hacluster"
@@ -91,7 +91,7 @@ resource "juju_application" "hacluster-glance" {
 resource "juju_integration" "glance-ha" {
 
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.glance.name
@@ -106,7 +106,7 @@ resource "juju_integration" "glance-ha" {
 
 resource "juju_integration" "glance-mysql" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.glance.name
@@ -121,7 +121,7 @@ resource "juju_integration" "glance-mysql" {
 
 resource "juju_integration" "glance-db" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.glance-mysql-router.name
@@ -136,7 +136,7 @@ resource "juju_integration" "glance-db" {
 
 resource "juju_integration" "glance-rmq" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.glance.name
@@ -151,7 +151,7 @@ resource "juju_integration" "glance-rmq" {
 
 resource "juju_integration" "glance-keystone" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.glance.name
@@ -166,7 +166,7 @@ resource "juju_integration" "glance-keystone" {
 
 resource "juju_integration" "glance-ceph" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.glance.name
@@ -181,7 +181,7 @@ resource "juju_integration" "glance-ceph" {
 
 resource "juju_integration" "glance-cinder" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.glance.name

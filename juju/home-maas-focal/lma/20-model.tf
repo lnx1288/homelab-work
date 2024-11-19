@@ -6,7 +6,7 @@ resource "juju_model" "lma" {
   }
 
   config = {
-    apt-mirror = "http://${var.apt_mirror}/archive.ubuntu.com/ubuntu"
+    apt-mirror = "http://archive.ubuntu.com/ubuntu"
     lxd-snap-channel = var.lxd-snap-channel
 
     container-image-metadata-url = "http://${var.apt_mirror}/lxd/"

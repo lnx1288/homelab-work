@@ -1,6 +1,6 @@
 resource "juju_machine" "mysql" {
   count       = var.num_units
-  model       = var.model-name
+  model       = juju_model.openstack.name
   placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids[count.index]].machine_id])
   constraints = "spaces=oam"
 }
@@ -8,7 +8,7 @@ resource "juju_machine" "mysql" {
 resource "juju_application" "mysql-innodb-cluster" {
   name = "mysql-innodb-cluster"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "mysql-innodb-cluster"

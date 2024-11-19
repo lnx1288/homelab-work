@@ -1,13 +1,11 @@
-resource "juju_model" "openstack" {
-  name = var.openstack-model-name
+resource "juju_model" "infra" {
+  name = var.infra-model-name
 
   cloud {
     name = var.cloud
   }
 
   config = {
-    cloudinit-userdata = file("user-data.yaml")
-
     apt-mirror = "http://${var.apt_mirror}/archive.ubuntu.com/ubuntu"
     lxd-snap-channel = var.lxd-snap-channel
 

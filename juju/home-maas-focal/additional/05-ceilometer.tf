@@ -1,6 +1,6 @@
 resource "juju_machine" "ceilometer" {
   count       = var.num_units
-  model       = var.model-name
+  model       = juju_model.openstack.name
   placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids[count.index+var.num_units]].machine_id])
   constraints = "spaces=oam"
 }
@@ -8,7 +8,7 @@ resource "juju_machine" "ceilometer" {
 resource "juju_application" "ceilometer" {
   name = "ceilometer"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "ceilometer"
@@ -44,7 +44,7 @@ resource "juju_application" "ceilometer" {
 
 resource "juju_integration" "ceilometer-rmq" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.ceilometer.name
@@ -59,7 +59,7 @@ resource "juju_integration" "ceilometer-rmq" {
 
 resource "juju_integration" "ceilometer-keystone" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.ceilometer.name
@@ -74,7 +74,7 @@ resource "juju_integration" "ceilometer-keystone" {
 
 resource "juju_integration" "ceilometer-ceil-agent" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.ceilometer.name

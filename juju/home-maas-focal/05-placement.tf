@@ -1,6 +1,6 @@
 resource "juju_machine" "placement" {
   count       = var.num_units
-  model       = var.model-name
+  model       = juju_model.openstack.name
   placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids[count.index+var.num_units]].machine_id])
   constraints = "spaces=oam"
 }
@@ -8,7 +8,7 @@ resource "juju_machine" "placement" {
 resource "juju_application" "placement" {
   name = "placement"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "placement"
@@ -48,7 +48,7 @@ resource "juju_application" "placement" {
 resource "juju_application" "placement-mysql-router" {
   name = "placement-mysql-router"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name    = "mysql-router"
@@ -75,7 +75,7 @@ resource "juju_application" "placement-mysql-router" {
 resource "juju_application" "hacluster-placement" {
   name = "hacluster-placement"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "hacluster"
@@ -87,7 +87,7 @@ resource "juju_application" "hacluster-placement" {
 
 resource "juju_integration" "placement-ha" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.placement.name
@@ -102,7 +102,7 @@ resource "juju_integration" "placement-ha" {
 
 resource "juju_integration" "placement-mysql" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.placement.name
@@ -117,7 +117,7 @@ resource "juju_integration" "placement-mysql" {
 
 resource "juju_integration" "placement-db" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.placement-mysql-router.name
@@ -132,7 +132,7 @@ resource "juju_integration" "placement-db" {
 
 resource "juju_integration" "placement-keystone" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.placement.name
@@ -147,7 +147,7 @@ resource "juju_integration" "placement-keystone" {
 
 resource "juju_integration" "placement-nova" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.placement.name

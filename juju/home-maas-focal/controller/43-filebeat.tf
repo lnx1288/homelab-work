@@ -1,7 +1,7 @@
-resource "juju_application" "filebeat" {
+resource "juju_application" "filebeat-ctrl" {
   name = "filebeat"
 
-  model = juju_model.openstack.name
+  model = data.juju_model.controller.name
 
   charm {
     name     = "filebeat"
@@ -54,29 +54,27 @@ resource "juju_application" "filebeat" {
   }
 }
 
-resource "juju_integration" "filebeat-integration" {
-  for_each = toset(var.all_services)
+resource "juju_integration" "filebeat-ctrl-integration" {
 
-  model = juju_model.openstack.name
+  model = data.juju_model.controller.name
 
   application {
-    name     = juju_application.filebeat.name
+    name     = juju_application.filebeat-ctrl.name
     endpoint = "beats-host"
   }
 
   application {
-    name     = "${each.value}"
+    name     = juju_application.juju-server.name
     endpoint = "juju-info"
   }
 }
 
+resource "juju_integration" "filebeat-ctrl-graylog" {
 
-resource "juju_integration" "filebeat-graylog" {
-
-  model = juju_model.openstack.name
+  model = data.juju_model.controller.name
 
   application {
-    name     = juju_application.filebeat.name
+    name     = juju_application.filebeat-ctrl.name
     endpoint = "logstash"
   }
 

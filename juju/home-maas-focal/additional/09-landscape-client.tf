@@ -1,7 +1,7 @@
 resource "juju_application" "landscape-client-bionic" {
   name = "landscape-client-bionic"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "landscape-client"
@@ -47,7 +47,7 @@ resource "juju_application" "landscape-client-bionic" {
 resource "juju_application" "landscape-client" {
   name = "landscape-client"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "landscape-client"
@@ -75,7 +75,7 @@ resource "juju_application" "landscape-client" {
 resource "juju_integration" "landscape-client-integration" {
   for_each = toset(var.all_services)
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.landscape-client.name

@@ -1,6 +1,6 @@
 resource "juju_machine" "memcache" {
   count       = var.num_units
-  model       = var.model-name
+  model       = juju_model.openstack.name
   placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids[count.index]].machine_id])
   constraints = "spaces=oam"
 }
@@ -8,7 +8,7 @@ resource "juju_machine" "memcache" {
 resource "juju_application" "memcached" {
   name = "memcached"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name    = "memcached"
@@ -38,7 +38,7 @@ resource "juju_application" "memcached" {
 
 resource "juju_integration" "nova-cloud-controller-memcache" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.nova-cloud-controller.name

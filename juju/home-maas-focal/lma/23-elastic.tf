@@ -1,7 +1,7 @@
 resource "juju_application" "elasticsearch" {
   name = "elasticsearch"
 
-  model = var.lma-model-name
+  model = juju_model.lma.name
 
   charm {
     name     = "elasticsearch"
@@ -60,7 +60,7 @@ resource "juju_application" "elasticsearch" {
 
 resource "juju_integration" "graylog-elastic" {
 
-  model = var.lma-model-name
+  model = juju_model.lma.name
 
   application {
     name     = juju_application.graylog.name

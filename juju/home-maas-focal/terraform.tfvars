@@ -1,4 +1,4 @@
-model-name = "cpe-focal"
+openstack-model-name = "cpe-focal"
 
 machines = [
   {machine_id=100,constraints="tags=control,asrock01"},
@@ -27,6 +27,13 @@ lma-machines = [
   {machine_id=300,constraints="tags=compute,asrock04",base="ubuntu@18.04"},
   {machine_id=301,constraints="tags=compute,asrock03",base="ubuntu@18.04"},
   {machine_id=302,constraints="tags=compute,asrock01",base="ubuntu@18.04"},
+]
+
+infra-machines = [
+  {machine_id=0,name="asrock01"},
+  {machine_id=1,name="asrock02"},
+  {machine_id=2,name="asrock03"},
+  {machine_id=3,name="asrock04"},
 ]
 
 osd-devices    = "/dev/sdb /dev/sdc"
@@ -70,3 +77,5 @@ vips = {
   placement   = "10.0.1.223"
   radosgw     = "10.0.1.224"
 }
+
+etcd_channel = "1.29/stable"

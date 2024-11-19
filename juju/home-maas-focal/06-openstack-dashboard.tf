@@ -1,6 +1,6 @@
 resource "juju_machine" "openstack-dashboard" {
   count       = var.num_units
-  model       = var.model-name
+  model       = juju_model.openstack.name
   placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids[count.index]].machine_id])
   constraints = "spaces=oam,ceph-access"
 }
@@ -8,7 +8,7 @@ resource "juju_machine" "openstack-dashboard" {
 resource "juju_application" "openstack-dashboard" {
   name = "openstack-dashboard"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "openstack-dashboard"
@@ -47,7 +47,7 @@ resource "juju_application" "openstack-dashboard" {
 resource "juju_application" "openstack-dashboard-mysql-router" {
   name = "openstack-dashboard-mysql-router"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name    = "mysql-router"
@@ -74,7 +74,7 @@ resource "juju_application" "openstack-dashboard-mysql-router" {
 resource "juju_application" "hacluster-openstack-dashboard" {
   name = "hacluster-openstack-dashboard"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "hacluster"
@@ -86,7 +86,7 @@ resource "juju_application" "hacluster-openstack-dashboard" {
 
 resource "juju_integration" "openstack-dashboard-ha" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.openstack-dashboard.name
@@ -101,7 +101,7 @@ resource "juju_integration" "openstack-dashboard-ha" {
 
 resource "juju_integration" "openstack-dashboard-mysql" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.openstack-dashboard.name
@@ -116,7 +116,7 @@ resource "juju_integration" "openstack-dashboard-mysql" {
 
 resource "juju_integration" "openstack-dashboard-db" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.openstack-dashboard-mysql-router.name
@@ -131,7 +131,7 @@ resource "juju_integration" "openstack-dashboard-db" {
 
 resource "juju_integration" "openstack-dashboard-keystone" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.openstack-dashboard.name

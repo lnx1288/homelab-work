@@ -1,7 +1,7 @@
 resource "juju_application" "neutron-gateway" {
   name = "neutron-gateway"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "neutron-gateway"
@@ -29,7 +29,7 @@ resource "juju_application" "neutron-gateway" {
 
 resource "juju_machine" "neutron-api" {
   count       = var.num_units
-  model       = var.model-name
+  model       = juju_model.openstack.name
   placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids[count.index]].machine_id])
   constraints = "spaces=oam"
 }
@@ -37,7 +37,7 @@ resource "juju_machine" "neutron-api" {
 resource "juju_application" "neutron-api" {
   name = "neutron-api"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "neutron-api"
@@ -92,7 +92,7 @@ resource "juju_application" "neutron-api" {
 resource "juju_application" "neutron-mysql-router" {
   name = "neutron-mysql-router"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "mysql-router"
@@ -119,7 +119,7 @@ resource "juju_application" "neutron-mysql-router" {
 resource "juju_application" "hacluster-neutron" {
   name = "hacluster-neutron"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "hacluster"
@@ -131,7 +131,7 @@ resource "juju_application" "hacluster-neutron" {
 
 resource "juju_integration" "neutron-ha" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.neutron-api.name
@@ -146,7 +146,7 @@ resource "juju_integration" "neutron-ha" {
 
 resource "juju_integration" "neutron-mysql" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.neutron-api.name
@@ -161,7 +161,7 @@ resource "juju_integration" "neutron-mysql" {
 
 resource "juju_integration" "neutron-db" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.neutron-mysql-router.name
@@ -176,7 +176,7 @@ resource "juju_integration" "neutron-db" {
 
 resource "juju_integration" "neutron-keystone" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.neutron-api.name
@@ -191,7 +191,7 @@ resource "juju_integration" "neutron-keystone" {
 
 resource "juju_integration" "neutron-api-rmq" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.neutron-api.name
@@ -206,7 +206,7 @@ resource "juju_integration" "neutron-api-rmq" {
 
 resource "juju_integration" "neutron-gw-rmq" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.neutron-gateway.name

@@ -36,13 +36,13 @@ variable "all_services" {
   default = [
     "easyrsa",
     "etcd",
-    "ceilometer",
+#    "ceilometer",
     "ceph-mon",
 #    "ceph-osd",
     "ceph-radosgw",
     "cinder",
     "glance",
-    "gnocchi",
+#    "gnocchi",
     "heat",
     "keystone",
     "memcached",
@@ -75,7 +75,14 @@ variable "lma-machines" {
   }))
 }
 
-variable model-name {
+variable "infra-machines" {
+  type = list(object({
+    machine_id = number
+    name = string
+  }))
+}
+
+variable openstack-model-name {
     type = string
     default = "openstack"
 }
@@ -83,6 +90,11 @@ variable model-name {
 variable lma-model-name {
     type = string
     default = "lma"
+}
+
+variable infra-model-name {
+    type = string
+    default = "infra"
 }
 
 variable openstack-origin {
@@ -167,7 +179,7 @@ variable "etcd_channel" {
 
 variable "etcd_revision" {
     type = string
-    default = "583"
+    default = ""
 }
 
 variable "easyrsa_channel" {

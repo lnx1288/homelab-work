@@ -1,12 +1,12 @@
-resource "juju_application" "filebeat" {
+resource "juju_application" "filebeat-infra" {
   name = "filebeat"
 
-  model = juju_model.openstack.name
+  model = juju_model.infra.name
 
   charm {
     name     = "filebeat"
     channel  = "latest/stable"
-    base     = var.default-base
+    base     = "ubuntu@22.04"
   }
 
   units = 0
@@ -54,29 +54,27 @@ resource "juju_application" "filebeat" {
   }
 }
 
-resource "juju_integration" "filebeat-integration" {
-  for_each = toset(var.all_services)
+resource "juju_integration" "filebeat-infra-integration" {
 
-  model = juju_model.openstack.name
+  model = juju_model.infra.name
 
   application {
-    name     = juju_application.filebeat.name
+    name     = juju_application.filebeat-infra.name
     endpoint = "beats-host"
   }
 
   application {
-    name     = "${each.value}"
+    name     = juju_application.infra-server.name
     endpoint = "juju-info"
   }
 }
 
+resource "juju_integration" "filebeat-infra-graylog" {
 
-resource "juju_integration" "filebeat-graylog" {
-
-  model = juju_model.openstack.name
+  model = juju_model.infra.name
 
   application {
-    name     = juju_application.filebeat.name
+    name     = juju_application.filebeat-infra.name
     endpoint = "logstash"
   }
 

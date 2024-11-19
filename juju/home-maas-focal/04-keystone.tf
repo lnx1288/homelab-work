@@ -1,6 +1,6 @@
 resource "juju_machine" "keystone" {
   count       = var.num_units
-  model       = var.model-name
+  model       = juju_model.openstack.name
   placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids[count.index+var.num_units]].machine_id])
   constraints = "spaces=oam"
 }
@@ -8,7 +8,7 @@ resource "juju_machine" "keystone" {
 resource "juju_application" "keystone" {
   name = "keystone"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "keystone"
@@ -52,7 +52,7 @@ resource "juju_application" "keystone" {
 resource "juju_application" "keystone-mysql-router" {
   name = "keystone-mysql-router"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name = "mysql-router"
@@ -79,7 +79,7 @@ resource "juju_application" "keystone-mysql-router" {
 resource "juju_application" "hacluster-keystone" {
   name = "hacluster-keystone"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name    = "hacluster"
@@ -91,7 +91,7 @@ resource "juju_application" "hacluster-keystone" {
 
 resource "juju_integration" "keystone-ha" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.keystone.name
@@ -106,7 +106,7 @@ resource "juju_integration" "keystone-ha" {
 
 resource "juju_integration" "keystone-mysql" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.keystone.name
@@ -121,7 +121,7 @@ resource "juju_integration" "keystone-mysql" {
 
 resource "juju_integration" "keystone-db" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.keystone-mysql-router.name

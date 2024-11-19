@@ -1,6 +1,6 @@
 resource "juju_machine" "rmq" {
   count       = var.num_units
-  model       = var.model-name
+  model       = juju_model.openstack.name
   placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids[count.index+var.num_units]].machine_id])
   constraints = "spaces=oam"
 }
@@ -8,7 +8,7 @@ resource "juju_machine" "rmq" {
 resource "juju_application" "rabbitmq-server" {
   name = "rabbitmq-server"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "rabbitmq-server"

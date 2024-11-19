@@ -1,7 +1,7 @@
-resource "juju_application" "telegraf" {
+resource "juju_application" "telegraf-ctrl" {
   name = "telegraf"
 
-  model = juju_model.openstack.name
+  model = data.juju_model.controller.name
 
   charm {
     name     = "telegraf"
@@ -62,32 +62,27 @@ resource "juju_application" "telegraf" {
 }
 
 
-locals {
-  physical_apps = ["ceph-osd", "neutron-gateway"]
-}
+resource "juju_integration" "telegraf-ctrl-integration" {
 
-resource "juju_integration" "telegraf-integration" {
-  for_each = toset(local.physical_apps)
-
-  model = juju_model.openstack.name
+  model = data.juju_model.controller.name
 
   application {
-    name     = juju_application.telegraf.name
+    name     = juju_application.telegraf-ctrl.name
     endpoint = "juju-info"
   }
 
   application {
-    name     = "${each.value}"
+    name     = juju_application.juju-server.name
     endpoint = "juju-info"
   }
 }
 
-resource "juju_integration" "telegraf-grafana" {
+resource "juju_integration" "telegraf-ctrl-grafana" {
 
-  model = juju_model.openstack.name
+  model = data.juju_model.controller.name
 
   application {
-    name     = juju_application.telegraf.name
+    name     = juju_application.telegraf-ctrl.name
     endpoint = "dashboards"
   }
 
@@ -96,12 +91,12 @@ resource "juju_integration" "telegraf-grafana" {
   }
 }
 
-resource "juju_integration" "telegraf-prometheus" {
+resource "juju_integration" "telegraf-ctrl-prometheus" {
 
-  model = juju_model.openstack.name
+  model = data.juju_model.controller.name
 
   application {
-    name     = juju_application.telegraf.name
+    name     = juju_application.telegraf-ctrl.name
     endpoint = "prometheus-client"
   }
 

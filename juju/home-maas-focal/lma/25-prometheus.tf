@@ -1,5 +1,5 @@
 resource "juju_machine" "prometheus" {
-  model       = var.lma-model-name
+  model       = juju_model.lma.name
   placement   = join(":", ["lxd", juju_machine.lma_machines["201"].machine_id])
   constraints = "spaces=oam"
 }
@@ -7,7 +7,7 @@ resource "juju_machine" "prometheus" {
 resource "juju_application" "prometheus" {
   name = "prometheus"
 
-  model = var.lma-model-name
+  model = juju_model.lma.name
 
   charm {
     name     = "prometheus2"
@@ -25,7 +25,7 @@ resource "juju_application" "prometheus" {
 }
 
 resource "juju_integration" "prometheus-grafana" {
-  model = var.lma-model-name
+  model = juju_model.lma.name
 
   application {
     name     = juju_application.prometheus.name
@@ -40,7 +40,7 @@ resource "juju_integration" "prometheus-grafana" {
 
 resource "juju_integration" "ceph-mon-prometheus" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.ceph-mon.name
@@ -53,7 +53,7 @@ resource "juju_integration" "ceph-mon-prometheus" {
 }
 
 resource "juju_offer" "prometheus" {
-  model            = var.lma-model-name
+  model            = juju_model.lma.name
   application_name = juju_application.prometheus.name
   endpoint         = "target"
 }

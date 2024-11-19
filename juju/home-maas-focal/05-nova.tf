@@ -1,6 +1,6 @@
 resource "juju_machine" "ncc" {
   count       = var.num_units
-  model       = var.model-name
+  model       = juju_model.openstack.name
   placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids[count.index+var.num_units]].machine_id])
   constraints = "spaces=oam"
 }
@@ -8,7 +8,7 @@ resource "juju_machine" "ncc" {
 resource "juju_application" "nova-cloud-controller" {
   name = "nova-cloud-controller"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "nova-cloud-controller"
@@ -59,7 +59,7 @@ resource "juju_application" "nova-cloud-controller" {
 resource "juju_application" "nova-cloud-controller-mysql-router" {
   name = "nova-cloud-controller-mysql-router"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name    = "mysql-router"
@@ -86,7 +86,7 @@ resource "juju_application" "nova-cloud-controller-mysql-router" {
 resource "juju_application" "hacluster-nova" {
   name = "hacluster-nova"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "hacluster"
@@ -98,7 +98,7 @@ resource "juju_application" "hacluster-nova" {
 
 resource "juju_integration" "nova-cloud-controller-ha" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.nova-cloud-controller.name
@@ -113,7 +113,7 @@ resource "juju_integration" "nova-cloud-controller-ha" {
 
 resource "juju_integration" "nova-cloud-controller-mysql" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.nova-cloud-controller.name
@@ -128,7 +128,7 @@ resource "juju_integration" "nova-cloud-controller-mysql" {
 
 resource "juju_integration" "nova-cloud-controller-db" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.nova-cloud-controller-mysql-router.name
@@ -143,7 +143,7 @@ resource "juju_integration" "nova-cloud-controller-db" {
 
 resource "juju_integration" "nova-cloud-controller-rmq" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.nova-cloud-controller.name
@@ -158,7 +158,7 @@ resource "juju_integration" "nova-cloud-controller-rmq" {
 
 resource "juju_integration" "nova-cloud-controller-keystone" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.nova-cloud-controller.name
@@ -173,7 +173,7 @@ resource "juju_integration" "nova-cloud-controller-keystone" {
 
 resource "juju_integration" "nova-cloud-controller-neutron" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.nova-cloud-controller.name
@@ -188,7 +188,7 @@ resource "juju_integration" "nova-cloud-controller-neutron" {
 
 resource "juju_integration" "nova-cloud-controller-nova-compute" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.nova-cloud-controller.name
@@ -202,7 +202,7 @@ resource "juju_integration" "nova-cloud-controller-nova-compute" {
 }
 resource "juju_integration" "nova-cloud-controller-glance" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.nova-cloud-controller.name

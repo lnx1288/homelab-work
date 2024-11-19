@@ -1,6 +1,6 @@
 resource "juju_machine" "heat" {
   count       = var.num_units
-  model       = var.model-name
+  model       = juju_model.openstack.name
   placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids[count.index]].machine_id])
   constraints = "spaces=oam"
 }
@@ -8,7 +8,7 @@ resource "juju_machine" "heat" {
 resource "juju_application" "heat" {
   name = "heat"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "heat"
@@ -51,7 +51,7 @@ resource "juju_application" "heat" {
 resource "juju_application" "heat-mysql-router" {
   name = "heat-mysql-router"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name    = "mysql-router"
@@ -78,7 +78,7 @@ resource "juju_application" "heat-mysql-router" {
 resource "juju_application" "hacluster-heat" {
   name = "hacluster-heat"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "hacluster"
@@ -90,7 +90,7 @@ resource "juju_application" "hacluster-heat" {
 
 resource "juju_integration" "heat-ha" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.heat.name
@@ -105,7 +105,7 @@ resource "juju_integration" "heat-ha" {
 
 resource "juju_integration" "heat-mysql" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.heat.name
@@ -120,7 +120,7 @@ resource "juju_integration" "heat-mysql" {
 
 resource "juju_integration" "heat-db" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.heat-mysql-router.name
@@ -135,7 +135,7 @@ resource "juju_integration" "heat-db" {
 
 resource "juju_integration" "heat-rmq" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.heat.name
@@ -150,7 +150,7 @@ resource "juju_integration" "heat-rmq" {
 
 resource "juju_integration" "heat-keystone" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.heat.name

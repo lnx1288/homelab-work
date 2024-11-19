@@ -1,6 +1,6 @@
 resource "juju_machine" "vault" {
   count       = var.num_units
-  model       = var.model-name
+  model       = juju_model.openstack.name
   placement   = join(":",["lxd",juju_machine.all_machines[var.sdn_ids[count.index]].machine_id])
   constraints = "spaces=oam"
 }
@@ -8,7 +8,7 @@ resource "juju_machine" "vault" {
 resource "juju_application" "vault" {
   name = "vault"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name    = "vault"
@@ -33,7 +33,7 @@ resource "juju_application" "vault" {
 resource "juju_application" "vault-mysql-router" {
   name = "vault-mysql-router"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name    = "mysql-router"
@@ -62,7 +62,7 @@ resource "juju_application" "vault-mysql-router" {
 resource "juju_application" "hacluster-vault" {
   name = "hacluster-vault"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "hacluster"
@@ -75,7 +75,7 @@ resource "juju_application" "hacluster-vault" {
 
 resource "juju_machine" "etcd" {
   count       = var.num_units
-  model       = var.model-name
+  model       = juju_model.openstack.name
   placement   = join(":",["lxd",juju_machine.all_machines[var.sdn_ids[count.index]].machine_id])
   constraints = "spaces=oam"
 }
@@ -83,13 +83,13 @@ resource "juju_machine" "etcd" {
 resource "juju_application" "etcd" {
   name = "etcd"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "etcd"
     channel  = var.etcd_channel
+    #revision = var.etcd_revision
     base     = var.default-base
-    revision = var.etcd_revision
   }
 
   placement = "${join(",",sort([
@@ -115,7 +115,7 @@ resource "juju_application" "etcd" {
 }
 
 resource "juju_machine" "easyrsa" {
-  model       = var.model-name
+  model       = juju_model.openstack.name
   placement   = join(":",["lxd",juju_machine.all_machines["402"].machine_id])
   constraints = "spaces=oam"
 }
@@ -123,7 +123,7 @@ resource "juju_machine" "easyrsa" {
 resource "juju_application" "easyrsa" {
   name = "easyrsa"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name    = "easyrsa"
@@ -140,7 +140,7 @@ resource "juju_application" "easyrsa" {
 
 resource "juju_integration" "vault-etcd" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.vault.name
@@ -155,7 +155,7 @@ resource "juju_integration" "vault-etcd" {
 
 resource "juju_integration" "etcd-easyrsa" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.etcd.name
@@ -170,7 +170,7 @@ resource "juju_integration" "etcd-easyrsa" {
 
 resource "juju_integration" "vault-ha" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.vault.name
@@ -185,7 +185,7 @@ resource "juju_integration" "vault-ha" {
 
 resource "juju_integration" "vault-mysql" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.vault.name
@@ -200,7 +200,7 @@ resource "juju_integration" "vault-mysql" {
 
 resource "juju_integration" "vault-ceph" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.vault.name
@@ -215,7 +215,7 @@ resource "juju_integration" "vault-ceph" {
 
 resource "juju_integration" "vault-db" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.vault-mysql-router.name

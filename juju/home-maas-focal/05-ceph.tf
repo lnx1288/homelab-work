@@ -1,7 +1,7 @@
 resource "juju_application" "ceph-osd" {
   name = "ceph-osd"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name    = "ceph-osd"
@@ -29,7 +29,7 @@ resource "juju_application" "ceph-osd" {
 
 resource "juju_machine" "ceph-mon" {
   count       = var.num_units
-  model       = var.model-name
+  model       = juju_model.openstack.name
   placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids[count.index]].machine_id])
   constraints = "spaces=oam,ceph-access,ceph-replica"
 }
@@ -37,7 +37,7 @@ resource "juju_machine" "ceph-mon" {
 resource "juju_application" "ceph-mon" {
   name = "ceph-mon"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "ceph-mon"
@@ -80,7 +80,7 @@ resource "juju_application" "ceph-mon" {
 
 resource "juju_machine" "ceph-rgw" {
   count       = var.num_units
-  model       = var.model-name
+  model       = juju_model.openstack.name
   placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids[count.index]].machine_id])
   constraints = "spaces=oam,ceph-access"
 }
@@ -88,7 +88,7 @@ resource "juju_machine" "ceph-rgw" {
 resource "juju_application" "ceph-radosgw" {
   name = "ceph-radosgw"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "ceph-radosgw"
@@ -132,7 +132,7 @@ resource "juju_application" "ceph-radosgw" {
 resource "juju_application" "hacluster-radosgw" {
   name = "hacluster-radosgw"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "hacluster"
@@ -144,7 +144,7 @@ resource "juju_application" "hacluster-radosgw" {
 
 resource "juju_integration" "osd-mon" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.ceph-osd.name
@@ -159,7 +159,7 @@ resource "juju_integration" "osd-mon" {
 
 resource "juju_integration" "rgw-mon" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.ceph-radosgw.name
@@ -174,7 +174,7 @@ resource "juju_integration" "rgw-mon" {
 
 resource "juju_integration" "rgw-ha" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.ceph-radosgw.name
@@ -189,7 +189,7 @@ resource "juju_integration" "rgw-ha" {
 
 resource "juju_integration" "rgw-keystone" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.ceph-radosgw.name

@@ -1,7 +1,7 @@
 resource "juju_application" "ceilometer-agent" {
   name = "ceilometer-agent"
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   charm {
     name     = "ceilometer-agent"
@@ -17,7 +17,7 @@ resource "juju_application" "ceilometer-agent" {
 
 resource "juju_integration" "compute-ceilometer" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.nova-compute-kvm.name
@@ -32,7 +32,7 @@ resource "juju_integration" "compute-ceilometer" {
 
 resource "juju_integration" "ceilometer-agent-rmq" {
 
-  model = var.model-name
+  model = juju_model.openstack.name
 
   application {
     name     = juju_application.ceilometer-agent.name
