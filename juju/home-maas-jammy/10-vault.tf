@@ -14,6 +14,7 @@ resource "juju_application" "vault" {
     name    = "vault"
     channel = var.vault_channel
     base    = var.default-base
+    revision = 319
   }
 
   units = var.num_units
@@ -26,6 +27,7 @@ resource "juju_application" "vault" {
   config = {
     vip            = var.vips["vault"]
     nagios_context = var.nagios-context
+    auto-generate-root-ca-cert = "true"
   }
 
 }

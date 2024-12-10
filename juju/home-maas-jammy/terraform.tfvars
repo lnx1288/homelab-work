@@ -26,6 +26,12 @@ lma-machines = [
   {machine_id=202,constraints="tags=compute,asrock02",base="ubuntu@20.04"},
 ]
 
+microk8s-machines = [
+  {machine_id=300,constraints="tags=compute,asrock03",base="ubuntu@22.04"},
+  {machine_id=301,constraints="tags=compute,asrock02",base="ubuntu@22.04"},
+  {machine_id=302,constraints="tags=compute,asrock01",base="ubuntu@22.04"},
+]
+
 osd-devices    = "/dev/sdb /dev/sdc"
 
 nagios-context = "arif-nc01"

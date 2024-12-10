@@ -26,6 +26,11 @@ variable sdn_ids {
   default = ["400", "401", "402"]
 }
 
+variable k8s_ids {
+  type    = list(string)
+  default = ["300", "301", "302"]
+}
+
 variable apt_mirror {
     type = string
     default = "192.168.1.12"
@@ -75,6 +80,14 @@ variable "lma-machines" {
   }))
 }
 
+variable "microk8s-machines" {
+  type = list(object({
+    machine_id = number
+    constraints = string
+    base = optional(string)
+  }))
+}
+
 variable model-name {
     type = string
     default = "openstack"
@@ -83,6 +96,11 @@ variable model-name {
 variable lma-model-name {
     type = string
     default = "lma"
+}
+
+variable microk8s-model-name {
+    type = string
+    default = "microk8s"
 }
 
 variable openstack-origin {
