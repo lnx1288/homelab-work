@@ -14,7 +14,7 @@ variable "spaces" {
   }))
 }
 
-variable "asrock_machines" {
+variable "minipc_machines" {
   type = list(object({
     host_name = string
     power_type = string

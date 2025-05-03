@@ -1,0 +1,87 @@
+- name: Update and upgrade via apt
+  hosts: orchestrator
+  become: true
+
+  tasks:
+  - name: Update and upgrade OS via apt
+    apt:
+      update_cache: yes
+      upgrade: yes
+
+  - name: Install Opentofu
+    snap:
+      name: opentofu
+      classic: yes
+      channel: latest/stable
+
+      state: present
+      update_cache: true
+
+  - name: Configure hostname resolution via /etc/hosts
+    lineinfile: 
+      dest: /etc/hosts 
+      regexp: '.*{{ item }}$' 
+      line: "{{ hostvars[item].ansible_default_ipv4.address }} {{item}}" 
+      state: present
+      backup: yes
+    when: hostvars[item].ansible_default_ipv4.address is defined
+    with_items: "{{ groups['all'] }}"
+
+- name: Apply Netplan configuration
+  hosts: orchestrator
+  become: true
+
+  tasks:
+    - name: Render Netplan template
+      template:
+        src: netplan-orchestrator.yaml.j2
+        dest: /etc/netplan/01-netcfg.yaml
+
+    - name: Apply Netplan connfig
+      command: netplan apply
+
+    - name: Pause 15s for network config to complete
+      ansible.builtin.pause:
+        seconds: 15
+
+- name: SSH config
+  hosts: orchestrator
+  become: true
+
+  vars:
+    key_dir: /home/{{ ansible_user }}/.ssh
+    private_key_path: "{{ key_dir }}/lab"
+    public_key_path: "{{ key_dir }}/lab.pub"
+
+  tasks:
+    - name: Ensure .ssh directory exists
+      file:
+        path: "{{ key_dir }}"
+        state: directory
+        mode: '0700'
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+
+    - name: Import public key from Launchpad
+      become_user: "{{ ansible_user }}"
+      command: "ssh-import-id lp:{{ launchpad_user }}"
+      register: ssh_import_result
+      changed_when: "'already exists' not in ssh_import_result.stdout"
+
+    - name: Generate secure SSH keypair
+      openssh_keypair:
+        path: "{{ private_key_path }}"
+        type: rsa
+        size: 4096
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0600'
+        force: false
+
+    - name: Set correct permissions on public key
+      file:
+        path: "{{ public_key_path }}"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0644'
+

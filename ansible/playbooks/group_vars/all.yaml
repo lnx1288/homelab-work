@@ -1,0 +1,30 @@
+# network config
+gateway: 192.168.100.1
+gateway_wlan: 192.168.68.1
+eth0_ip: 192.168.100.10
+wlan0_ip: 192.168.68.63
+
+# other configs
+launchpad_user: al3jandrosg
+
+# MAAS
+maas_version: 3.5/stable
+maas_admin_user: admin
+maas_admin_pass: somepass
+maas_admin_email: admin@example.com
+
+# MAAS PostgreSQL config
+postgresql_version: 14
+maas_db_name: maasdb
+maas_db_user: maas
+maas_db_password: somepass
+maas_db_host: localhost
+
+# Mirror
+uubntu_version: 24.04
+ubuntu_releases: 
+  - jammy
+  - focal
+
+# Output path for Terraform to read the MAAS API key
+api_key_output_path: /home/{{ ansible_user }}/maas_api_key.tfvars

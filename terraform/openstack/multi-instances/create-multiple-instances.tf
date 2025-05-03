@@ -11,7 +11,7 @@ resource "openstack_compute_instance_v2" "test_servers" {
   count           = 7
   name            = format("%s_%02d", "test_server", count.index+1)
   flavor_id       = data.openstack_compute_flavor_v2.m1_small.id
-  key_pair        = "arif-key"
+  key_pair        = "alejandro-key"
   security_groups = ["default"]
 
   block_device {

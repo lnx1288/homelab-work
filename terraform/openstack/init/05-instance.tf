@@ -5,7 +5,7 @@ data "openstack_compute_flavor_v2" "m1_small" {
 resource "openstack_compute_instance_v2" "test_server_01" {
   name            = "test_server_01"
   flavor_id       = data.openstack_compute_flavor_v2.m1_small.id
-  key_pair        = openstack_compute_keypair_v2.arif-key.name
+  key_pair        = openstack_compute_keypair_v2.alejandro-key.name
   security_groups = [
     "default",
     openstack_compute_secgroup_v2.allow_ssh.name,

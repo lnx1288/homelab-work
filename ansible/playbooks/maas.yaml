@@ -1,0 +1,89 @@
+- name: Install and configure MAAS with PostgreSQL
+  hosts: orchestrator
+  become: true
+
+  tasks:
+    - name: Disable systemd-timesyncd
+      systemd_service:
+          name: systemd-timesyncd
+          state: stopped
+          enabled: false
+          masked: yes
+
+    - name: Install PostgreSQL
+      apt:
+        name: 
+          - postgresql
+          - acl
+          - python3-psycopg2
+        state: present
+        update_cache: true
+
+    - name: Ensure PostgreSQL is listening on localhost
+      lineinfile:
+        path: "/etc/postgresql/{{ postgresql_version }}/main/postgresql.conf"
+        regexp: '^#?listen_addresses =.*'
+        line: "listen_addresses = '{{ maas_db_host }}'"
+      notify: Restart PostgreSQL
+
+    - name: Allow MD5 auth for MAAS user in pg_hba.conf
+      lineinfile:
+        path: /etc/postgresql/{{ postgresql_version }}/main/pg_hba.conf
+        insertafter: "^# IPv4"
+        line: "host    {{ maas_db_name }}    {{ maas_db_user }}    0/0    md5"
+      notify: Restart PostgreSQL
+
+    - name: Create PostgreSQL DB user
+      become_user: postgres
+      postgresql_user:
+        name: "{{ maas_db_user }}"
+        password: "{{ maas_db_password }}"
+        role_attr_flags: CREATEDB
+
+    - name: Create MAAS database
+      become_user: postgres
+      postgresql_db:
+        name: "{{ maas_db_name }}"
+        owner: "{{ maas_db_user }}"
+
+    - name: Install MAAS snap
+      snap:
+        name: maas
+        classic: yes
+        channel: "{{ maas_version }}"
+
+    - name: Initialize MAAS (region+rack) with external DB
+      command: >
+        maas init region+rack --database-uri \
+        "postgres://{{ maas_db_user }}:{{ maas_db_password }}@{{ maas_db_host }}/{{ maas_db_name }}" \ 
+        --maas-url "http://{{ eth0_ip }}:5240/MAAS"
+
+    - name: Create MAAS admin user
+      command: >
+        maas createadmin
+        --username {{ maas_admin_user }}
+        --password {{ maas_admin_pass }}
+        --email {{ maas_admin_email }}
+        --ssh-import lp:{{ launchpad_user }}
+      args:
+        creates: /var/snap/maas/common/.maas_admin_created
+
+    - name: Generate MAAS API key
+      command: "maas apikey --username={{ maas_admin_user }}"
+      register: maas_api_key_result
+
+    - name: Save MAAS API key to Terraform-compatible file
+      copy:
+        content: "maas_api_key = \"{{ maas_api_key_result.stdout }}\"\n"
+        dest: "{{ api_key_output_path }}"
+        mode: '0600'
+
+    - name: Print MAAS API key
+      debug:
+        msg: "MAAS API Key saved to {{ api_key_output_path }}"
+
+  handlers:
+    - name: Restart PostgreSQL
+      service:
+        name: postgresql
+        state: restarted

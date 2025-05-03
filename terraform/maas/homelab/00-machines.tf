@@ -1,8 +1,8 @@
-resource "maas_machine" "asrock_machines" {
+resource "maas_machine" "minipc_machines" {
 
   for_each = {
-    for index, asrock_machines in var.asrock_machines:
-    asrock_machines.host_name => asrock_machines
+    for index, minipc_machines in var.minipc_machines:
+    minipc_machines.host_name => minipc_machines
   }
 
   power_parameters = {}

@@ -34,7 +34,7 @@ microk8s-machines = [
 
 osd-devices    = "/dev/sdb /dev/sdc"
 
-nagios-context = "arif-nc01"
+nagios-context = "alejandro-nc01"
 
 ram-allocation-ratio = "1.0"
 cpu-allocation-ratio = "2.0"

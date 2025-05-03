@@ -1,0 +1,23 @@
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    enp1s0:
+      addresses: [{{ eth0_ip }}/24]
+      routes:
+        - to: default
+          via: {{ gateway }}
+      nameservers:
+        addresses: [8.8.8.8, 1.1.1.1]
+  wifis:
+    wlp2s0:
+      optional: true
+      access-points:
+        "SSID":
+          password: "password"
+      addresses: [{{ wlan_ip }}/24]
+      routes:
+        - to: default
+          via: {{ gateway_wlan }}
+      nameservers:
+        addresses: [8.8.8.8, 1.1.1.1]

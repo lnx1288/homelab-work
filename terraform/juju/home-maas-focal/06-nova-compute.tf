@@ -48,7 +48,7 @@ resource "juju_application" "nova-compute-kvm" {
          vendor_id: "1af4",
          product_id: "1000",
          device_type: "type-PCI",
-         name: "arifpass",
+         name: "alejandropass",
          numa_policy: "preferred"
        })
   }

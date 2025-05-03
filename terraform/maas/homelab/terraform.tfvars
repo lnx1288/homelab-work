@@ -2,13 +2,13 @@ spaces = [
   {
     space="external",
     vid=1,
-    cidr="192.168.1.0/24",
+    cidr="192.168.2.0/24",
     mtu=1500,
     managed=false
     ip_range = [{
       type = "reserved"
-      start_ip = "192.168.1.241"
-      end_ip = "192.168.1.254"
+      start_ip = "192.168.2.241"
+      end_ip = "192.168.2.254"
       comment = "Servers"
     }]
   },
@@ -154,25 +154,25 @@ spaces = [
   }
 ]
 
-asrock_machines = [
+minipc_machines = [
   {
-     host_name = "asrock01"
+     host_name = "mini01"
      power_type = "manual",
-     mac_addr = "a8:a1:59:44:70:ac"
+     mac_addr = "c8:ff:bf:04:09:fe"
   },
   {
-     host_name = "asrock02"
+     host_name = "mini02"
      power_type = "manual",
-     mac_addr = "a8:a1:59:44:76:79"
+     mac_addr = "c8:ff:bf:04:0f:00"
   },
   {
-     host_name = "asrock03"
+     host_name = "mini03"
      power_type = "manual",
-     mac_addr = "a8:a1:59:44:73:f0"
-  },
+     mac_addr = "c8:ff:bf:05:9d:f3"
+  }
   {
-     host_name = "asrock04"
+     host_name = "asusrog"
      power_type = "manual",
-     mac_addr = "a8:a1:59:e4:92:b8"
+     mac_addr = "70:4d:7b:3e:40:dd"
   }
 ]

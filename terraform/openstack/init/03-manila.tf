@@ -1,6 +1,6 @@
 resource "openstack_images_image_v2" "manila-service-image" {
   name             = "manila-service-image"
-  local_file_path  = "/home/arif/images/manila-service-image-master.qcow2"
+  local_file_path  = "/home/alejandro/images/manila-service-image-master.qcow2"
   container_format = "bare"
   disk_format      = "qcow2"
   visibility       = "public"
@@ -17,5 +17,5 @@ resource "openstack_compute_flavor_v2" "manila-service-flavor" {
 
 resource "openstack_compute_keypair_v2" "manila-service" {
   name       = "manila-service"
-  public_key = file("/home/arif/.ssh/aarsa4096canonical.pub")
+  public_key = file("/home/alejandro/.ssh/aarsa4096canonical.pub")
 }

@@ -1,0 +1,51 @@
+---
+- name: Deploy Ubuntu Mirror inside LXD container
+  hosts: orchestrator
+  become: true
+  tasks:
+
+    - name: Ensure snapd is installed (required for LXD)
+      apt:
+        name: snapd
+        state: present
+        update_cache: yes
+
+    - name: Ensure LXD is installed
+      snap:
+        name: lxd
+        state: present
+
+    - name: Initialize LXD if not already initialized
+      command: lxd init --auto
+      register: lxd_init
+      failed_when: false
+      changed_when: "'You may wish to update your configuration' in lxd_init.stdout"
+
+    - name: Ensure Ubuntu container is running
+      command: lxc launch images:ubuntu/{{ mirror_version }} ubuntu-mirror
+      register: container_launch
+      failed_when: false
+      changed_when: "'Creating ubuntu-mirror' in container_launch.stdout"
+
+    - name: Wait for container to obtain IP
+      shell: |
+        until lxc list ubuntu-mirror -c 4 | grep eth0 | grep -oP '\d+\.\d+\.\d+\.\d+'; do sleep 2; done
+      register: container_ip
+      changed_when: false
+
+    - name: Install apt-mirror and apache2 in container
+      command: lxc exec ubuntu-mirror -- bash -c "apt-get update && apt-get install -y apt-mirror apache2"
+
+    - name: Render mirror.list from template
+      template:
+        src: mirror.list.j2
+        dest: /tmp/mirror.list
+
+    - name: Push mirror.list into container
+      command: lxc file push /tmp/mirror.list ubuntu-mirror/etc/apt/mirror.list
+
+    - name: Create cron job to update mirror daily
+      command: lxc exec ubuntu-mirror -- bash -c "echo '0 3 * * * /usr/bin/apt-mirror' > /etc/cron.d/apt-mirror"
+
+    - name: Restart apache2 to serve the mirror
+      command: lxc exec ubuntu-mirror -- systemctl restart apache2
