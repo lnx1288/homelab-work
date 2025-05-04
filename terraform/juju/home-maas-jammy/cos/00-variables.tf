@@ -25,11 +25,6 @@ variable oam-space {
     default = "oam"
 }
 
-variable apt_mirror {
-    type = string
-    default = "192.168.1.12"
-}
-
 variable lxd-snap-channel {
     type = string
     default = "5.21/stable"

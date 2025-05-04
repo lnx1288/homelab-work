@@ -54,7 +54,7 @@ resource "juju_application" "elasticsearch" {
         =92oX
         -----END PGP PUBLIC KEY BLOCK-----
         EOF
-       apt-repository = "deb http://192.168.1.12/artifacts.elastic.co/packages/6.x/apt stable main"
+       apt-repository = "deb http://artifacts.elastic.co/packages/6.x/apt stable main"
   }
 }
 

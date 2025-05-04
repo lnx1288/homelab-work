@@ -31,11 +31,6 @@ variable k8s_ids {
   default = ["300", "301", "302"]
 }
 
-variable apt_mirror {
-    type = string
-    default = "192.168.1.12"
-}
-
 variable "all_services" {
   type    = list(string)
   default = [

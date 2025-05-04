@@ -1,3 +1,33 @@
+## Network diagram
+
+```
+                             Internet
+                                |
+                  +---------------------------+
+                  |     Wi-Fi Access Point    |
+                  +------------+--------------+
+                                |.1
+                                |
+                     ** WiFi ** | 192.168.68.0/24 (wlp2s0)
+                                |
+                                |.63
+                         +------+-------+
+                         | orchestrator |  NAT (from internal to public)
+                         +------+-------+
+                                |.10 (enp1s0)
+                                |
+     +--------------------------+------------------------+
+     |           Gigabit Switch 192.168.100.0/24         |
+     +---------------------------------------------------+
+      |     |         |     |        |      |           |
+      |     |         | (enp3s0 & enp1s0)   |           |
+      |     |         |     |        |      |           |
+      |.11  |.12      |.13  |.14     |.15   |.16        |.17
+     +---+---+       +---+---+      +---+---+   +----+----+
+     | mini1 |       | mini2 |      | mini3 |   | asusrog |
+     +---+---+       +---+---+      +---+---+   +----+----+
+```
+
 ## Prep Hardware
 
 * Plug all nodes (incl. orchestrator) into the physical switch.
@@ -5,7 +35,7 @@
 
   * All nodes have their NICs connected
   * BIOS on all nodes:
-    * Boot order: PXE first
+    * Boot order: PXE first, disk second
     * Secure Boot: OFF
     * UEFI: Enabled
 
@@ -13,7 +43,7 @@
 
 ### Orchestrator
 
-  * Install OS ---> OK
+  * Install OS (manual) ---> OK
   * Create Ubuntu mirror in LXD (Ansible) ---> OK
   * Hardening (Ansible)
   * Network config (Ansible) ---> OK

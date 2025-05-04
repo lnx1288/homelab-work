@@ -1,39 +1,39 @@
 openstack-model-name = "cpe-focal"
 
 machines = [
-  {machine_id=100,constraints="tags=control,asrock01"},
-  {machine_id=101,constraints="tags=control,asrock02"},
-  {machine_id=102,constraints="tags=control,asrock03"},
-  {machine_id=103,constraints="tags=control,asrock04"},
-  {machine_id=104,constraints="tags=control,asrock02"},
-  {machine_id=105,constraints="tags=control,asrock03"},
-  {machine_id=400,constraints="tags=compute,asrock01"},
-  {machine_id=401,constraints="tags=compute,asrock02"},
-  {machine_id=402,constraints="tags=compute,asrock03"},
-  {machine_id=1000,constraints="tags=compute,asrock01"},
-  {machine_id=1001,constraints="tags=compute,asrock01"},
-  {machine_id=1002,constraints="tags=compute,asrock02"},
-  {machine_id=1003,constraints="tags=compute,asrock02"},
-  {machine_id=1004,constraints="tags=compute,asrock03"},
-  {machine_id=1005,constraints="tags=compute,asrock03"},
-  {machine_id=1006,constraints="tags=compute,asrock04"},
-  {machine_id=1007,constraints="tags=compute,asrock04"},
+  {machine_id=100,constraints="tags=control,mini01"},
+  {machine_id=101,constraints="tags=control,mini02"},
+  {machine_id=102,constraints="tags=control,mini03"},
+  {machine_id=103,constraints="tags=control,mini01"},
+  {machine_id=104,constraints="tags=control,mini02"},
+  {machine_id=105,constraints="tags=control,mini03"},
+  {machine_id=400,constraints="tags=compute,mini01"},
+  {machine_id=401,constraints="tags=compute,mini02"},
+  {machine_id=402,constraints="tags=compute,mini03"},
+  {machine_id=1000,constraints="tags=compute,mini01"},
+  {machine_id=1001,constraints="tags=compute,mini01"},
+  {machine_id=1002,constraints="tags=compute,mini02"},
+  {machine_id=1003,constraints="tags=compute,mini02"},
+  {machine_id=1004,constraints="tags=compute,mini03"},
+  {machine_id=1005,constraints="tags=compute,mini03"},
+  {machine_id=1006,constraints="tags=compute,mini04"},
+  {machine_id=1007,constraints="tags=compute,mini04"},
 ]
 
 lma-machines = [
-  {machine_id=200,constraints="tags=compute,asrock01"},
-  {machine_id=201,constraints="tags=compute,asrock04"},
-  {machine_id=202,constraints="tags=compute,asrock02"},
-  {machine_id=300,constraints="tags=compute,asrock04",base="ubuntu@18.04"},
-  {machine_id=301,constraints="tags=compute,asrock03",base="ubuntu@18.04"},
-  {machine_id=302,constraints="tags=compute,asrock01",base="ubuntu@18.04"},
+  {machine_id=200,constraints="tags=compute,mini01"},
+  {machine_id=201,constraints="tags=compute,mini04"},
+  {machine_id=202,constraints="tags=compute,mini02"},
+  {machine_id=300,constraints="tags=compute,mini04",base="ubuntu@18.04"},
+  {machine_id=301,constraints="tags=compute,mini03",base="ubuntu@18.04"},
+  {machine_id=302,constraints="tags=compute,mini01",base="ubuntu@18.04"},
 ]
 
 infra-machines = [
-  {machine_id=0,name="asrock01"},
-  {machine_id=1,name="asrock02"},
-  {machine_id=2,name="asrock03"},
-  {machine_id=3,name="asrock04"},
+  {machine_id=0,name="mini01"},
+  {machine_id=1,name="mini02"},
+  {machine_id=2,name="mini03"},
+  {machine_id=3,name="mini04"},
 ]
 
 osd-devices    = "/dev/sdb /dev/sdc"
@@ -54,10 +54,10 @@ overlay-space      = "overlay"
 expected-osd-count = 12
 expected-mon-count = 3
 
-ntp-source               = "192.168.1.11"
-external-network-cidr    = "192.168.1.0/24"
-external-network-gateway = "192.168.1.249"
-dns-servers              = "192.168.1.13"
+ntp-source               = "192.168.100.11"
+external-network-cidr    = "192.168.100.0/24"
+external-network-gateway = "192.168.100.249"
+dns-servers              = "192.168.100.13"
 
 data-port       = "br-data:ens9"
 bridge-mappings = "physnet1:br-data"

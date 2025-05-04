@@ -11,7 +11,7 @@ resource "juju_application" "cinder-purestorage" {
   units = 0
 
   config = {
-    driver-source: "http://${var.apt_mirror}/ppa.launchpadcontent.net/openstack-charmers/purestorage-stable/ubuntu jammy main"
+    driver-source: "http://ppa.launchpadcontent.net/openstack-charmers/purestorage-stable/ubuntu jammy main"
     driver-key = <<-EOT
         -----BEGIN PGP PUBLIC KEY BLOCK-----
 

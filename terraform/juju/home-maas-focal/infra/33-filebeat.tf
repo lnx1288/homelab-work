@@ -18,7 +18,7 @@ resource "juju_application" "filebeat-infra" {
   config = {
       logpath = "/var/log/*.log /var/log/*/*.log /var/log/syslog"
       install_sources = <<-EOF
-        - 'deb http://192.168.1.12/artifacts.elastic.co/packages/6.x/apt stable main'
+        - 'deb http://artifacts.elastic.co/packages/6.x/apt stable main'
         EOF
       install_keys = <<-EOF
         - |

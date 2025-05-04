@@ -6,13 +6,13 @@ resource "juju_model" "infra" {
   }
 
   config = {
-    apt-mirror = "http://${var.apt_mirror}/archive.ubuntu.com/ubuntu"
+    apt-mirror = "http://archive.ubuntu.com/ubuntu"
     lxd-snap-channel = var.lxd-snap-channel
 
-    container-image-metadata-url = "http://${var.apt_mirror}/lxd/"
+    #container-image-metadata-url = "http://lxd/"
     container-image-stream = "released"
 
-    agent-metadata-url = "http://${var.apt_mirror}/juju/tools/"
+    #agent-metadata-url = "http://juju/tools/"
     agent-stream = "released"
   }
 }

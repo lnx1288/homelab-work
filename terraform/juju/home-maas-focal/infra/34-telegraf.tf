@@ -21,7 +21,7 @@ resource "juju_application" "telegraf-infra" {
   config = {
       socket_listener_port = "8095"
       install_sources = <<-EOF
-        - 'deb http://192.168.1.12/ppa.launchpad.net/telegraf-devs/ppa/ubuntu focal main'
+        - 'deb http://ppa.launchpad.net/telegraf-devs/ppa/ubuntu focal main'
         EOF
       install_keys = <<-EOF
         - |

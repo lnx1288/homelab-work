@@ -18,7 +18,7 @@ resource "juju_application" "landscape-client-bionic" {
   config = {
       account-name = "standalone"
       install_sources = <<-EOF
-        - "deb http://192.168.1.12/ppa.launchpad.net/landscape/19.10/ubuntu bionic main"
+        - "deb http://ppa.launchpad.net/landscape/19.10/ubuntu bionic main"
         EOF
       install_keys = <<-EOF
         - |

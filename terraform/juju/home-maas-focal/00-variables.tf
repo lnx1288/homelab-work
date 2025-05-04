@@ -26,11 +26,6 @@ variable sdn_ids {
   default = ["400", "401", "402"]
 }
 
-variable apt_mirror {
-    type = string
-    default = "192.168.1.12"
-}
-
 variable "all_services" {
   type    = list(string)
   default = [
