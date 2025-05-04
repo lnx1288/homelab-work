@@ -4,9 +4,6 @@ network:
   ethernets:
     enp1s0:
       addresses: [{{ eth0_ip }}/24]
-      routes:
-        - to: default
-          via: {{ gateway }}
       nameservers:
         addresses: [8.8.8.8, 1.1.1.1]
   wifis:

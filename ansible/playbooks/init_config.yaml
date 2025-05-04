@@ -44,6 +44,62 @@
       ansible.builtin.pause:
         seconds: 15
 
+- name: Configure NAT and IP forwarding
+  hosts: orchestrator
+  become: true
+
+  tasks:
+    - name: Enable IP forwarding in sysctl
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: "1"
+        state: present
+        reload: yes
+
+    - name: Install iptables-persistent
+      apt:
+        name: iptables-persistent
+        state: present
+        install_recommends: yes
+        update_cache: yes
+
+    - name: Add MASQUERADE rule for NAT
+      iptables:
+        table: nat
+        chain: POSTROUTING
+        out_interface: "{{ public_interface }}"
+        jump: MASQUERADE
+        state: present
+
+    - name: Allow forwarding from internal to public
+      iptables:
+        chain: FORWARD
+        in_interface: "{{ internal_interface }}"
+        out_interface: "{{ public_interface }}"
+        jump: ACCEPT
+        state: present
+
+    - name: Allow established connections back in
+      iptables:
+        chain: FORWARD
+        in_interface: "{{ public_interface }}"
+        out_interface: "{{ internal_interface }}"
+        match: state
+        ctstate: RELATED,ESTABLISHED
+        jump: ACCEPT
+        state: present
+
+    - name: Save iptables rules persistently
+      command: netfilter-persistent save
+      notify:
+        - Restart netfilter-persistent
+
+  handlers:
+    - name: Restart netfilter-persistent
+      service:
+        name: netfilter-persistent
+        state: restarted
+
 - name: SSH config
   hosts: orchestrator
   become: true

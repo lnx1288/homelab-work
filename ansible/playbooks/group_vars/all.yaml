@@ -1,8 +1,10 @@
 # network config
-gateway: 192.168.100.1
+#gateway: 192.168.100.1
 gateway_wlan: 192.168.68.1
 eth0_ip: 192.168.100.10
 wlan0_ip: 192.168.68.63
+public_interface: "wlp2s0"
+internal_interface: "enp1s0"
 
 # other configs
 launchpad_user: al3jandrosg
