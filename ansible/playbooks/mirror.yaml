@@ -2,8 +2,8 @@
 - name: Deploy Ubuntu Mirror inside LXD container
   hosts: orchestrator
   become: true
-  tasks:
 
+  tasks:
     - name: Ensure snapd is installed (required for LXD)
       apt:
         name: snapd
@@ -22,7 +22,7 @@
       changed_when: "'You may wish to update your configuration' in lxd_init.stdout"
 
     - name: Ensure Ubuntu container is running
-      command: lxc launch images:ubuntu/{{ mirror_version }} ubuntu-mirror
+      command: lxc launch ubuntu:{{ mirror_version }} ubuntu-mirror
       register: container_launch
       failed_when: false
       changed_when: "'Creating ubuntu-mirror' in container_launch.stdout"
@@ -49,3 +49,6 @@
 
     - name: Restart apache2 to serve the mirror
       command: lxc exec ubuntu-mirror -- systemctl restart apache2
+
+    - name: Run apt-mirror to start the initial mirroring process
+      command: lxc exec ubuntu-mirror -- apt-mirror

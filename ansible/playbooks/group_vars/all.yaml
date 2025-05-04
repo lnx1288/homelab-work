@@ -21,7 +21,7 @@ maas_db_password: somepass
 maas_db_host: localhost
 
 # Mirror
-uubntu_version: 24.04
+mirror_version: 24.04
 ubuntu_releases: 
   - jammy
   - focal

@@ -13,8 +13,9 @@
 
 ### Orchestrator
 
-  * Install OS
-  * Hardening (Ansible) ---> OK
+  * Install OS ---> OK
+  * Create Ubuntu mirror in LXD (Ansible) ---> OK
+  * Hardening (Ansible)
   * Network config (Ansible) ---> OK
   * Install and initialize MAAS (Ansible) ---> OK
   * Generate API key (Ansible) ---> OK
@@ -44,7 +45,12 @@
         sudo apt update; sudo apt install ansible -y
         cd ansible
         ansible-playbook -i inventory/hosts.yaml playbooks/init_config.yaml --ask-become-pass
+        ansible-playbook -i inventory/hosts.yaml playbooks/mirror.yaml --ask-become-pass
         ansible-playbook -i inventory/hosts.yaml playbooks/maas.yaml --ask-become-pass
         ```
     * Copy the API key to the Tf init.tf file
 
+
+## Known Issues
+
+Because of [LP#1995194](https://bugs.launchpad.net/ubuntu/+source/lxd/+bug/1995194), for the time being we need to stop the `maas` snap services to be able to initialize LXD, hence why it's better to start by creating the mirror container.
