@@ -30,10 +30,8 @@
 
 ## Prep Hardware
 
-* Plug all nodes (incl. orchestrator) into the physical switch.
 * Ensure:
 
-  * All nodes have their NICs connected
   * BIOS on all nodes:
     * Boot order: PXE first, disk second
     * Secure Boot: OFF
