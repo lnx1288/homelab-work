@@ -12,14 +12,14 @@ launchpad_user: al3jandrosg
 # MAAS
 maas_version: 3.5/stable
 maas_admin_user: admin
-maas_admin_pass: somepass
+maas_admin_pass: openstack
 maas_admin_email: admin@example.com
 
 # MAAS PostgreSQL config
 postgresql_version: 14
 maas_db_name: maasdb
 maas_db_user: maas
-maas_db_password: somepass
+maas_db_password: openstack
 maas_db_host: localhost
 
 # Mirror

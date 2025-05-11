@@ -1,0 +1,117 @@
+#cloud-config
+
+ssh_import_id:
+  - lp:al3jandrosg
+
+byobu_by_default: enable
+
+timezone: "Europe/London"
+
+# Allow ssh passwords
+ssh_pwauth: True
+
+## Update apt database and upgrade packages on first boot
+package_update: true
+package_upgrade: true
+
+users:
+  - default
+  - name: virsh
+    lock_passwd: false
+    passwd: $6$SVOxUrhz9mNyscUJ$hKF0RMY1nkGC3BpiozpaznE3AWerd8Ac8AlV9YEpLx50bLw5zweFCuTEEdS04McJNlaIqA.E4HiPuaIYGMzlH/
+    shell: "/bin/rbash"
+    ssh_import_id:
+      - lp:al3jandrosg
+
+## Install additional packages on first boot
+packages:
+  - virtinst
+  - jq
+  - ksmtuned
+  - openvswitch-switch
+
+snap:
+  commands:
+    - ['install', 'maas']
+
+## Write arbitrary files to the file-system (including binaries!)
+write_files:
+  - path: /root/initial_setup.sh
+    content: |
+      #!/bin/bash
+
+      git clone https://github.com/lnx1288/homelab-work.git /root/homelab-work
+      cd /root/homelab-work/configs
+      ln -sf ${HOSTNAME}.config hypervisor.config
+
+      cd ../
+      chmod +x manage-vm-nodes.sh
+      ./manage-vm-nodes.sh -c
+    permissions: '0755'
+    owner: root:root
+  - path: /root/install_kvm.sh
+    content: |
+      #!/bin/bash
+
+      series=$(lsb_release -c -s)
+
+      if [[ $series == "bionic" ]] ; then
+          pkgs="qemu-kvm libvirt-bin qemu-efi"
+      else
+          pkgs="libvirt-daemon-system libvirt-clients"
+      fi
+
+      apt -y update
+      apt -y install $pkgs
+
+      mkdir -p /home/virsh/bin
+      ln -s /usr/bin/virsh /home/virsh/bin/virsh
+      sh -c echo "PATH=/home/virsh/bin" >> /home/virsh/.bashrc
+
+      systemctl restart sshd
+
+      usermod -a -G libvirt,libvirt-qemu virsh
+    permissions: '0755'
+    owner: root:root
+  - path: /etc/ssh/sshd_config.d/90-virsh-user.conf
+    content: |
+      Match user virsh
+          X11Forwarding no
+          AllowTcpForwarding no
+          PermitTTY no
+          ForceCommand nc -q 0 -U /var/run/libvirt/libvirt-sock
+    owner: root:root
+  - path: /root/wipe_disk.sh
+    content: |
+      #!/bin/bash
+
+      dd if=/dev/zero of=/dev/sda bs=1M count=1000
+    permissions: '0755'
+    owner: root:root
+  - path: /etc/netplan/99-custom.yaml
+    content: |
+      network:
+        version: 2
+        ethernets:
+          enp1s0:
+             wakeonlan: true
+             link-local: []
+          enp3s0:
+             wakeonlan: true
+             link-local: []
+    permissions: '0644'
+    owner: root:root
+  - path: /etc/sysctl.d/99-custom.conf
+    content: |
+      kernel.softlockup_all_cpu_backtrace=1
+    permissions: '0644'
+    owner: root:root
+
+# Runs any command that we need to run post install
+runcmd:
+  - [ "/root/install_kvm.sh" ]
+  - [ "rm", "/root/install_kvm.sh" ]
+  - [ "/root/initial_setup.sh" ]
+  - [ "rm", "/root/initial_setup.sh" ]
+  - [ "netplan", "apply" ]
+  - [ "sysctl", "-p", "--system"]
