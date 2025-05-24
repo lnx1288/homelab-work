@@ -1,0 +1,48 @@
+name: maas
+description: Profile for MAAS instance
+config: {}
+devices:
+  eth0:
+    name: eth0
+    nictype: bridged
+    parent: lxdbr0
+    type: nic
+    {% if maas_ip is defined %}
+    ipv4.address: {{ maas_ip }}
+    {% endif %}
+  eth1:
+    name: eth1
+    nictype: bridged
+    parent: br0
+    type: nic
+  eth2:
+    name: eth2
+    nictype: bridged
+    parent: br1
+    type: nic
+  eth3:
+    name: eth3
+    nictype: bridged
+    parent: br2
+    type: nic
+  eth4:
+    name: eth4
+    nictype: bridged
+    parent: br3
+    type: nic
+  eth5:
+    name: eth5
+    nictype: bridged
+    parent: br4
+    type: nic
+  eth6:
+    name: eth6
+    nictype: bridged
+    parent: br5
+    type: nic
+  root:
+    path: /
+    pool: default
+    type: disk
+used_by:
+- /1.0/instances/maas

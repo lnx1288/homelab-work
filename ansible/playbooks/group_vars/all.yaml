@@ -1,8 +1,7 @@
-# network config
-#gateway: 192.168.100.1
-gateway_wlan: 192.168.68.1
+# Orchestrator
 eth0_ip: 192.168.100.10
 wlan0_ip: 192.168.68.63
+gateway_wlan: 192.168.68.1
 public_interface: "wlp2s0"
 internal_interface: "enp1s0"
 
@@ -10,6 +9,7 @@ internal_interface: "enp1s0"
 launchpad_user: al3jandrosg
 
 # MAAS
+maas_ip: 192.168.100.122
 maas_version: 3.5/stable
 maas_admin_user: admin
 maas_admin_pass: openstack

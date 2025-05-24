@@ -12,9 +12,10 @@
                                 |
                                 |.63
                          +------+-------+
-                         | orchestrator |  NAT (from internal to public)
+                         | orchestrator |  NAT (from internal to public for Internet access)
                          +------+-------+
                                 |.10 (enp1s0)
+                                |
                                 |
      +--------------------------+------------------------+
      |           Gigabit Switch 192.168.100.0/24         |
@@ -73,12 +74,19 @@
         sudo apt update; sudo apt install ansible -y
         cd ansible
         ansible-playbook -i inventory/hosts.yaml playbooks/init_config.yaml --ask-become-pass
-        ansible-playbook -i inventory/hosts.yaml playbooks/mirror.yaml --ask-become-pass
         ansible-playbook -i inventory/hosts.yaml playbooks/maas.yaml --ask-become-pass
         ```
     * Copy the API key to the Tf init.tf file
 
+#### Playbooks explained
+
+  * __`init_config.yaml`__:
+    * Install the tooling in the orchestrator node
+    * Configures the orchestrator networking
+    * Sets up LXD and creates the MAAS container
+    * Copies all scripts and configs to the MAAS container
+    * Runs `scripts/bootstrap-maas.sh -b` to install MAAS, do initial MAAS configs and import images
 
 ## Known Issues
 
-  * __MAAS/LXD race condition__: Because of [LP#1995194](https://bugs.launchpad.net/ubuntu/+source/lxd/+bug/1995194), for the time being we need to stop the `maas` snap services to be able to initialize LXD, hence why it's better to start by creating the mirror container.
+  * __MAAS/LXD race condition__: Because of [LP#1995194](https://bugs.launchpad.net/ubuntu/+source/lxd/+bug/1995194), for the time being we need to stop the `maas` snap services to be able to initialize LXD, hence why it's better to start by creating the mirror container. __NOTE__: This is only needed if there's a local mirror to be set up via `mirror.yaml` and if MAAS is being installed via `maas.yaml` (neither of these is true at the moment since I'm using `bootstrap-maas.sh`).

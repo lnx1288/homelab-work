@@ -4,3 +4,7 @@ all:
       ansible_host: localhost
       ansible_connection: local
       ansible_user: alejandro
+    maas:
+      ansible_host: 192.168.100.122
+      ansible_connection: ssh
+      ansible_user: root

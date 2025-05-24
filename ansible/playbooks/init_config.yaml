@@ -141,3 +141,71 @@
         group: "{{ ansible_user }}"
         mode: '0644'
 
+- name: Install and configure LXD, create profile and container for MAAS
+  hosts: orchestrator
+  become: true
+
+  tasks:
+    - name: Ensure snapd is installed
+      apt:
+        name: snapd
+        state: present
+        update_cache: yes
+
+    - name: Ensure LXD is installed via snap
+      snap:
+        name: lxd
+        state: present
+        classic: yes
+
+    - name: Ensure LXD group exists
+      group:
+        name: lxd
+        state: present
+
+    - name: Add current user to lxd group
+      user:
+        name: "{{ ansible_user }}"
+        groups: lxd
+        append: yes
+
+    - name: Initialize LXD with default settings (non-interactive)
+      command: lxd init --auto
+      args:
+        creates: /var/snap/lxd/common/lxd/database
+
+    - name: Create LXD profile
+      command: >
+        lxc profile create orchestrator-lxd-profile
+
+    - name: Render LXD profile from Jinja2 template
+      template:
+        src: orchestrator-lxd-profile.yaml.j2
+        dest: /tmp/orchestrator-lxd-profile.yaml
+
+    - name: Apply LXD profile from rendered template
+      command: lxc profile edit orchestrator-lxd-profile < /tmp/orchestrator-lxd-profile.yaml
+      args:
+        executable: /bin/bash
+      ignore_errors: true
+
+    - name: Launch container from profile
+      command: >
+        lxc launch images:ubuntu/22.04 maas -p orchestrator-lxd-profile
+      args:
+        creates: "/var/snap/lxd/common/lxd/containers/maas"
+
+    - name: Copy scripts and configs into the container
+      find:
+        paths: ./scripts
+        file_type: file
+      register: files_to_copy
+
+    - name: Push files into the container
+      command: >
+        lxc file push {{ item.path }} maas/root/{{ item.path | basename }}
+      with_items: "{{ files_to_copy.files }}"
+
+    - name: Push maas.yaml into the container
+      command: >
+        lxc file push ./maas.yaml maas/root/maas.yaml

@@ -1,8 +1,20 @@
 - name: Install and configure MAAS with PostgreSQL
-  hosts: orchestrator
+  hosts: maas
   become: true
 
   tasks:
+    - name: Render Netplan template
+      template:
+        src: netplan-maas.yaml
+        dest: /etc/netplan/01-netcfg.yaml
+
+    - name: Apply Netplan connfig
+      command: netplan apply
+
+    - name: Pause 15s for network config to complete
+      ansible.builtin.pause:
+        seconds: 15
+
     - name: Disable systemd-timesyncd
       systemd_service:
           name: systemd-timesyncd
@@ -56,7 +68,7 @@
       command: >
         maas init region+rack --database-uri \
         "postgres://{{ maas_db_user }}:{{ maas_db_password }}@{{ maas_db_host }}/{{ maas_db_name }}" \ 
-        --maas-url "http://{{ eth0_ip }}:5240/MAAS"
+        --maas-url "http://{{ maas_ip }}:5240/MAAS"
 
     - name: Create MAAS admin user
       command: >

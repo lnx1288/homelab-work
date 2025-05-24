@@ -145,7 +145,7 @@ build_maas() {
     [[ -n "$maas_name" ]] && maas $maas_profile maas set-config name=maas_name value=${maas_name}
 
     if [[ -n "$squid_proxy" ]] ; then
-        maas $maas_profile maas set-config name=enable_http_proxy value=true
+        maas $maas_profile maas set-config name=enable_http_proxy value="$enable_http_proxy"
         maas $maas_profile maas set-config name=http_proxy value="$squid_proxy"
     fi
 

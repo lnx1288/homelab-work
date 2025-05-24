@@ -5,7 +5,7 @@ ssh_import_id:
 
 byobu_by_default: enable
 
-timezone: "Europe/London"
+timezone: "Europe/Madrid"
 
 # Allow ssh passwords
 ssh_pwauth: True
