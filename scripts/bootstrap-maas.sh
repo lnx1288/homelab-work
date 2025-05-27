@@ -68,6 +68,8 @@ remove_maas_snap() {
 
 install_maas_deb() {
 
+    echo "Installing MAAS deb..."
+
     sudo apt-add-repository ppa:maas/${maas_version} -y
 
     # This is separate from the removal, so we can handle them atomically
@@ -76,6 +78,7 @@ install_maas_deb() {
 }
 
 install_maas_snap() {
+    echo "Installing MAAS snap..."
     sudo apt-get -fuy --reinstall install "${core_packages}"
 
     # When we specify the channel, we have to install the snaps individually
@@ -85,6 +88,7 @@ install_maas_snap() {
 }
 
 purge_admin_user() {
+    echo "Purging admin user from DB just in case..."
 
 read -r -d '' purgeadmin <<EOF
 with deleted_user as (delete from auth_user where username = '$maas_profile' returning id),
@@ -99,11 +103,13 @@ EOF
 }
 
 build_maas() {
+    echo "Building MAAS..."
     # Create the initial 'admin' user of MAAS, purge first!
     purge_admin_user
 
     [[ $maas_pkg_type == "snap" ]] && maas init region+rack --database-uri maas-test-db:/// --maas-url $maas_endpoint --force
 
+    echo "Creating the MAAS admin user: $maas_profile..."
     sudo maas createadmin --username "$maas_profile" --password "$maas_pass" --email "$maas_profile"@"$maas_pass" --ssh-import lp:"$launchpad_user"
 
     if [[ $maas_pkg_type == "deb" ]] ; then
@@ -132,6 +138,7 @@ build_maas() {
     fi
 
     # Update settings to match our needs
+    echo "Updating MAAS configs..."
     maas $maas_profile maas set-config name=default_storage_layout value=lvm
     maas $maas_profile maas set-config name=network_discovery value=disabled
     maas $maas_profile maas set-config name=active_discovery_interval value=0

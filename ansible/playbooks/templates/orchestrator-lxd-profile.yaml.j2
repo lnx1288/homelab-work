@@ -7,9 +7,6 @@ devices:
     nictype: bridged
     parent: lxdbr0
     type: nic
-    {% if maas_ip is defined %}
-    ipv4.address: {{ maas_ip }}
-    {% endif %}
   eth1:
     name: eth1
     nictype: bridged

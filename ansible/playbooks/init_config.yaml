@@ -14,9 +14,6 @@
       classic: yes
       channel: latest/stable
 
-      state: present
-      update_cache: true
-
   - name: Configure hostname resolution via /etc/hosts
     lineinfile: 
       dest: /etc/hosts 
@@ -169,29 +166,33 @@
         groups: lxd
         append: yes
 
+    - name: Render LXD config from Jinja2 template
+      template:
+        src: lxd-config.yaml.j2
+        dest: /tmp/lxd-config.yaml
+
     - name: Initialize LXD with default settings (non-interactive)
-      command: lxd init --auto
+      command: lxd init --preseed /tmp/lxd-config.yaml
       args:
         creates: /var/snap/lxd/common/lxd/database
 
     - name: Create LXD profile
-      command: >
-        lxc profile create orchestrator-lxd-profile
+      command: lxc profile create orchestrator-lxd-profile
 
     - name: Render LXD profile from Jinja2 template
       template:
         src: orchestrator-lxd-profile.yaml.j2
         dest: /tmp/orchestrator-lxd-profile.yaml
 
-    - name: Apply LXD profile from rendered template
-      command: lxc profile edit orchestrator-lxd-profile < /tmp/orchestrator-lxd-profile.yaml
+    - name: Apply LXD profile
+      command: >
+        lxc profile edit orchestrator-lxd-profile < /tmp/orchestrator-lxd-profile.yaml
       args:
         executable: /bin/bash
-      ignore_errors: true
 
     - name: Launch container from profile
       command: >
-        lxc launch images:ubuntu/22.04 maas -p orchestrator-lxd-profile
+        lxc launch ubuntu:22.04 maas -p orchestrator-lxd-profile
       args:
         creates: "/var/snap/lxd/common/lxd/containers/maas"
 
@@ -203,8 +204,9 @@
 
     - name: Push files into the container
       command: >
-        lxc file push {{ item.path }} maas/root/{{ item.path | basename }}
-      with_items: "{{ files_to_copy.files }}"
+        tar czf scripts.gz ../scripts/
+        lxc file push scripts.gz maas/root/
+        lxc exec maas -- tar xf /root/scripts.gz
 
     - name: Push maas.yaml into the container
       command: >
