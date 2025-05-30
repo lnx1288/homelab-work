@@ -8,7 +8,7 @@
                   +------------+--------------+
                                 |.1
                                 |
-                     ** WiFi ** | 192.168.68.0/24 (wlp2s0)
+                    ** WiFi ** ... 192.168.68.0/24 (wlp2s0)
                                 |
                                 |.63
                          +------+-------+
@@ -23,11 +23,26 @@
       |     |         |     |        |      |           |
       |     |         | (enp3s0 & enp1s0)   |           |
       |     |         |     |        |      |           |
+      |     |         |     |        |      |           |
+      |     |         |     |        |      |           |
+      |     |         |     |        |      |           |
       |.11  |.12      |.13  |.14     |.15   |.16        |.17
      +---+---+       +---+---+      +---+---+   +----+----+
      | mini1 |       | mini2 |      | mini3 |   | asusrog |
      +---+---+       +---+---+      +---+---+   +----+----+
 ```
+
+### Subnets/VLANs
+
+  * LAN: 192.168.100.0/24 (vlan 1, untagged)
+  * OAM: 10.0.1.0/24 (vlan 300, tagged)
+  * Ceph-access: 10.0.2.0/24 (vlan 301, tagged)
+  * Ceph-replica: 10.0.3.0/24 (vlan 302, tagged)
+  * Overlay: 10.0.4.0/24 (vlan 303, tagged)
+  * Admin: 10.0.5.0/24 (vlan 304, tagged)
+  * Internal: 10.0.6.0/24 (vlan 305, tagged)
+
+
 
 ## Prep Hardware
 
@@ -42,6 +57,32 @@
 
 ### Orchestrator
 
+#### Network config
+
+```
+                            Internet
+                                |
+                                |192.168.68.63
+    +---------------------------+---------------------------+
+    |                      orchestrator                     |
+    |                                                       |
+    |                  +--------+--------+                  |
+    |                  |  maas container |                  |
+    |                  +--------+--------+                  |
+    |                           | 192.168.100.122           |
+    |                           |                           |
+    |                      +----+----+                      |
+    |                      |  lxdbr0 |  (NAT = true)        |
+    |                      +----+----+                      |
+    |                           | 192.168.100.250           |
+    +---------------------------+---------------------------+
+                                |192.168.100.10 (enp1s0)
+                                |
+                            Internal
+```
+
+#### Tasks
+
   * Install OS (manual) ---> OK
   * Create Ubuntu mirror in LXD (Ansible) ---> OK
   * Hardening (Ansible)
@@ -55,7 +96,9 @@
 
 ### Nodes
 
-  * Provision OS via MAAS (Manual)
+#### Tasks
+
+  * Provision OS via MAAS (Script)
   * If custom build:
     * Deploy MAAS + Juju + Openstack control plane in the 3 mini PCs (Terraform)
     * Deploy Nova in compute node (laptop) (Terraform)

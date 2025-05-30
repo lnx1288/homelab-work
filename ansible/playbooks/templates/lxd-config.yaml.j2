@@ -1,7 +1,8 @@
 config: {}
 networks:
 - config:
-    ipv4.address: "{{ maas_ip }}/24"
+    ipv4.address: "{{ lxdbr0_network }}/24"
+    ipv4.nat: "true"
     ipv6.address: auto
   description: ""
   name: lxdbr0

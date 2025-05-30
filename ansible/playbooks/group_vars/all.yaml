@@ -4,6 +4,7 @@ wlan_ip: 192.168.68.63
 gateway_wlan: 192.168.68.1
 public_interface: "wlp2s0"
 internal_interface: "enp1s0"
+lxdbr0_network: 192.168.100.250
 
 # other configs
 launchpad_user: al3jandrosg
