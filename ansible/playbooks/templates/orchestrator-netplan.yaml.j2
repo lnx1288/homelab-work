@@ -10,8 +10,8 @@ network:
     wlp2s0:
       optional: true
       access-points:
-        "SSID":
-          password: "password"
+        "{{ wlan_ssid }}":
+          password: "{{ wlan_password }}"
       addresses: [{{ wlan_ip }}/24]
       routes:
         - to: default
@@ -21,9 +21,9 @@ network:
   bridges:
     lxdbr0:
       interfaces:
-        - enp1s0:
+        - enp1s0
       addresses: 
-        - "{{ lxdbr0_network }}/24"
+        - "{{ lxdbr0_ip }}/24"
       nameservers:
         addresses: [8.8.8.8, 1.1.1.1]
       routes:

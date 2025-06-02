@@ -39,14 +39,9 @@ maas_assign_networks()
                 vlan_int_id=$(echo $vlan_int | jq -r .id)
             fi
 
-            # Set IP address based on whether it's external or internal
-            if [[ $vlan -eq $external_vlan ]] ; then
-                mode="STATIC"
-                ip_addr="ip_address=$external_ip"
-            else
-                mode="STATIC"
-                ip_addr="ip_address=${sub_prefix}${ip_suffix}"
-            fi
+            # Set IP address
+            mode="STATIC"
+            ip_addr="ip_address=${sub_prefix}${ip_suffix}"
         fi
 
         # Check and create bridge if necessary

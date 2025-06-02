@@ -427,6 +427,7 @@ while getopts ":a:bc:dij:nt:r" opt; do
     b )
         echo "Building out a new MAAS server"
         check_bins
+        remove_maas_${maas_pkg_type}
         install_maas_${maas_pkg_type}
         build_maas
         bootstrap_maas

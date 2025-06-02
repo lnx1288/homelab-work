@@ -5,7 +5,7 @@
   tasks:
     - name: Render Netplan template
       template:
-        src: netplan-maas.yaml
+        src: maas-netplan.yaml
         dest: /etc/netplan/01-netcfg.yaml
 
     - name: Apply Netplan connfig

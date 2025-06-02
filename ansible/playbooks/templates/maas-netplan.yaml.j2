@@ -5,7 +5,7 @@ network:
     eth0:
       dhcp4: false
       addresses:
-        - "{{ maas_ip }}/24"
+        - "{{ maas_system_ip }}/24"
       nameservers:
         addresses:
           - 8.8.8.8
@@ -15,7 +15,7 @@ network:
           via: "{{ gateway_wlan }}"
     eth1:
       addresses:
-        - 10.0.1.253/24
+        - "{{ maas_bridge_ip }}/24"
     eth2:
       addresses:
         - 10.0.2.253/24

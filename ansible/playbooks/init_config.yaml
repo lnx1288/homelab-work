@@ -31,7 +31,7 @@
   tasks:
     - name: Render Netplan template
       template:
-        src: netplan-orchestrator.yaml.j2
+        src: orchestrator-netplan.yaml.j2
         dest: /etc/netplan/01-netcfg.yaml
 
     - name: Apply Netplan connfig
@@ -168,11 +168,11 @@
 
     - name: Render LXD config from Jinja2 template
       template:
-        src: lxd-config.yaml.j2
-        dest: /tmp/lxd-config.yaml
+        src: orchestrator-lxd-config.yaml.j2
+        dest: /tmp/orchestrator-lxd-config.yaml
 
     - name: Initialize LXD with default settings (non-interactive)
-      command: lxd init --preseed /tmp/lxd-config.yaml
+      command: lxd init --preseed /tmp/orchestrator-lxd-config.yaml
       args:
         creates: /var/snap/lxd/common/lxd/database
 
@@ -208,6 +208,6 @@
         lxc file push scripts.gz maas/root/
         lxc exec maas -- tar xf /root/scripts.gz
 
-    - name: Push maas.yaml into the container
+    - name: Push MAAS installation playbook into the container
       command: >
         lxc file push ./maas.yaml maas/root/maas.yaml
