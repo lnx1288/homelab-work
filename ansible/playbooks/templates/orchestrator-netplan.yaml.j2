@@ -3,35 +3,27 @@ network:
   renderer: networkd
   ethernets:
     enp1s0:
-      addresses: [{{ eth0_ip }}/24]
-      nameservers:
-        addresses: [8.8.8.8, 1.1.1.1]
+      optional: true
   wifis:
     wlp2s0:
       optional: true
       access-points:
         "{{ wlan_ssid }}":
           password: "{{ wlan_password }}"
-      addresses: [{{ wlan_ip }}/24]
+      addresses: 
+        - "{{ wlan_ip }}/24"
       routes:
         - to: default
           via: "{{ gateway_wlan }}"
       nameservers:
         addresses: [8.8.8.8, 1.1.1.1]
   bridges:
-    lxdbr0:
-      interfaces:
-        - enp1s0
-      addresses: 
-        - "{{ lxdbr0_ip }}/24"
-      nameservers:
-        addresses: [8.8.8.8, 1.1.1.1]
-      routes:
-        - to: default
-          via: "{{ gateway_wlan }}"
     br0:
       interfaces:
         - vlan300
+        - enp1s0
+      addresses: 
+        - "{{ eth0_ip }}/24"
     br1:
       interfaces:
         - vlan301

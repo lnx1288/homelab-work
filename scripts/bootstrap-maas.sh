@@ -412,7 +412,7 @@ read_config
 init_variables
 
 # This is the proxy that MAAS itself uses (the "internal" MAAS proxy)
-no_proxy="localhost,127.0.0.1,$maas_system_ip,$(echo $maas_ip_range.{100..200} | sed 's/ /,/g')"
+no_proxy="localhost,127.0.0.1,$(echo $maas_ip_range.{100..200} | sed 's/ /,/g')"
 
 while getopts ":a:bc:dij:nt:r" opt; do
   case $opt in

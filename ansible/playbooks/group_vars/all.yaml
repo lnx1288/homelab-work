@@ -1,7 +1,6 @@
 # Orchestrator
 eth0_ip: 10.0.1.63
 wlan_ip: 192.168.68.63
-lxdbr0_ip: 192.168.68.73
 gateway_wlan: 192.168.68.1
 public_interface: "wlp2s0"
 internal_interface: "enp1s0"
@@ -13,7 +12,6 @@ launchpad_user: al3jandrosg
 
 # MAAS
 maas_bridge_ip: 10.0.1.253
-maas_system_ip: 192.168.68.253
 maas_version: 3.5/stable
 maas_admin_user: admin
 maas_admin_pass: openstack

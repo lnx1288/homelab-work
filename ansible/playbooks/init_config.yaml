@@ -142,6 +142,9 @@
   hosts: orchestrator
   become: true
 
+  vars:
+    scripts_dir: "{{ playbook_dir }}/../../scripts"
+
   tasks:
     - name: Ensure snapd is installed
       apt:
@@ -172,7 +175,7 @@
         dest: /tmp/orchestrator-lxd-config.yaml
 
     - name: Initialize LXD with default settings (non-interactive)
-      command: lxd init --preseed /tmp/orchestrator-lxd-config.yaml
+      command: lxd init --preseed < /tmp/orchestrator-lxd-config.yaml
       args:
         creates: /var/snap/lxd/common/lxd/database
 
@@ -185,10 +188,7 @@
         dest: /tmp/orchestrator-lxd-profile.yaml
 
     - name: Apply LXD profile
-      command: >
-        lxc profile edit orchestrator-lxd-profile < /tmp/orchestrator-lxd-profile.yaml
-      args:
-        executable: /bin/bash
+      shell: lxc profile edit orchestrator-lxd-profile < /tmp/orchestrator-lxd-profile.yaml
 
     - name: Launch container from profile
       command: >
@@ -196,18 +196,17 @@
       args:
         creates: "/var/snap/lxd/common/lxd/containers/maas"
 
-    - name: Copy scripts and configs into the container
-      find:
-        paths: ./scripts
-        file_type: file
-      register: files_to_copy
+    - name: Archive the scripts directory
+      archive:
+        path: "{{ scripts_dir }}"
+        dest: "/tmp/scripts.tar.gz"
+        format: gz
 
-    - name: Push files into the container
-      command: >
-        tar czf scripts.gz ../scripts/
-        lxc file push scripts.gz maas/root/
-        lxc exec maas -- tar xf /root/scripts.gz
+    - name: Push the archive to the container
+      command: lxc file push /tmp/scripts.tar.gz maas/root/scripts.tar.gz
 
-    - name: Push MAAS installation playbook into the container
-      command: >
-        lxc file push ./maas.yaml maas/root/maas.yaml
+    - name: Extract archive inside container
+      command: lxc exec maas -- tar -xf /root/scripts.tar.gz -C /root/
+
+    - name: Push maas.yaml into container
+      command: lxc file push {{ playbook_dir }}/maas.yaml maas/root/maas.yaml
