@@ -178,7 +178,7 @@ build_maas() {
     # This is hacky, but it's the only way I could find to reliably get the
     # correct subnet for the maas bridge interface
     maas $maas_profile subnet update "$(maas $maas_profile subnets read | jq -rc --arg maas_ip "$maas_ip_range" '.[] | select(.name | contains($maas_ip)) | "\(.id)"')" \
-        gateway_ip="$maas_bridge_ip" dns_servers="$maas_bridge_ip"
+        gateway_ip="$maas_ip" dns_servers="$maas_ip"
 
     sleep 3
 

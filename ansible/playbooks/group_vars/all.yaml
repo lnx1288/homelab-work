@@ -11,7 +11,7 @@ wlan_password: "my_pass"
 launchpad_user: al3jandrosg
 
 # MAAS
-maas_bridge_ip: 10.0.1.253
+maas_ip: 10.0.1.253
 maas_version: 3.5/stable
 maas_admin_user: admin
 maas_admin_pass: openstack
@@ -31,4 +31,4 @@ ubuntu_releases:
   - focal
 
 # Output path for Terraform to read the MAAS API key
-api_key_output_path: /home/{{ ansible_user }}/maas_api_key.tfvars
+api_key_output_path: "$HOME/maas_api_key.tfvars"
