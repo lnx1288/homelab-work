@@ -41,7 +41,7 @@ write_files:
       #!/bin/bash
 
       git clone https://github.com/lnx1288/homelab-work.git /root/homelab-work
-      cd /root/homelab-work/configs
+      cd /root/homelab-work/scripts/configs
       ln -sf ${HOSTNAME}.config hypervisor.config
 
       cd ../

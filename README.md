@@ -109,7 +109,8 @@ On my machine, I had to add `sudo ip route add 10.0.1.0/24 via 192.168.68.63` so
         sudo apt update; sudo apt install ansible -y
         cd ansible
         ansible-playbook -i inventory/hosts.yaml playbooks/init_config.yaml --ask-become-pass
-        ansible-playbook -i inventory/hosts.yaml playbooks/maas.yaml --ask-become-pass
+        lxc exec maas -- bash -c "ansible-playbook -i inventory/hosts.yaml playbooks/maas.yaml"
+        lxc exec maas -- bash -c "chmod +x scripts/bootstrap-maas.sh; ./scripts/bootstrap-maas.sh -b"
         ```
     * Copy the API key to the Tf init.tf file
 
@@ -120,8 +121,11 @@ On my machine, I had to add `sudo ip route add 10.0.1.0/24 via 192.168.68.63` so
     * Configures the orchestrator networking
     * Sets up LXD and creates the MAAS container
     * Copies all scripts and configs to the MAAS container
-    * Runs `scripts/bootstrap-maas.sh -b` to install MAAS, do initial MAAS configs and import images
+
+  * __`maas.yaml`__:
+    * Installs MAAS, PostgreSQL and some other packages in the MAAS container
+
 
 ## Known Issues
 
-  * __MAAS/LXD race condition__: Because of [LP#1995194](https://bugs.launchpad.net/ubuntu/+source/lxd/+bug/1995194), for the time being we need to stop the `maas` snap services to be able to initialize LXD, hence why it's better to start by creating the mirror container. __NOTE__: This is only needed if there's a local mirror to be set up via `mirror.yaml` and if MAAS is being installed via `maas.yaml` (neither of these is true at the moment since I'm using `bootstrap-maas.sh`).
+  * __MAAS/LXD race condition__: Because of [LP#1995194](https://bugs.launchpad.net/ubuntu/+source/lxd/+bug/1995194), for the time being we need to stop the `maas` snap services to be able to initialize LXD, hence why it's better to start by creating the mirror container. __NOTE__: This is only needed if there's a local mirror to be set up via `mirror.yaml` and if MAAS is being installed via `maas.yaml`.
