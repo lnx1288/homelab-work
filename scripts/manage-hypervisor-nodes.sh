@@ -12,9 +12,10 @@ maas_assign_networks()
     system_id=$1
 
     # Get details of the primary physical interface (no parent means it's physical)
-    phsy_int=$(maas ${maas_profile} interfaces read ${system_id} | jq -c ".[] | {id:.id, name:.name,parent:.parents}" | grep "parent.*\[\]")
-    phys_int_name=$(echo $phsy_int | jq -r .name)
-    phys_int_id=$(echo $phsy_int | jq -r .id)
+    # as per the MAC defined in the hypervisor_mac variable
+    phys_int=$(maas ${maas_profile} interfaces read ${system_id} | jq -c ".[] | {id:.id, name:.name, mac:.mac_address, parent:.parents}" | grep "${hypervisor_mac}.*parent.*\[\]")
+    phys_int_name=$(echo $phys_int | jq -r .name)
+    phys_int_id=$(echo $phys_int | jq -r .id)
 
     i=0
     for vlan in ${vlans[*]}
