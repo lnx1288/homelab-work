@@ -17,6 +17,7 @@
           - acl
           - python3-psycopg2
           - jq
+          - wakeonlan
         state: present
         update_cache: true
 

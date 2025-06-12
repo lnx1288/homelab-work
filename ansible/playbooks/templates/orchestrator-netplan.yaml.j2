@@ -20,7 +20,6 @@ network:
   bridges:
     br0:
       interfaces:
-        - vlan300
         - enp1s0
       addresses: 
         - "{{ eth0_ip }}/24"
@@ -40,9 +39,6 @@ network:
       interfaces:
         - vlan305
   vlans:
-    vlan300:
-      id: 300
-      link: enp1s0
     vlan301:
       id: 301
       link: enp1s0

@@ -16,17 +16,17 @@
                          +------+-------+
                                 |.63 (enp1s0) 
                                 |
-                                |
+                                | port 8
      +--------------------------+------------------------+
      |            Gigabit Switch 10.0.1.0/24             |
      +---------------------------------------------------+
-      |     |         |     |        |     |           |
-      |     |         | (enp3s0 & enp1s0)  |           |
-      |     |         |     |        |     |           |
-      |     |         |     |        |     |           |
-      |     |         |     |        |     |           |
-      |     |         |     |        |     |           |
-      |.241 |         |.242 |        |.243 |           |.244
+      |port 7         |port 5        |port 3           |port 1
+      |               |              |                 |
+      |               |              |                 |
+      |               |              |                 |
+      |               |              |                 |
+      |               |              |                 |
+      |.241           |.242          |.243             |.244
      +---+---+       +---+---+      +---+---+     +----+----+
      | mini1 |       | mini2 |      | mini3 |     | asusrog |
      +---+---+       +---+---+      +---+---+     +----+----+
@@ -52,7 +52,7 @@ On my machine, I had to add `sudo ip route add 10.0.1.0/24 via 192.168.68.63` so
 
 ### Subnets/VLANs
 
-  * OAM: 10.0.1.0/24 (vlan 300, tagged) -> PXE boot network
+  * OAM: 10.0.1.0/24 (vlan 300, untagged) -> PXE boot network
   * Ceph-access: 10.0.2.0/24 (vlan 301, tagged)
   * Ceph-replica: 10.0.3.0/24 (vlan 302, tagged)
   * Overlay: 10.0.4.0/24 (vlan 303, tagged)
@@ -81,8 +81,7 @@ On my machine, I had to add `sudo ip route add 10.0.1.0/24 via 192.168.68.63` so
   * Network config (Ansible) ---> OK
   * Install and initialize MAAS (Ansible) ---> OK
   * Generate API key (Ansible) ---> OK
-  * Commission lab nodes (Manual)
-    * Define networking layout (ask Arif since I have two NICs)
+  * Commission lab nodes (scripts)
     * Define disk layout
     * virtualized or physical deployment? (MAAS autobuilder or custom deployment on my own)
 
