@@ -12,13 +12,12 @@ variable num_units {
 variable controller_ids {
   type    = list(string)
   default = ["100", "101", "102",
-             "103", "104", "105"]
+             "100", "101", "102"]
 }
 
 variable compute_ids {
   type    = list(string)
-  default = ["1000", "1001", "1002", "1003",
-             "1004", "1005", "1006", "1007"]
+  default = ["1000", "1001", "1002"]
 }
 
 variable sdn_ids {

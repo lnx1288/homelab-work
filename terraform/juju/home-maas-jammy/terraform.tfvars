@@ -10,20 +10,15 @@ machines = [
   {machine_id=400,constraints="tags=compute,mini01"},
   {machine_id=401,constraints="tags=compute,mini02"},
   {machine_id=402,constraints="tags=compute,mini03"},
-  {machine_id=1000,constraints="tags=compute,asusrog"},
-  {machine_id=1001,constraints="tags=compute,asusrog"},
-  {machine_id=1002,constraints="tags=compute,asusrog"},
-  {machine_id=1003,constraints="tags=compute,asusrog"},
-  {machine_id=1004,constraints="tags=compute,asusrog"},
-  {machine_id=1005,constraints="tags=compute,asusrog"},
-  {machine_id=1006,constraints="tags=compute,asusrog"},
-  {machine_id=1007,constraints="tags=compute,asusrog"},
+  {machine_id=1000,constraints="tags=compute,mini01"},
+  {machine_id=1001,constraints="tags=compute,mini02"},
+  {machine_id=1002,constraints="tags=compute,mini03"},
 ]
 
 lma-machines = [
   {machine_id=200,constraints="tags=compute,mini01",base="ubuntu@20.04"},
-  {machine_id=201,constraints="tags=compute,mini04",base="ubuntu@20.04"},
-  {machine_id=202,constraints="tags=compute,mini02",base="ubuntu@20.04"},
+  {machine_id=201,constraints="tags=compute,mini02",base="ubuntu@20.04"},
+  {machine_id=202,constraints="tags=compute,mini03",base="ubuntu@20.04"},
 ]
 
 microk8s-machines = [
@@ -47,16 +42,16 @@ ceph-public-space  = "ceph-access"
 ceph-cluster-space = "ceph-replica"
 overlay-space      = "overlay"
 
-expected-osd-count = "12"
-expected-mon-count = "3"
+expected-osd-count = 6
+expected-mon-count = 3
 
-ntp-source               = "192.168.100.11"
-external-network-cidr    = "192.168.100.0/24"
-external-network-gateway = "192.168.100.249"
-dns-servers              = "192.168.100.13"
+#ntp-source               = "192.168.100.11"
+#external-network-cidr    = "192.168.100.0/24"
+#external-network-gateway = "192.168.100.249"
+dns-servers              = "8.8.8.8"
 
-data-port       = "br-data:ens9"
-bridge-mappings = "physnet1:br-data"
+#data-port       = "br-data:ens9"
+#bridge-mappings = "physnet1:br-data"
 
 vips = {
   aodh        = "10.0.1.211"
