@@ -83,29 +83,7 @@ maas_create_partitions()
 
     # Format and mount the libvirt storage
     stg_fs=$(maas ${maas_profile} block-device format ${system_id} ${libvirt_block_id} fstype=ext4)
-    stg_mount=$(maas ${maas_profile} block-device mount ${system_id} ${libvirt_block_id} mount_point=${ceph_storage_path})
-
-    # Create partitions and LVM volume for additional disks
-    for ((disk=1;disk<${#disk_names[@]};disk++)); do
-        disk_id=$(echo $disks | jq -r ".[] | select(.name == \"${disk_names[$disk]}\") | .id")
-        create_partition=$(maas ${maas_profile} partitions create ${system_id} ${disk_id})
-        part_id=$(echo $create_partition | jq -r .id)
-
-        if [[ $disk -eq 1 ]] ; then
-            vg_create=$(maas ${maas_profile} volume-groups create ${system_id} name=${hypervisor_name}-nvme block_device=${disk_id} partitions=${part_id})
-            vg_id=$(echo $vg_create | jq -r .id)
-            vg_size=$(echo $vg_create | jq -r .size)
-        else
-            vg_update=$(maas ${maas_profile} volume-group update ${system_id} ${vg_id} add_partitions=${part_id})
-            vg_size=$(echo $vg_update | jq -r .size)
-        fi
-    done
-
-    # Create, format, and mount logical volume for images
-    lv_create=$(maas admin volume-group create-logical-volume ${system_id} ${vg_id} name=images size=${vg_size})
-    lv_id=$(echo $lv_create | jq -r .id)
-    lv_fs=$(maas ${maas_profile} block-device format ${system_id} ${lv_id} fstype=ext4)
-    lv_mount=$(maas ${maas_profile} block-device mount ${system_id} ${lv_id} mount_point=${storage_path})
+    stg_mount=$(maas ${maas_profile} block-device mount ${system_id} ${libvirt_block_id} mount_point=${storage_path})
 }
 
 # Adds the hypervisor as a pod to MAAS

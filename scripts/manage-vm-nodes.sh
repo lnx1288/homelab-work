@@ -220,18 +220,11 @@ create_storage() {
 
         # Create the directory where the storage files will be located
         mkdir -p "$storage_path/$virt_node"
-        mkdir -p "$ceph_storage_path/$virt_node"
 
         # For all the disks that are defined in the array, create a disk
         for ((disk=0;disk<${#disks[@]};disk++)); do
 
-            if [[ $disk -eq 0 ]] ; then
-               final_storage_path=$storage_path
-            else
-               final_storage_path=$ceph_storage_path
-            fi
-
-            file_name="$final_storage_path/$virt_node/$virt_node-d$((${disk} + 1)).img"
+            file_name="$storage_path/$virt_node/$virt_node-d$((${disk} + 1)).img"
 
             if [[ ! -f $file_name ]] ; then
                 /usr/bin/qemu-img create -f "$storage_format" "${file_name}" "${disks[$disk]}"G &
@@ -285,11 +278,9 @@ wipe_disks() {
         # Remove the disks
         if [[ $doing_juju == "true" ]] ; then
             rm -rf "$storage_path/$virt_node/$virt_node.img"
-            rm -rf "$ceph_storage_path/$virt_node/$virt_node.img"
         else
             for ((disk=0;disk<${#disks[@]};disk++)); do
                 rm -rf "$storage_path/$virt_node/$virt_node-d$((${disk} + 1)).img" &
-                rm -rf "$ceph_storage_path/$virt_node/$virt_node-d$((${disk} + 1)).img" &
             done
         fi
     done
@@ -400,12 +391,7 @@ build_vms() {
             # disks to the VM
             disk_spec=""
             for ((disk=0;disk<${disk_count};disk++)); do
-                if [[ $disk -eq 0 ]] ; then
-                    final_storage_path=$storage_path
-                else
-                    final_storage_path=$ceph_storage_path
-                fi
-                disk_spec+=" --disk path=$final_storage_path/$virt_node/$virt_node-d$((${disk} + 1)).img"
+                disk_spec+=" --disk path=$storage_path/$virt_node/$virt_node-d$((${disk} + 1)).img"
                 disk_spec+=",format=$storage_format,size=${disks[$disk]},bus=$stg_bus,io=native,cache=directsync"
             done
         fi
