@@ -1,18 +1,15 @@
 model-name = "cpe-jammy"
 
 machines = [
-  {machine_id=100,constraints="tags=control,mini01"},
-  {machine_id=101,constraints="tags=control,mini02"},
-  {machine_id=102,constraints="tags=control,mini03"},
-  {machine_id=103,constraints="tags=control,mini01"},
-  {machine_id=104,constraints="tags=control,mini02"},
-  {machine_id=105,constraints="tags=control,mini03"},
-  {machine_id=400,constraints="tags=compute,mini01"},
-  {machine_id=401,constraints="tags=compute,mini02"},
-  {machine_id=402,constraints="tags=compute,mini03"},
-  {machine_id=1000,constraints="tags=compute,mini01"},
-  {machine_id=1001,constraints="tags=compute,mini02"},
-  {machine_id=1002,constraints="tags=compute,mini03"},
+  {machine_id=100,constraints="tags=control,mini01",base="ubuntu@22.04"},
+  {machine_id=101,constraints="tags=control,mini02",base="ubuntu@22.04"},
+  {machine_id=102,constraints="tags=control,mini03",base="ubuntu@22.04"},
+  {machine_id=400,constraints="tags=compute,mini01",base="ubuntu@22.04"},
+  {machine_id=401,constraints="tags=compute,mini02",base="ubuntu@22.04"},
+  {machine_id=402,constraints="tags=compute,mini03",base="ubuntu@22.04"},
+  {machine_id=1000,constraints="tags=compute,mini01",base="ubuntu@22.04"},
+  {machine_id=1001,constraints="tags=compute,mini02",base="ubuntu@22.04"},
+  {machine_id=1002,constraints="tags=compute,mini03",base="ubuntu@22.04"},
 ]
 
 lma-machines = [

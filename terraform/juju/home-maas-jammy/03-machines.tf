@@ -6,4 +6,5 @@ resource "juju_machine" "all_machines" {
   model       = juju_model.openstack.name
   name        = each.value.machine_id
   constraints = each.value.constraints
+  base        = each.value.base
 }
