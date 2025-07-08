@@ -8,8 +8,6 @@ resource "juju_application" "ntp" {
     channel  = "latest/stable"
     base     = "ubuntu@22.04"
   }
-
-  units = 0
 }
 
 resource "juju_integration" "ntp-k8s" {

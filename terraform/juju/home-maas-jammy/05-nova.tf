@@ -16,12 +16,10 @@ resource "juju_application" "nova-cloud-controller" {
     base     = var.default-base
   }
 
-  units = var.num_units
-
-  placement = "${join(",", sort([
+  machines = [
     for res in juju_machine.ncc :
         res.machine_id
-  ]))}"
+  ]
 
   endpoint_bindings = [{
     space    = var.oam-space
@@ -67,8 +65,6 @@ resource "juju_application" "nova-cloud-controller-mysql-router" {
     channel = var.mysql-router-channel
   }
 
-  units = 0
-
   endpoint_bindings = [{
     space    = var.oam-space
   },{
@@ -93,8 +89,6 @@ resource "juju_application" "hacluster-nova" {
     name     = "hacluster"
     channel  = var.hacluster-channel
   }
-
-  units = 0
 }
 
 resource "juju_integration" "nova-cloud-controller-ha" {

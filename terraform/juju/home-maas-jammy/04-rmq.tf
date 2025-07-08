@@ -16,12 +16,10 @@ resource "juju_application" "rabbitmq-server" {
     base     = var.default-base
   }
 
-  units = 3
-
-  placement = "${join(",", sort([
+  machines = [
     for res in juju_machine.rmq :
         res.machine_id
-  ]))}"
+  ]
 
   endpoint_bindings = [{
     space    = var.oam-space

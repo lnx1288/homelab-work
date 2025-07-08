@@ -9,12 +9,10 @@ resource "juju_application" "microk8s" {
     base     = "ubuntu@22.04"
   }
 
-  units = 3
-
-  placement = "${join(",", sort([
+  machines = [
     for res in juju_machine.microk8s :
         res.machine_id
-  ]))}"
+  ]
 
 
    endpoint_bindings = [{

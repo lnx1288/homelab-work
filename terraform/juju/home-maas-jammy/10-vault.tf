@@ -17,12 +17,10 @@ resource "juju_application" "vault" {
     revision = 319
   }
 
-  units = var.num_units
-
-  placement = "${join(",",sort([
+  machines = [
     for res in juju_machine.vault :
       res.machine_id
-  ]))}"
+  ]
 
   config = {
     vip            = var.vips["vault"]
@@ -41,8 +39,6 @@ resource "juju_application" "vault-mysql-router" {
     name    = "mysql-router"
     channel = var.mysql-router-channel
   }
-
-  units = 0
 
   endpoint_bindings = [
     {
@@ -70,8 +66,6 @@ resource "juju_application" "hacluster-vault" {
     name     = "hacluster"
     channel  = var.hacluster-channel
   }
-
-  units = 0
 }
 
 
@@ -94,10 +88,10 @@ resource "juju_application" "etcd" {
     #revision = var.etcd_revision
   }
 
-  placement = "${join(",",sort([
+  machines = [
     for res in juju_machine.etcd :
       res.machine_id
-  ]))}"
+  ]
 
   endpoint_bindings = [{
     space    = var.oam-space
@@ -108,8 +102,6 @@ resource "juju_application" "etcd" {
     space    = var.internal-space
     endpoint = "db"
   }]
-
-  units = var.num_units
 
   config = {
     channel = "3.2/stable"
@@ -133,11 +125,9 @@ resource "juju_application" "easyrsa" {
     base    = var.default-base
   }
 
-  placement = juju_machine.easyrsa.machine_id
+  machines = [ juju_machine.easyrsa.machine_id ]
 
   endpoint_bindings = [{space = var.oam-space}]
-
-  units = 1
 }
 
 resource "juju_integration" "vault-etcd" {

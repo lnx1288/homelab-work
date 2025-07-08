@@ -9,12 +9,10 @@ resource "juju_application" "ceph-osd" {
     base    = var.default-base
   }
 
-  units = length(var.compute_ids)
-
-  placement = "${join(",", sort([
+  machines = [
     for index in var.compute_ids :
       juju_machine.all_machines[index].machine_id
-  ]))}"
+  ]
 
   config = {
     osd-devices     = var.osd-devices
@@ -46,12 +44,10 @@ resource "juju_application" "ceph-mon" {
     base     = var.default-base
   }
 
-  units = var.num_units
-
-  placement = "${join(",", sort([
+  machines = [
     for res in juju_machine.ceph-mon :
         res.machine_id
-  ]))}"
+  ]
 
   endpoint_bindings = [{
     space    = var.oam-space
@@ -98,12 +94,10 @@ resource "juju_application" "ceph-radosgw" {
     base     = var.default-base
   }
 
-  units = var.num_units
-
-  placement = "${join(",", sort([
+  machines = [
     for res in juju_machine.ceph-rgw :
         res.machine_id
-  ]))}"
+  ]
 
   endpoint_bindings = [{
     space    = var.oam-space
@@ -141,8 +135,6 @@ resource "juju_application" "hacluster-radosgw" {
     name     = "hacluster"
     channel  = var.hacluster-channel
   }
-
-  units = 0
 }
 
 resource "juju_integration" "osd-mon" {

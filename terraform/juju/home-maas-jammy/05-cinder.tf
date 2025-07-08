@@ -16,12 +16,10 @@ resource "juju_application" "cinder" {
     base     = var.default-base
   }
 
-  units = var.num_units
-
-  placement = "${join(",", sort([
+  machines = [
     for res in juju_machine.cinder :
         res.machine_id
-  ]))}"
+  ]
 
   endpoint_bindings = [{
     space    = var.oam-space
@@ -61,8 +59,6 @@ resource "juju_application" "cinder-ceph" {
     channel = var.openstack-channel
   }
 
-  units = 0
-
   config = {
     restrict-ceph-pools = "false"
   }
@@ -78,8 +74,6 @@ resource "juju_application" "cinder-mysql-router" {
     name    = "mysql-router"
     channel = var.mysql-router-channel
   }
-
-  units = 0
 
   endpoint_bindings = [{
     space    = var.oam-space
@@ -105,8 +99,6 @@ resource "juju_application" "hacluster-cinder" {
     name     = "hacluster"
     channel  = var.hacluster-channel
   }
-
-  units = 0
 }
 
 resource "juju_integration" "cinder-ha" {

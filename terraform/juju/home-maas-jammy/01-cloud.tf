@@ -16,5 +16,6 @@ resource "juju_model" "openstack" {
 
     #agent-metadata-url = "http://juju/tools/"
     agent-stream = "released"
+    default-series = var.default-series
   }
 }

@@ -19,9 +19,21 @@ lma-machines = [
 ]
 
 microk8s-machines = [
-  {machine_id=300,constraints="tags=compute,mini03",base="ubuntu@22.04"},
+  {machine_id=300,constraints="tags=compute,mini01",base="ubuntu@22.04"},
   {machine_id=301,constraints="tags=compute,mini02",base="ubuntu@22.04"},
-  {machine_id=302,constraints="tags=compute,mini01",base="ubuntu@22.04"},
+  {machine_id=302,constraints="tags=compute,mini03",base="ubuntu@22.04"},
+]
+
+cinder-lvm-machines = [
+  {machine_id=500,constraints="tags=compute,mini01",base="ubuntu@22.04"},
+  {machine_id=501,constraints="tags=compute,mini02",base="ubuntu@22.04"},
+  {machine_id=502,constraints="tags=compute,mini03",base="ubuntu@22.04"},
+]
+
+infra-machines = [
+  "mini01",
+  "mini02",
+  "mini03",
 ]
 
 osd-devices    = "/dev/sdb /dev/sdc"

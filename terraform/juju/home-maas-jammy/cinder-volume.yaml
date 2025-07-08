@@ -1,0 +1,11 @@
+variables:
+  oam-space:           &oam-space           oam
+
+applications:
+  cinder-volume:
+    charm: ch:cinder
+    channel: yoga/stable
+    series: jammy
+    bindings:
+      "": *oam-space
+    num_units: 0

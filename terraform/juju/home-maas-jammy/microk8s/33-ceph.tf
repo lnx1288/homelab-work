@@ -1,4 +1,4 @@
-resource "juju_application" "ceph-osd" {
+resource "juju_application" "mk8s-ceph-osd" {
   name = "ceph-osd"
 
   model = juju_model.microk8s.name
@@ -9,19 +9,17 @@ resource "juju_application" "ceph-osd" {
     base    = var.default-base
   }
 
-  units = length(juju_machine.microk8s)
-
-  placement = "${join(",", sort([
+  machines = [
     for res in juju_machine.microk8s :
         res.machine_id
-  ]))}"
+  ]
 
   config = {
     osd-devices     = var.osd-devices
   }
 }
 
-resource "juju_machine" "ceph-mon" {
+resource "juju_machine" "mk8s-ceph-mon" {
   count       = length(juju_machine.microk8s)
   model       = juju_model.microk8s.name
   placement   = join(":", ["lxd", juju_machine.microk8s[var.k8s_ids[count.index]].machine_id])
@@ -29,7 +27,7 @@ resource "juju_machine" "ceph-mon" {
   base        = var.default-base
 }
 
-resource "juju_application" "ceph-mon" {
+resource "juju_application" "mk8s-ceph-mon" {
   name = "ceph-mon"
 
   model = juju_model.microk8s.name
@@ -40,12 +38,10 @@ resource "juju_application" "ceph-mon" {
     base     = var.default-base
   }
 
-  units = length(juju_machine.microk8s)
-
-  placement = "${join(",", sort([
-    for res in juju_machine.ceph-mon :
+  machines = [
+    for res in juju_machine.mk8s-ceph-mon :
         res.machine_id
-  ]))}"
+  ]
 
   endpoint_bindings = [{
     space    = var.oam-space
@@ -57,7 +53,7 @@ resource "juju_application" "ceph-mon" {
   }
 }
 
-resource "juju_application" "ceph-csi" {
+resource "juju_application" "mk8s-ceph-csi" {
   name = "ceph-csi"
 
   model = juju_model.microk8s.name
@@ -68,50 +64,48 @@ resource "juju_application" "ceph-csi" {
     base    = var.default-base
   }
 
-  units = 0
-
   config = {
     provisioner-replicas = 1
     namespace = "kube-system"
   }
 }
 
-resource "juju_integration" "osd-mon" {
+resource "juju_integration" "mk8s-osd-mon" {
 
   model = juju_model.microk8s.name
 
   application {
-    name     = juju_application.ceph-osd.name
+    name     = juju_application.mk8s-ceph-osd.name
     endpoint = "mon"
   }
 
   application {
-    name     = juju_application.ceph-mon.name
+    name     = juju_application.mk8s-ceph-mon.name
     endpoint = "osd"
   }
 }
 
-resource "juju_integration" "csi-mon" {
+resource "juju_integration" "mk8s-csi-mon" {
 
   model = juju_model.microk8s.name
 
   application {
-    name     = juju_application.ceph-csi.name
+    name     = juju_application.mk8s-ceph-csi.name
     endpoint = "ceph-client"
   }
 
   application {
-    name     = juju_application.ceph-mon.name
+    name     = juju_application.mk8s-ceph-mon.name
     endpoint = "client"
   }
 }
 
-resource "juju_integration" "csi-k8s" {
+resource "juju_integration" "mk8s-csi-k8s" {
 
   model = juju_model.microk8s.name
 
   application {
-    name     = juju_application.ceph-csi.name
+    name     = juju_application.mk8s-ceph-csi.name
     endpoint = "kubernetes-info"
   }
 

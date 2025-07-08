@@ -10,12 +10,10 @@ resource "juju_application" "controller-server" {
     base     = var.default-base
   }
 
-  units = length(var.controller_ids)
-
-  placement = "${join(",", sort([
+  machines = [
     for index in var.controller_ids :
       juju_machine.all_machines[index].machine_id
-  ]))}"
+  ]
 }
 
 resource "juju_application" "sysconfig-control" {
@@ -28,8 +26,6 @@ resource "juju_application" "sysconfig-control" {
     channel  = var.sysconfig_channel
     revision = var.sysconfig_revision
   }
-
-  units = 0
 
   config = {
       governor     = "performance"

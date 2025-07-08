@@ -69,34 +69,6 @@ On my machine, I had to add `sudo ip route add 10.0.1.0/24 via 192.168.68.63` so
     * Secure Boot: OFF
     * UEFI: Enabled
 
-## Node config
-
-### Orchestrator
-
-#### Tasks
-
-  * Install OS (manual) ---> OK
-  * Create Ubuntu mirror in LXD (Ansible) ---> OK
-  * Hardening (Ansible)
-  * Network config (Ansible) ---> OK
-  * Install and initialize MAAS (Ansible) ---> OK
-  * Generate API key (Ansible) ---> OK
-  * Commission lab nodes (scripts)
-    * Define disk layout
-    * virtualized or physical deployment? (MAAS autobuilder or custom deployment on my own)
-
-### Nodes
-
-#### Tasks
-
-  * Provision OS via MAAS (Script)
-  * If custom build:
-    * Deploy MAAS + Juju + Openstack control plane in the 3 mini PCs (Terraform)
-    * Deploy Nova in compute node (laptop) (Terraform)
-  * If maas autobuilder:
-    * Deploy all the infra in the 4 nodes (revisit the service to host mapping and remove unnecessary services)
-  * Hardening
-
 ## Deploy the lab
 
 ### Scenario 1: everything from scratch
@@ -110,6 +82,7 @@ On my machine, I had to add `sudo ip route add 10.0.1.0/24 via 192.168.68.63` so
         ansible-playbook -i inventory/hosts.yaml playbooks/init_config.yaml --ask-become-pass
         lxc exec maas -- bash -c "ansible-playbook -i inventory/hosts.yaml playbooks/maas.yaml"
         lxc exec maas -- bash -c "chmod +x scripts/bootstrap-maas.sh; ./scripts/bootstrap-maas.sh -b"
+        lxc exec maas -- bash -x ./bootstrap-maas.sh -j home-maas
         ```
     * Copy the API key to the Tf init.tf file
 

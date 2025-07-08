@@ -82,9 +82,26 @@ variable "microk8s-machines" {
   }))
 }
 
+variable "cinder-lvm-machines" {
+  type = list(object({
+    machine_id = number
+    constraints = string
+    base = optional(string)
+  }))
+}
+variable infra-machines {
+  type    = list(string)
+  default = []
+}
+
 variable model-name {
     type = string
     default = "openstack"
+}
+
+variable infra-model-name {
+    type = string
+    default = "infra"
 }
 
 variable lma-model-name {
@@ -120,6 +137,11 @@ variable ovn-channel {
 variable default-base {
     type = string
     default = "ubuntu@22.04"
+}
+
+variable default-series {
+    type = string
+    default = "jammy"
 }
 
 variable mysql-channel {

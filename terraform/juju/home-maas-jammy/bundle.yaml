@@ -1,0 +1,28 @@
+variables:
+  oam-space:           &oam-space           oam
+  internal-space:      &internal-space      oam
+
+applications:
+  cinder:
+    charm: ch:cinder
+    channel: yoga/stable
+    series: jammy
+    bindings:
+      "": *oam-space
+    num_units: 0
+  cinder-backup:
+    charm: ch:cinder
+    channel: yoga/stable
+    series: jammy
+    bindings:
+      "": *oam-space
+    num_units: 0
+  etcd:
+    charm: ch:etcd
+    channel: 1.29/stable
+    series: jammy
+    bindings:
+      "": *oam-space
+      cluster: *internal-space
+      db: *internal-space
+    num_units: 0

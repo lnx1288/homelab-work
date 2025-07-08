@@ -2,7 +2,7 @@ resource "juju_machine" "glance" {
   count       = var.num_units
   model       = var.model-name
   placement   = join(":", ["lxd", juju_machine.all_machines[var.controller_ids[count.index]].machine_id])
-  constraints = "spaces=oam"
+  constraints = "cores=2 mem=2048M spaces=oam virt-type=virtual-machine"
 }
 
 resource "juju_application" "glance" {
@@ -16,12 +16,10 @@ resource "juju_application" "glance" {
     base     = var.default-base
   }
 
-  units = var.num_units
-
-  placement = "${join(",", sort([
+  machines = [
     for res in juju_machine.glance :
         res.machine_id
-  ]))}"
+  ]
 
   endpoint_bindings = [{
     space    = var.oam-space
@@ -59,8 +57,6 @@ resource "juju_application" "glance-mysql-router" {
     channel = var.mysql-router-channel
   }
 
-  units = 0
-
   endpoint_bindings = [{
     space    = var.oam-space
   },{
@@ -85,8 +81,6 @@ resource "juju_application" "hacluster-glance" {
     name     = "hacluster"
     channel  = var.hacluster-channel
   }
-
-  units = 0
 }
 
 resource "juju_integration" "glance-ha" {
@@ -180,17 +174,32 @@ resource "juju_integration" "glance-ceph" {
   }
 }
 
-resource "juju_integration" "glance-cinder" {
+#resource "juju_integration" "glance-cinder" {
+#
+#  model = var.model-name
+#
+#  application {
+#    name     = juju_application.glance.name
+#    endpoint = "image-service"
+#  }
+#
+#  application {
+#    name     = juju_application.cinder.name
+#    endpoint = "image-service"
+#  }
+#}
+
+resource "juju_integration" "glance-cinder-image" {
 
   model = var.model-name
 
   application {
     name     = juju_application.glance.name
-    endpoint = "image-service"
+    endpoint = "cinder-volume-service"
   }
 
   application {
     name     = juju_application.cinder.name
-    endpoint = "image-service"
+    endpoint = "cinder-volume-service"
   }
 }

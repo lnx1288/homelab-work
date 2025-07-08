@@ -16,12 +16,10 @@ resource "juju_application" "memcached" {
     base    = var.default-base
   }
 
-  units = var.num_units
-
-  placement = "${join(",", sort([
+  machines = [
     for res in juju_machine.memcache :
         res.machine_id
-  ]))}"
+  ]
 
 
   endpoint_bindings = [{

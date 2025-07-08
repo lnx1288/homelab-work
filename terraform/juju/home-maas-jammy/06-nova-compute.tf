@@ -9,12 +9,10 @@ resource "juju_application" "nova-compute-kvm" {
     base     = var.default-base
   }
 
-  units = length(var.compute_ids)
-
-  placement = "${join(",", sort([
+  machines = [
     for index in var.compute_ids :
       juju_machine.all_machines[index].machine_id
-  ]))}"
+  ]
 
    endpoint_bindings = [{
      space    = var.oam-space
@@ -37,21 +35,6 @@ resource "juju_application" "nova-compute-kvm" {
        reserved-host-memory   = var.reserved-host-memory
        cpu-allocation-ratio   = var.cpu-allocation-ratio
        ram-allocation-ratio   = var.ram-allocation-ratio
-       #cpu-mode               = "custom"
-       #cpu-model              = "EPYC-IBPB"
-       #cpu-model-extra-flags  = "svm,pcid"
-       pci-passthrough-whitelist = jsonencode([
-         {vendor_id: "1af4", product_id: "1000", address: "00:08.0"},
-         {vendor_id: "1af4", product_id: "1000", address: "00:07.0"},
-         {vendor_id: "1af4", product_id: "1000", address: "00:06.0"},
-       ])
-       pci-alias = jsonencode({
-         vendor_id: "1af4",
-         product_id: "1000",
-         device_type: "type-PCI",
-         name: "alejandropass",
-         numa_policy: "preferred"
-       })
   }
 }
 
@@ -64,8 +47,6 @@ resource "juju_application" "ovn-chassis" {
     name     = "ovn-chassis"
     channel  = var.ovn-channel
   }
-
-  units = 0
 
   endpoint_bindings = [{
     space    = var.oam-space
@@ -87,8 +68,6 @@ resource "juju_application" "sysconfig-compute" {
     channel  = var.sysconfig_channel
     revision = var.sysconfig_revision
   }
-
-  units = 0
 
   config = {
 #      enable-iommu = "false"

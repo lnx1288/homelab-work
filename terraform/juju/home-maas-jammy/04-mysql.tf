@@ -16,12 +16,10 @@ resource "juju_application" "mysql-innodb-cluster" {
     base     = var.default-base
   }
 
-  units = var.num_units
-
-  placement = "${join(",", sort([
+  machines = [
     for res in juju_machine.mysql :
         res.machine_id
-  ]))}"
+  ]
 
   endpoint_bindings = [{
     space    = var.oam-space

@@ -21,7 +21,7 @@ resource "juju_application" "telegraf" {
   config = {
       socket_listener_port = "8095"
       install_sources = <<-EOF
-        - 'deb http://ppa.launchpad.net/telegraf-devs/ppa/ubuntu jammy main'
+        - 'deb http://192.168.1.12/ppa.launchpad.net/telegraf-devs/ppa/ubuntu jammy main'
         EOF
       install_keys = <<-EOF
         - |
