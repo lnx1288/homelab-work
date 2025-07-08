@@ -18,8 +18,18 @@
           - python3-psycopg2
           - jq
           - wakeonlan
+          - uuid
         state: present
         update_cache: true
+
+    - name: Install Terraform snap
+      snap:
+        name: terraform
+        classic: yes
+
+    - name: Install Vault snap
+      snap:
+        name: vault
 
     - name: Ensure PostgreSQL is listening on localhost
       lineinfile:
