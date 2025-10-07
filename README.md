@@ -80,9 +80,19 @@ On my machine, I had to add `sudo ip route add 10.0.1.0/24 via 192.168.68.63` so
         sudo apt update; sudo apt install ansible -y
         cd ansible
         ansible-playbook -i inventory/hosts.yaml playbooks/init_config.yaml --ask-become-pass
+
+        # create a MAAS container install MAAS + PostgreSQL DB, bootstrap MAAS
         lxc exec maas -- bash -c "ansible-playbook -i inventory/hosts.yaml playbooks/maas.yaml"
         lxc exec maas -- bash -c "chmod +x scripts/bootstrap-maas.sh; ./scripts/bootstrap-maas.sh -b"
+
+        # bootstrap a Juju controller, add a cloud and then configure/deploy Juju in HA (3 controllers in total) 
         lxc exec maas -- bash -x ./bootstrap-maas.sh -j home-maas
+
+        # deploy Openstack via Terrafor
+        ssh into the MAAS container
+        cd <terraform-dir>
+        terraform init
+        terraform apply --auto-approve  # this may need to be executed a few times
         ```
     * Copy the API key to the Tf init.tf file
 

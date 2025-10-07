@@ -1,4 +1,4 @@
-# Documeent on these scripts
+# Document on these scripts
 
 ## Arif's lab specific
 
