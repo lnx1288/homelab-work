@@ -1,9 +1,42 @@
+model_name="cpe-jammy"
+model=" -m ${model_name}"
+
+check_juju_version()
+{
+    juju_version=$(juju version | cut -d'-' -f1 | cut -d'.' -f1)
+
+    juju_timeout="30s"
+
+    juju_run="juju run --timeout ${juju_timeout}"
+    juju_run_action="juju run-action --wait"
+    juju_status="juju status"
+    juju_ssh="juju ssh"
+    juju_scp="juju scp"
+    juju_config="juju config"
+
+    if [[ ${juju_version} -ge 3 ]] ; then
+        juju_run="juju exec --wait=${juju_timeout}"
+        juju_run_action="juju run"
+    fi
+
+    if [[ -n ${model} ]] ; then
+        juju_run+=${model}
+        juju_run_action+=${model}
+        juju_status+=${model}
+        juju_ssh+=${model}
+        juju_scp+=${model}
+        juju_config+=${model}
+    fi
+}
+
+check_juju_version
+
 # Unset any previous variables
 unset $(printenv | awk 'BEGIN{FS="=";} /^OS_/ {print $1;}')
 
 keystone_addr=$(juju config keystone vip)
 if [ -z "$keystone_addr" ]; then
-  keystone_addr=$(juju run --unit keystone/0 unit-get private-address)
+  keystone_addr=$(${juju_run} -u keystone/0 unit-get private-address)
 fi
 
 ssl_cert=$(juju config keystone ssl_cert)
@@ -12,7 +45,7 @@ if [ -n "$ssl_cert" ]; then
 fi
 
 export OS_USERNAME=admin
-export OS_PASSWORD=$(juju run --unit keystone/0 leader-get admin_passwd)
+export OS_PASSWORD=$(${juju_run} -u keystone/0 leader-get admin_passwd)
 export OS_PROJECT_NAME=admin
 export OS_REGION_NAME=RegionOne
 

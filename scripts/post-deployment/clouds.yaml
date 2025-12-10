@@ -1,0 +1,12 @@
+clouds:
+  alejandro-home:
+    auth:
+      auth_url: https://10.0.1.216:5000/v3
+      username: admin
+      password: openstack
+      project_name: admin
+      user_domain_name: admin_domain
+      project_domain_name: admin_domain
+    identity_api_version: 3
+    region_name: RegionOne
+    cacert: /root/homelab-work/scripts/post-deployment/root_ca.cert

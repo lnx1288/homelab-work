@@ -7,7 +7,7 @@ LMA_SERVERS="on"
 get_juju_status()
 {
     juju_status_out=$(mktemp)
-    ${juju_status} --format json > "${juju_status_out}"
+    ${juju_status} --format json | tee "${juju_status_out}"
 }
 
 check_juju_version()

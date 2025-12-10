@@ -10,6 +10,7 @@ terraform {
 
 provider "openstack" {
   cloud = var.cloud
+  cacert_file = "/root/homelab-work/scripts/post-deployment/root_ca.cert"
 }
 
 variable "domain_id" {

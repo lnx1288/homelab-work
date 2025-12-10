@@ -86,9 +86,9 @@ On my machine, I had to add `sudo ip route add 10.0.1.0/24 via 192.168.68.63` so
         lxc exec maas -- bash -c "chmod +x scripts/bootstrap-maas.sh; ./scripts/bootstrap-maas.sh -b"
 
         # bootstrap a Juju controller, add a cloud and then configure/deploy Juju in HA (3 controllers in total) 
-        lxc exec maas -- bash -x ./bootstrap-maas.sh -j home-maas
+        lxc exec maas -- bash -x ./scripts/bootstrap-maas.sh -j home-maas
 
-        # deploy Openstack via Terrafor
+        # deploy Openstack via Terraform
         ssh into the MAAS container
         cd <terraform-dir>
         terraform init
@@ -107,6 +107,16 @@ On my machine, I had to add `sudo ip route add 10.0.1.0/24 via 192.168.68.63` so
   * __`maas.yaml`__:
     * Installs MAAS, PostgreSQL and some other packages in the MAAS container
 
+To get Openstack commands working I need to:
+
+* ensure `clouds.yaml` is set (automate this!!!)
+* grab the cert from Vault using the script `get_vault_ca.sh`
+* `juju config keystone ssl_cert="<path to root_ca.cert from script>"`
+* run `export OS_CLOUD=alejandro-home`
+
+## To DO
+
+- Add installation of `jhack`
 
 ## Known Issues
 

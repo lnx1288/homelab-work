@@ -13,7 +13,7 @@ resource "openstack_compute_instance_v2" "test_server_01" {
   ]
 
   block_device {
-    uuid                  = openstack_images_image_v2.bionic-raw.id
+    uuid                  = openstack_images_image_v2.cirros.id
     source_type           = "image"
     volume_size           = 10
     boot_index            = 0
