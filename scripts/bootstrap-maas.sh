@@ -105,17 +105,17 @@ EOF
 build_maas() {
     echo "Building MAAS..."
     # Create the initial 'admin' user of MAAS, purge first!
-    purge_admin_user
+    #purge_admin_user
 
-    [[ $maas_pkg_type == "snap" ]] && maas init region+rack --database-uri maas-test-db:/// --maas-url $maas_endpoint --force
+    #[[ $maas_pkg_type == "snap" ]] && maas init region+rack --database-uri maas-test-db:/// --maas-url $maas_endpoint --force
 
-    echo "Creating the MAAS admin user: $maas_profile..."
-    sudo maas createadmin --username "$maas_profile" --password "$maas_pass" --email "$maas_profile"@"$maas_pass" --ssh-import lp:"$launchpad_user"
+    #echo "Creating the MAAS admin user: $maas_profile..."
+    #sudo maas createadmin --username "$maas_profile" --password "$maas_pass" --email "$maas_profile"@"$maas_pass" --ssh-import lp:"$launchpad_user"
 
-    if [[ $maas_pkg_type == "deb" ]] ; then
-      sudo chsh -s /bin/bash maas
-      sudo chown -R maas:maas /var/lib/maas
-    fi
+    #if [[ $maas_pkg_type == "deb" ]] ; then
+    #  sudo chsh -s /bin/bash maas
+    #  sudo chown -R maas:maas /var/lib/maas
+    #fi
 
     if [ -f ~/.maas-api.key ]; then
         rm ~/.maas-api.key

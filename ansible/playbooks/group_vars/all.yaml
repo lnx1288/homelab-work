@@ -31,4 +31,4 @@ ubuntu_releases:
   - focal
 
 # Output path for Terraform to read the MAAS API key
-api_key_output_path: "$HOME/maas_api_key.tfvars"
+api_key_output_path: "~/maas_api_key.tfvars"

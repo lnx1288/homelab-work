@@ -88,13 +88,13 @@
       copy:
         content: "maas_api_key = \"{{ maas_api_key_result.stdout }}\"\n"
         dest: "{{ api_key_output_path }}"
-        mode: '0600'
+        mode: '0644'
     
     - name: Save MAAS API key for MAAS bootstrap
       copy:
         content: "{{ maas_api_key_result.stdout }}"
         dest: "~/.maas-api.key"
-        mode: 0600''
+        mode: '0644'
 
     - name: Print MAAS API key
       debug:
