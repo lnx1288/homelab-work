@@ -11,7 +11,7 @@ vault_vip=$(${juju_config} vault vip)
 
 export VAULT_ADDR="http://${vault_vip}:8200"
 
-vault operator init -key-shares=5 -key-threshold=3 > ${vault_file}
+vault operator init -key-shares=5 -key-threshold=3 | tee ${vault_file}
 
 if [[ -z "$(cat ${vault_file})" ]] ; then
   echo "Vault was not initialised, exiting ..."
@@ -24,7 +24,7 @@ initial_token=$(grep Initial ${vault_file} | awk '{print $4}')
 
 export VAULT_TOKEN=${initial_token}
 
-vault token create -ttl=10m > ${vault_token_file}
+vault token create -ttl=10m | tee ${vault_token_file}
 
 token=$(grep token ${vault_token_file} | head -n 1 | awk '{print $2}')
 
