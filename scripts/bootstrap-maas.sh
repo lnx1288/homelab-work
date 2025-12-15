@@ -422,10 +422,10 @@ while getopts ":a:bc:dij:nt:r" opt; do
         add_cloud "$OPTARG"
         ;;
     b )
-        echo "Building out a new MAAS server"
-        check_bins
-        remove_maas_${maas_pkg_type}
-        install_maas_${maas_pkg_type}
+        #echo "Building out a new MAAS server"
+        #check_bins
+        #remove_maas_${maas_pkg_type}
+        #install_maas_${maas_pkg_type}
         build_maas
         bootstrap_maas
         exit 0

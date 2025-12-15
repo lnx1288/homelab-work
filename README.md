@@ -85,6 +85,16 @@ On my machine, I had to add `sudo ip route add 10.0.1.0/24 via 192.168.68.63` so
         lxc exec maas -- bash -c "ansible-playbook -i inventory/hosts.yaml playbooks/maas.yaml"
         lxc exec maas -- bash -c "chmod +x scripts/bootstrap-maas.sh; ./scripts/bootstrap-maas.sh -b"
 
+        # create and add the nodes to MAAS
+        lxc exec maas -- bash -x ./scripts/manage-hypervisor-nodes.sh -a mini01
+        lxc exec maas -- bash -x ./scripts/manage-hypervisor-nodes.sh -a mini02
+        lxc exec maas -- bash -x ./scripts/manage-hypervisor-nodes.sh -a mini03
+
+        # make sure the MAAS API key is configured in all nodes in configs/maas.config
+
+        # in each hypervisor run
+        ./manage-vm-nodes.sh -c
+
         # bootstrap a Juju controller, add a cloud and then configure/deploy Juju in HA (3 controllers in total) 
         lxc exec maas -- bash -x ./scripts/bootstrap-maas.sh -j home-maas
 
@@ -114,9 +124,10 @@ To get Openstack commands working I need to:
 * `juju config keystone ssl_cert="<path to root_ca.cert from script>"`
 * run `export OS_CLOUD=alejandro-home`
 
-## To DO
+## To Do
 
 - Add installation of `jhack`
+-  manage-vm-nodes.sh does not run because the MAAS AOPI key is not in the maas.config file that the hypervisors get, need to fix that
 
 ## Known Issues
 

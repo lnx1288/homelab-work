@@ -156,23 +156,23 @@ spaces = [
 
 minipc_machines = [
   {
-     host_name = "mini01"
+     host_name = "mini01",
      power_type = "manual",
      mac_addr = "c8:ff:bf:04:09:fe"
   },
   {
-     host_name = "mini02"
+     host_name = "mini02",
      power_type = "manual",
      mac_addr = "c8:ff:bf:04:0f:00"
   },
   {
-     host_name = "mini03"
+     host_name = "mini03",
      power_type = "manual",
      mac_addr = "c8:ff:bf:05:9d:f3"
   }
-  {
-     host_name = "asusrog"
-     power_type = "manual",
-     mac_addr = "70:4d:7b:3e:40:dd"
-  }
+  #{
+  #   host_name = "asusrog",
+  #   power_type = "manual",
+  #   mac_addr = "70:4d:7b:3e:40:dd"
+  #}
 ]
