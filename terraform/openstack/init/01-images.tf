@@ -4,6 +4,7 @@ resource "openstack_images_image_v2" "cirros" {
   container_format = "bare"
   disk_format      = "qcow2"
   visibility       = "public"
+  web_download     = true
 }
 
 resource "openstack_images_image_v2" "ubuntu_raw" {
@@ -14,6 +15,7 @@ resource "openstack_images_image_v2" "ubuntu_raw" {
   container_format = "bare"
   disk_format      = "raw"
   visibility       = "public"
+  web_download     = true
 }
 
 #resource "openstack_images_image_v2" "win2k12-r2-raw" {
@@ -27,3 +29,4 @@ resource "openstack_images_image_v2" "ubuntu_raw" {
 #    "os_type" = "windows"
 #  }
 #}
+
