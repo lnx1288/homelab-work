@@ -1,10 +1,6 @@
-data "openstack_compute_flavor_v2" "m1_small" {
-    name = "m1.small"
-}
-
 resource "openstack_compute_instance_v2" "test_server_01" {
   name            = "test_server_01"
-  flavor_id       = data.openstack_compute_flavor_v2.m1_small.id
+  flavor_id       = openstack_compute_flavor_v2.m1_small.id
   key_pair        = openstack_compute_keypair_v2.alejandro-key.name
   security_groups = [
     "default",
