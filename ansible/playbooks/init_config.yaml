@@ -189,28 +189,3 @@
 
     - name: Apply LXD profile
       shell: lxc profile edit orchestrator-lxd-profile < /tmp/orchestrator-lxd-profile.yaml
-
-    - name: Launch container from profile
-      command: >
-        lxc launch ubuntu:22.04 maas -p orchestrator-lxd-profile
-      args:
-        creates: "/var/snap/lxd/common/lxd/containers/maas"
-
-    - name: Archive the repository directory
-      archive:
-        path: "{{ repo_dir }}/*"
-        dest: "/tmp/repo.tar.gz"
-        format: gz
-
-    - name: Push the archive to the container
-      command: lxc file push /tmp/repo.tar.gz maas/root/repo.tar.gz
-
-    - name: Extract archive inside container
-      command: lxc exec maas -- tar -xf /root/repo.tar.gz -C /root/
-
-    - name: Config MAAS container networking
-      shell: >
-        lxc exec maas -- bash -c "set -a; source /root/scripts/configs/maas.config; set +a; envsubst < /root/scripts/configs/maas-netplan.yaml > /etc/netplan/01-netcfg.yaml; netplan apply"
-
-    - name: Install Ansible in MAAS container
-      shell: lxc exec maas -- bash -c "apt update; apt upgrade -y; apt install ansible -y"
